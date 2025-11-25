@@ -1,126 +1,101 @@
-/* === public/css/tentang.css === */
-
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  position: relative; 
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('/public/camping.png') no-repeat center center;
-  background-size: cover;
-  z-index: -2; 
-  opacity: 0.3; 
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: -1;
-}
-
-/* Konten utama di-wrap dengan style yang sama seperti halaman lain */
+/* Container Utama */
 .tentang-container {
-  width: 100%;
-  max-width: 1100px;
-  padding: 40px 24px;
-  margin: 40px 0; /* Memberi jarak dari Nav */
-  background: rgba(245, 242, 223, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  margin-top: 140px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+  min-height: 80vh;
 }
 
 .tentang-title {
-  font-family: "Viga", sans-serif;
-  font-size: 42px;
-  font-weight: 700;
-  color: #2c4532;
+  font-size: 36px;
+  font-weight: 800;
+  color: #344f1f;
   text-align: center;
   margin-bottom: 40px;
-  letter-spacing: 2px;
+  letter-spacing: -1px;
 }
 
+/* Layout Content Flexbox */
 .tentang-content {
   display: flex;
-  gap: 32px;
-  align-items: flex-start;
+  align-items: flex-start; /* Aligment atas */
+  gap: 50px;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
+/* Bagian Kiri (Gambar & Badge) */
 .tentang-kiri {
   flex: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  /* Pin di atas saat di-scroll di layar besar */
-  position: sticky;
-  top: 120px;
 }
 
 .tentang-logo {
   width: 100%;
-  max-width: 250px;
+  max-width: 300px;
   height: auto;
-  border-radius: 50%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  position: relative;
-  bottom: 30px;
+  object-fit: contain;
+  margin-bottom: 20px;
 }
 
 .tentang-badge {
-  background: #2c4532;
-  color: #f9d84a;
-  font-family: "Viga", sans-serif;
-  font-size: 24px;
-  position: relative;
-  bottom: 30px;
-  padding: 12px 24px;
-  border-radius: 12px;
-  text-align: center;
+  background-color: #344f1f;
+  color: #fff;
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 
+/* Bagian Kanan (Teks) */
 .tentang-kanan {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .tentang-kanan p {
   font-size: 16px;
-  color: #333;
   line-height: 1.8;
-  margin-bottom: 16px;
+  color: #555;
+  text-align: justify;
 }
 
-/* === Responsive === */
-@media (max-width: 768px) {
-  .tentang-container {
-    margin-top: 20px;
-    padding: 24px 16px;
-  }
+/* =========================================
+   RESPONSIVE (Mobile & Tablet)
+   ========================================= */
+@media screen and (max-width: 900px) {
   .tentang-content {
-    /* Stacking di mobile */
-    flex-direction: column;
+    flex-direction: column; /* Tumpuk ke bawah */
+    align-items: center;
+    padding: 30px 20px;
+    gap: 30px;
   }
+
+  .tentang-kiri,
+  .tentang-kanan {
+    width: 100%;
+    flex: none;
+  }
+
+  .tentang-logo {
+    max-width: 150px; /* Perkecil logo di HP */
+  }
+
   .tentang-title {
-    font-size: 32px;
-  }
-  .tentang-kiri {
-    /* Hapus sticky di mobile */
-    position: static;
+    font-size: 28px;
     margin-bottom: 20px;
+  }
+
+  .tentang-kanan p {
+    font-size: 14px;
+    text-align: left; /* Rata kiri lebih nyaman dibaca di HP */
   }
 }

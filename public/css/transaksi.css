@@ -1,257 +1,330 @@
-/* Hapus :root, *, html, body, header (sudah ada di main.css) */
-
-/* Wrapper baru untuk konten */
+/* Container Utama */
 .transaksi-wrapper {
-  width: 100%;
-  max-width: 1200px;
-  padding: 24px;
-  background: rgba(245, 242, 223, 0.95); /* Samakan dengan style konten lain */
-  border-radius: 16px;
-  margin: 140px 0 40px 0; /* Jarak dari Nav */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 0 20px;
+  min-height: 80vh;
 }
 
 .transaksi-title {
-    font-family: 'Viga', sans-serif;
-    font-size: 42px;
-    font-weight: 700;
-    color: #2C4532;
-    text-align: center;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #344f1f;
+  margin-bottom: 20px;
 }
 
-/* Style tabs yang disesuaikan */
-.tabs{
-    display:flex;
-    gap: 8px;
-    padding: 8px;
-    background: #DCE9D1; /* Warna lebih muda */
-    align-items:center;
-    justify-content:flex-start;
-    border-radius: 10px;
-}
-.tab{
-    flex: 1; /* Membuat tab memenuhi lebar */
-    text-align: center; /* Teks di tengah */
-    padding: 12px 20px;
-    border-radius: 8px;
-    background:transparent;
-    cursor:pointer;
-    color: #2C4532;
-    font-weight: 600;
-    box-shadow: none;
-    transition:all .18s ease;
-    user-select:none;
-}
-.tab.active{
-    background: #2C4532; /* Warna utama */
-    color: #F9D84A; /* Aksen */
-    transform:none;
-    box-shadow: 0 4px 12px rgba(44, 69, 50, 0.2);
+/* TABS NAVIGATION */
+.tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+  
+  /* Responsive Horizontal Scroll */
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 5px;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Main content (dihilangkan background-nya) */
-.container{
-    max-width:1100px;
-    margin: 22px auto 0 auto; /* Margin atas saja */
-    padding: 0; /* Padding dihapus, diatur oleh wrapper */
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    border: none;
+.tabs::-webkit-scrollbar {
+  height: 0px; /* Sembunyikan scrollbar */
 }
 
-.list{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #888;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
 }
 
-/* Order card (dibuat lebih cerah) */
-.order-card{
-    display:flex;
-    gap:20px;
-    align-items:flex-start;
-    background: #FFFFFF; /* Ganti jadi putih */
-    border-radius:12px;
-    padding:18px;
-    border:1px solid rgba(0,0,0,0.06);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+.tab:hover {
+  color: #344f1f;
 }
 
-.img-wrap{
-    min-width:140px;
-    width:140px;
-    height:140px;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background: #f0f0f0; /* Ganti background gambar */
-}
-.img-wrap img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block
+.tab.active {
+  color: #344f1f;
+  border-bottom: 3px solid #344f1f;
 }
 
-.order-main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:8px
-}
-.order-main h3{
-    margin:0;
-    font-size:18px;
-    color:#0d2616;
-    font-weight:800; 
-    letter-spacing:0.6px
-}
-.meta{
-    display:flex;
-    gap:20px;
-    align-items:center;
-    font-size:14px;
-    color: #6b6b6b;
-    margin-top:4px;
+/* ORDER CARD (Kartu Pesanan) */
+.order-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
 }
 
-/* controls row */
-.controls{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-top:8px;
-}
-.qty-box{
-    background:#fff;
-    border-radius:8px;
-    padding:10px 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    display:flex;
-    gap:8px;
-    align-items:center;
-    min-width:220px;
-    border: 1px solid #eee;
-}
-.qty-box button{
-    width:34px;height:34px;border-radius:8px;border:none;background:#f7f7f7;font-weight:700;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.06);cursor:pointer;
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-/* right column */
-.order-side{
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    align-items:flex-end;
-    gap:12px;
-    min-width:220px;
-}
-.price-big{
-    font-size:20px;
-    font-weight:800
+/* Gambar Produk */
+.img-wrap {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.btn-yellow{
-    background: #F9D84A; /* Samakan dengan aksen web */
-    color: #2C4532;
-    border:none;
-    border-radius:10px;
-    padding:12px 22px;
-    font-weight:800;
-    font-size:15px;
-    cursor:pointer;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.14);
-    transition:transform .12s;
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
+
+/* Detail Produk Tengah */
+.order-main {
+  flex: 1;
+}
+
+.order-main h3 {
+  font-size: 18px;
+  color: #222;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.meta {
+  color: #344f1f;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.order-main div {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+/* Bagian Kanan (Status & Tombol) */
+.order-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.done-badge {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-yellow {
+  background-color: #344f1f; /* Menggunakan warna hijau tema */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
 .btn-yellow:hover {
-    filter: brightness(1.05);
-}
-.btn-yellow:active{
-    transform:translateY(2px)
+  background-color: #2a3f18;
 }
 
-/* === MODAL & POPUP (Sisanya tetap sama) === */
-.overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:1000;
-}
-.overlay.show{
-    display:flex
-}
-.modal{
-    /* ... (style modal dari file asli Anda tetap di sini) ... */
-    width:92%;
-    max-width:920px;
-    background:#6b7f6b;
-    border-radius:12px;
-    padding:22px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.3);
-    position:relative;
-    color:#0b0b0b;
-}
-/* ... (salin sisa style .modal, .small-card, .checkmark, dll dari file asli Anda ke sini) ... */
-
-/* === Responsive === */
-@media (max-width:900px){
-    .order-card{
-        flex-direction:column;
-        align-items:stretch; /* Ubah agar rata */
-    }
-    .img-wrap {
-        width: 100%; /* Buat gambar jadi full-width */
-        height: 200px; /* Tentukan tinggi */
-    }
-    .order-side{
-        align-items:flex-start; /* Ubah agar rata kiri */
-        min-width:unset;
-        margin-top: 16px;
-    }
-    .modal div[style*="flex:1"] { /* Target modal flex-wrap */
-        min-width: 300px !important;
-    }
+/* MODAL STYLING */
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: none; /* Toggle with JS */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
 }
 
-@media (max-width: 768px) {
-    .transaksi-wrapper {
-        margin-top: 20px;
-        padding: 16px;
-    }
-    .transaksi-title {
-        font-size: 32px;
-    }
-    .tabs {
-        flex-direction: column;
-    }
-    .tab {
-        padding: 14px;
-    }
+.modal {
+  background: #fff;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 15px;
+  padding: 25px;
+  position: relative;
+  animation: slideUp 0.3s ease;
 }
 
-@media (max-width:520px){
-    .transaksi-wrapper {
-        padding: 12px;
-    }
-    .img-wrap{
-        height:160px
-    }
-    .controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .qty-box {
-        min-width: 100%;
-        justify-content: center;
-    }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
 }
 
-/* small helpers for "Selesai" card state */
-.done-badge{
-    background:rgba(255,255,255,0.85);
-    padding:10px 14px;border-radius:8px;border:1px solid rgba(0,0,0,0.05);font-weight:700;
+.modal-header h2 {
+  font-size: 20px;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+}
+
+/* Modal Content Styles */
+.modal-product {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #f9f5f0;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.modal-product img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.modal-details p {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.modal-total {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px dashed #eee;
+  font-size: 18px;
+  font-weight: 800;
+  color: #344f1f;
+  text-align: right;
+}
+
+.modal-footer {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.modal-footer button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #eee;
+  color: #555;
+}
+
+.btn-secondary:hover {
+  background-color: #ddd;
+}
+
+/* Animations & Notifications */
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.small-card {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 50px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 3000;
+}
+
+.small-card[aria-hidden="false"] {
+  transform: translateX(-50%) translateY(0);
+}
+
+.success-icon {
+  background: #344f1f;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* =========================================
+   RESPONSIVE (Mobile)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  .transaksi-wrapper {
+    padding: 0 15px;
+  }
+
+  /* Ubah Card menjadi vertikal di HP */
+  .order-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .img-wrap {
+    width: 100%;
+    height: 150px;
+  }
+  
+  .img-wrap img {
+    object-fit: contain;
+  }
+
+  .order-main {
+    width: 100%;
+  }
+
+  .order-side {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 15px;
+  }
+  
+  .btn-yellow {
+    padding: 10px 20px;
+  }
 }

@@ -5,153 +5,286 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALAMADVENTURE_SMD</title>
     <link rel="icon" href="/public/logo.png" type="image/png" />
-
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Viga&display=swap"
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
-
     <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
-      rel="stylesheet"
     />
     <link
-      href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css"
       rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
-
-    <link rel="stylesheet" href="./public/css/main.css" />
-    <link rel="stylesheet" href="./public/css/style.css" />
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/main.css">
   </head>
   <body>
-    <button class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
-      <span>Alam Adventure Samarinda</span>
-      <span class="hamburger"></span>
-    </button>
+    <div class="nav-main-wrapper">
+      <nav class="nav">
+        <div class="desktop-nav">
+          <div class="logo">
+            <img src="/public/logo.png" width="30px" alt="Logo" />
+          </div>
+          <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Beranda</a></li>
+            <li>
+              <a href="tentang-kami.html" class="nav-link">Tentang Kami</a>
+            </li>
+            <li><a href="katalog.html" class="nav-link">Katalog</a></li>
+            <li><a href="kontak.html" class="nav-link">Kontak</a></li>
+          </ul>
+        </div>
+        <button>Sewa Sekarang</button>
+      </nav>
 
-    <nav class="desktop-nav" data-aos="fade-down" data-aos-duration="1000">
-      <div class="logo"><img src="/public/logo.png" alt="Logo" /></div>
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="tentang-kami.html" class="nav-link">Tentang Kami</a></li>
-        <li><a href="katalog.html" class="nav-link">Katalog</a></li>
-        <li><a href="kontak.html" class="nav-link">Kontak</a></li>
-      </ul>
-    </nav>
+      <div class="main-content">
+        <div class="main-text">
+          <h1 data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+            ALAM ADVENTURE SAMARINDA
+          </h1>
 
-    <nav class="mobile-nav" id="mobileNav">
-      <div class="mobile-nav-header">
-      </div>
-      <ul class="mobile-nav-menu">
-        <li><a href="index.html" class="mobile-nav-link">Beranda</a></li>
-        <li>
-          <a href="tentang-kami.html" class="mobile-nav-link">Tentang Kami</a>
-        </li>
-        <li><a href="katalog.html" class="mobile-nav-link">Katalog</a></li>
-        <li><a href="kontak.html" class="mobile-nav-link">Kontak</a></li>
-      </ul>
-    </nav>
+          <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+            Kami menyediakan berbagai peralatan camping lengkap dan terawat
+            untuk mendukung petualangan outdoor kamu di Kalimantan Timur.
+            Nikmati kemudahan sewa dengan harga bersahabat, sistem booking
+            cepat, dan layanan ramah.
+          </p>
 
-    <div class="main-content">
-      <div
-        class="logo-container"
-        data-aos="zoom-in"
-        data-aos-duration="1000"
-        data-aos-delay="600"
-      >
-        <img src="/public/logo.png" alt="" />
-      </div>
+          <div class="button-container">
+            <button
+              class="active-button"
+              data-aos="fade-up"
+              data-aos-duration="1000"
+              data-aos-delay="800"
+            >
+              Telusuri Katalog
+            </button>
 
-      <div class="main-text">
-        <h1 data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-          ALAM ADVENTURE SMD
-        </h1>
-
-        <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-          Kami menyediakan berbagai peralatan camping lengkap dan terawat untuk
-          mendukung petualangan outdoor kamu di Kalimantan Timur. Nikmati
-          kemudahan sewa dengan harga bersahabat, sistem booking cepat, dan
-          layanan ramah.
-        </p>
-
-        <div class="button-container">
-          <button
-            class="action-button"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-delay="800"
-          >
-            <span>Instagram</span>
-            <div class="icon cart-icon"><i class="bxr bx-camera-home"></i></div>
-          </button>
-
-          <button
-            class="action-button"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-delay="1000"
-          >
-            <span>Whatsapp</span>
-            <div class="icon whatsapp-icon">
-              <i class="bxrds bx-phone-book"></i>
-            </div>
-          </button>
-
-          <button
-            class="action-button"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-delay="1200"
-          >
-            <span>Lokasi</span>
-            <div class="icon location-icon">
-              <i class="bxrds bx-location"></i>
-            </div>
-          </button>
+            <button
+              class="action-button"
+              data-aos="fade-up"
+              data-aos-duration="1000"
+              data-aos-delay="800"
+            >
+              Cara Sewa
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Produk Unggulan Section -->
-    <section class="produk-section" data-aos="fade-up" data-aos-duration="1000">
-      <h2 class="produk-title">Produk Unggulan</h2>
+    <!-- statistik -->
+    <section class="stats-container">
+      <div class="left-section">
+        <h1 class="main-title">
+          Why Thousands of Travelers Choose <br />
+          <strong>WANDER.ph</strong> for Their Philippine Adventures
+        </h1>
+        <p class="description">
+          From pristine beaches to cultural hotspots, we make exploring the
+          <br />
+          Philippines easier, safer, and more exciting with expert-crafted
+          itineraries <br />
+          and round-the-clock support.
+        </p>
 
-      <div class="carousel-container">
-        <button class="carousel-btn prev-btn" onclick="prevSlide()">
-          <span>&lt;</span>
-        </button>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+        </div>
 
-        <div class="carousel-wrapper">
-          <div class="carousel-track" id="carouselTrack">
-            <div class="product-card" data-index="0">
-              <img src="/public/hammock.png" style="width: 250px" />
-            </div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <i class="fas fa-smile-beam icon-dark"></i>
+            <p class="stat-number">12k</p>
+            <p class="stat-label">Happy and Satisfied</p>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-clock icon-dark"></i>
+            <p class="stat-number">10yrs</p>
+            <p class="stat-label">Proven Travel Experience</p>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-map-marker-alt icon-dark"></i>
+            <p class="stat-number">50+</p>
+            <p class="stat-label">Destinations Covered</p>
+          </div>
+        </div>
+      </div>
 
-            <div class="product-card" data-index="1">
-              <img src="/public/tenda.png" style="width: 250px" />
-            </div>
-
-            <div class="product-card" data-index="2">
-              <img src="/public/lentera.png" style="width: 250px" />
-            </div>
-
-            <div class="product-card" data-index="3">
-              <img src="/public/tendapro.png" style="width: 250px" alt="" />
-            </div>
-
-            <div class="product-card" data-index="4">
-              <img
-                src="/public/komporportable.png"
-                style="width: 250px"
-                alt=""
-              />
-            </div>
+      <div class="right-section">
+        <div class="feature-card">
+          <div class="card-icon-box">
+            <i class="fas fa-map card-icon"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Local Expertise</h3>
+            <p class="card-text">
+              Our Filipino travel experts craft unique experiences with insider
+              knowledge you won't find in typical tours.
+            </p>
           </div>
         </div>
 
-        <button class="carousel-btn next-btn" onclick="nextSlide()">
-          <span>&gt;</span>
-        </button>
+        <div class="feature-card">
+          <div class="card-icon-box">
+            <i class="fas fa-calendar-alt card-icon"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">All-in-One Booking</h3>
+            <p class="card-text">
+              Book everything in one place—easy, fast, and hassle-free, whether
+              for quick getaways or planned vacations.
+            </p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon-box">
+            <i class="fas fa-headset card-icon"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">24/7 Support</h3>
+            <p class="card-text">
+              We're here anytime, anywhere. Get real-time help anytime you need
+              it before, during, or after your trip.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-unggulan-section" id="product-unggulan">
+      <div class="header-content">
+        <h2 class="section-title">Produk Unggulan</h2>
+        <p class="section-description">
+          Cek koleksi tenda, alat masak, dan perlengkapan terbaik kami yang
+          selalu terawat dan siap menemani petualangan Anda.
+        </p>
+      </div>
+
+      <div class="slider-container">
+        <div class="swiper" id="productSwiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="product-card">
+                <img
+                  src="public/tenda.png"
+                  alt="Tenda Dome 4 Orang"
+                  class="card-image"
+                />
+                <div class="card-overlay">
+                  <span class="price-tag">mulai Rp 25k/hari</span>
+                  <h3 class="card-title">Tenda Dome 4P</h3>
+                  <p class="card-subtitle">
+                    Anti Bocor | <i class="fas fa-star"></i> 4.9 (540)
+                  </p>
+                  <p class="card-location">
+                    <i class="fas fa-mountain"></i> Kategori: Tenda
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="swiper-slide">
+              <div class="product-card">
+                <img
+                  src="public/komporportable.png"
+                  alt="Kompor Portable Set"
+                  class="card-image"
+                />
+                <div class="card-overlay">
+                  <span class="price-tag">mulai Rp 15k/hari</span>
+                  <h3 class="card-title">Kompor Portable</h3>
+                  <p class="card-subtitle">
+                    Lengkap Set | <i class="fas fa-star"></i> 4.7 (720)
+                  </p>
+                  <p class="card-location">
+                    <i class="fas fa-fire-alt"></i> Kategori: Masak
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="swiper-slide">
+              <div class="product-card">
+                <img
+                  src="public/bantalAngin.png"
+                  alt="Sleeping Bag Hangat"
+                  class="card-image"
+                />
+                <div class="card-overlay">
+                  <span class="price-tag">mulai Rp 10k/hari</span>
+                  <h3 class="card-title">Sleeping Bag</h3>
+                  <p class="card-subtitle">
+                    Steril & Hangat | <i class="fas fa-star"></i> 4.8 (890)
+                  </p>
+                  <p class="card-location">
+                    <i class="fas fa-moon"></i> Kategori: Tidur
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="swiper-slide">
+              <div class="product-card">
+                <img
+                  src="public/terpal.png"
+                  alt="Tas Carrier"
+                  class="card-image"
+                />
+                <div class="card-overlay">
+                  <span class="price-tag">mulai Rp 20k/hari</span>
+                  <h3 class="card-title">Tas Carrier 60L</h3>
+                  <p class="card-subtitle">
+                    Ergonomis | <i class="fas fa-star"></i> 4.5 (310)
+                  </p>
+                  <p class="card-location">
+                    <i class="fas fa-box-archive"></i> Kategori: Tas
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="swiper-slide">
+              <div class="product-card">
+                <img
+                  src="public/lamputenda.png"
+                  alt="Lampu Tenda LED"
+                  class="card-image"
+                />
+                <div class="card-overlay">
+                  <span class="price-tag">mulai Rp 5k/hari</span>
+                  <h3 class="card-title">Lampu Tenda LED</h3>
+                  <p class="card-subtitle">
+                    Terang | <i class="fas fa-star"></i> 4.6 (450)
+                  </p>
+                  <p class="card-location">
+                    <i class="fas fa-lightbulb"></i> Kategori: Penerangan
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <button class="view-more">Lihat Semua Barang</button>
+        <div class="slider-arrows">
+          <button class="arrow prev-arrow" id="prevArrow" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="arrow next-arrow" id="nextArrow">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -159,58 +292,71 @@
     <section
       id="tentang"
       class="cara-sewa-section"
-      data-aos="fade-up"
-      data-aos-duration="1000"
     >
       <h2 class="section-title">CARA SEWA</h2>
       <p class="section-subtitle">
-        Proses sewa yang mudah dan cepat. Ikuti langkah-langkah berikut untuk
-        menyewa peralatan camping kami.
+        Proses sewa yang mudah, cepat, dan transparan. Ikuti 5 langkah sederhana
+        berikut untuk menyewa peralatan camping berkualitas dari kami.
       </p>
 
       <div class="steps-container">
-        <div class="step-item" data-aos="fade-up" data-aos-delay="100">
+        <div class="step-item">
           <div class="step-number">1</div>
           <div class="step-icon">
-            <img src="/public/katalog.png" style="width: 64px" alt="" />
+            <i class="fas fa-search"></i>
           </div>
+          <h3 class="step-title">Pilih Produk</h3>
           <p class="step-text">
-            Buka katalog harga dan pilih barang yang ingin disewa
+            Buka katalog lengkap kami dan pilih peralatan camping yang sesuai
+            dengan kebutuhan petualangan Anda
           </p>
         </div>
-        <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+
+        <div class="step-item">
           <div class="step-number">2</div>
           <div class="step-icon">
-            <img src="/public/keranjangcara.png" style="width: 64px" alt="" />
+            <i class="fas fa-shopping-cart"></i>
           </div>
+          <h3 class="step-title">Tambah Keranjang</h3>
           <p class="step-text">
-            Klik tombol "Tambah ke Keranjang" pada barang pilihanmu.
+            Klik tombol "Tambah ke Keranjang" pada produk pilihan Anda dan
+            lanjutkan berbelanja
           </p>
         </div>
-        <div class="step-item" data-aos="fade-up" data-aos-delay="300">
+
+        <div class="step-item">
           <div class="step-number">3</div>
           <div class="step-icon">
-            <img src="/public/durasicara.png" style="width: 79px" alt="" />
+            <i class="fas fa-calendar-check"></i>
           </div>
-          <p class="step-text">Tentukan durasi sewa.</p>
-        </div>
-        <div class="step-item" data-aos="fade-up" data-aos-delay="400">
-          <div class="step-number">4</div>
-          <div class="step-icon">
-            <img src="/public/konfirmasicara.png" style="width: 64px" alt="" />
-          </div>
+          <h3 class="step-title">Tentukan Durasi</h3>
           <p class="step-text">
-            Setelah selesai memilih, klik "Konfirmasi Sewa"
+            Pilih tanggal mulai dan selesai sewa sesuai dengan jadwal
+            petualangan outdoor Anda
           </p>
         </div>
-        <div class="step-item" data-aos="fade-up" data-aos-delay="500">
+
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <div class="step-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3 class="step-title">Konfirmasi Sewa</h3>
+          <p class="step-text">
+            Review pesanan Anda dan klik "Konfirmasi Sewa" untuk melanjutkan ke
+            pembayaran
+          </p>
+        </div>
+
+        <div class="step-item">
           <div class="step-number">5</div>
           <div class="step-icon">
-            <img src="/public/duit.png" style="width: 101px" alt="" />
+            <i class="fas fa-hand-holding-usd"></i>
           </div>
+          <h3 class="step-title">Bayar & Ambil</h3>
           <p class="step-text">
-            Selesaikan pembayaran (transfer/cash) dan ambil alat di
-            lokasi/antar.
+            Selesaikan pembayaran via transfer atau cash, lalu ambil peralatan
+            di lokasi atau pilih layanan antar
           </p>
         </div>
       </div>
@@ -219,25 +365,44 @@
     <!-- Ketentuan Section -->
     <section
       class="ketentuan-section"
-      data-aos="fade-up"
-      data-aos-duration="1000"
     >
-      <h2 class="ketentuan-title">KETENTUAN</h2>
+      <h2 class="ketentuan-title">KETENTUAN SEWA</h2>
+      <p class="ketentuan-subtitle">
+        Untuk menjaga kualitas layanan dan kepercayaan bersama, mohon perhatikan
+        ketentuan penting berikut sebelum menyewa peralatan kami.
+      </p>
 
       <div class="ketentuan-container">
-        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="100">
-          <p>Kartu identitas penyewa sebagai jaminan</p>
-        </div>
-
-        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="ketentuan-card">
+          <i class="fas fa-id-card ketentuan-icon"></i>
+          <h3 class="ketentuan-card-title">Jaminan Identitas</h3>
           <p>
-            Barang harus dikembalikan sesuai jadwal dalam kondisi baik dan
-            lengkap.
+            <span class="ketentuan-highlight">KTP/SIM/Kartu Pelajar</span>
+            penyewa wajib diserahkan sebagai jaminan selama masa sewa. Identitas
+            akan dikembalikan saat pengembalian barang.
           </p>
         </div>
 
-        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="300">
-          <p>Denda berlaku untuk kerusakan atau keterlambatan.</p>
+        <div class="ketentuan-card">
+          <i class="fas fa-box-open ketentuan-icon"></i>
+          <h3 class="ketentuan-card-title">Kondisi Pengembalian</h3>
+          <p>
+            Barang harus dikembalikan
+            <span class="ketentuan-highlight">tepat waktu</span> dalam kondisi
+            bersih, lengkap, dan tidak rusak. Cek kelengkapan saat penerimaan.
+          </p>
+        </div>
+
+        <div class="ketentuan-card">
+          <i class="fas fa-exclamation-triangle ketentuan-icon"></i>
+          <h3 class="ketentuan-card-title">Denda & Sanksi</h3>
+          <p>
+            Denda berlaku untuk
+            <span class="ketentuan-highlight"
+              >keterlambatan, kerusakan, atau kehilangan</span
+            >
+            barang. Besaran denda sesuai kesepakatan di awal sewa.
+          </p>
         </div>
       </div>
     </section>
@@ -245,8 +410,6 @@
     <!-- Footer -->
     <footer
       id="kontak"
-      data-aos="fade-up"
-      data-aos-duration="500"
       class="site-footer"
     >
       <div class="footer-inner">
@@ -277,7 +440,43 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <link rel="stylesheet" href="./public/css/style.css" />
-    <script src="./public/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100,
+      });
+
+      // Initialize Swiper
+      const swiper = new Swiper("#productSwiper", {
+        slidesPerView: "auto",
+        spaceBetween: -100,
+        grabCursor: true,
+        navigation: {
+          nextEl: "#nextArrow",
+          prevEl: "#prevArrow",
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 1,
+            spaceBetween: -100,
+          },
+          640: {
+            slidesPerView: 2,
+            spaceBetween: -100,
+          },
+          1024: {
+            slidesPerView: 3,
+            spaceBetween: -100,
+          },
+          1280: {
+            slidesPerView: 4,
+            spaceBetween: -100,
+          },
+        },
+      });
+    </script>
   </body>
 </html>

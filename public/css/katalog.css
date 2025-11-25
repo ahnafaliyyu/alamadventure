@@ -1,281 +1,111 @@
-/* Catalog Container */
-.catalog-container {
-  width: 100%;
-  max-width: 1200px;
-}
-
-.catalog-title {
-  font-family: "Viga", sans-serif;
-  font-size: 64px;
-  font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 60px;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  letter-spacing: 4px;
-}
-
-/* Catalog Grid */
-.catalog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  margin-bottom: 80px;
-}
-
-.catalog-card {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.catalog-card:hover {
-  transform: translateY(-8px);
-}
-
-.card-image-wrapper {
-  background: linear-gradient(135deg, #2c4532 0%, #1f3328 100%);
-  border-radius: 24px;
-  border: 4px solid rgba(181, 201, 176, 0.5);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-  backdrop-filter: blur(10px);
-}
-
-.card-image-wrapper::before {
-  content: "";
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(
-    circle,
-    rgba(249, 216, 74, 0.1) 0%,
-    transparent 70%
-  );
-  top: -50px;
-  right: -50px;
-  border-radius: 50%;
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  position: relative;
-  z-index: 2;
-  transition: transform 0.4s ease;
-}
-
-.catalog-card:hover .card-image {
-  transform: scale(1.05);
-}
-
-.card-label {
-  background: linear-gradient(135deg, #f9d84a 0%, #e8c438 100%);
-  border-radius: 16px;
-  padding: 14px 24px;
-  margin-top: -20px;
-  margin-left: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 24px rgba(249, 216, 74, 0.4);
-  position: relative;
-  z-index: 3;
-}
-
-.card-label span {
-  font-weight: 700;
-  font-size: 18px;
-  color: #2c4532;
-  letter-spacing: 0.5px;
-}
-
-.arrow-icon {
-  width: 32px;
-  height: 32px;
-  background: #2c4532;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: #f9d84a;
-  transition: all 0.3s ease;
-}
-
-.arrow-icon::before {
-  content: "→";
-}
-
-.catalog-card:hover .arrow-icon {
-  animation: arrowPulse 0.6s ease;
-}
-
-@keyframes arrowPulse {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(4px);
-  }
-}
-
-/* Product Detail Section */
 .product-detail-section {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 10px;
-  margin-top: 20px;
+  margin: 0 20px;
+  position: relative;
 }
 
-.section-subtitle {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 32px;
-  font-weight: 600;
-  font-size: 18px;
+.category-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: 0;
+  margin: 0 -20px;
+  /* width: 100%; */
+  padding: 10px 20px;
+  border-bottom: 1px solid #d3d0cd;
+  background-color: #fff;
+  position: sticky;
+  position: -webkit-sticky; /* Untuk dukungan browser Safari lama */
+}
+
+.btn-filter button {
+  padding: 8px 12px;
+  margin-right: 3px;
+  background-color: #fffdfb;
+  border-radius: 5px;
+  border: 1px solid #d3d0cd;
+  font-size: 12px;
+  letter-spacing: -0.5px;
+  color: #222;
+  cursor: pointer;
+}
+
+.btn-filter button:first-child {
+  background-color: #222;
+  color: #f9f5f0;
+  border: 1px solid #222;
 }
 
 .search-container {
-  max-width: 600px;
-  margin: 0 auto 32px;
-  position: relative;
+  background-color: #fffdfb;
+  border-radius: 5px;
+  border: 1px solid #d3d3d3;
+  padding: 8px;
 }
 
-.search-input {
-  width: 100%;
-  padding: 14px 48px 14px 20px;
-  border-radius: 16px;
-  border: 2px solid rgba(44, 69, 50, 0.2);
-  background: rgba(245, 242, 223, 0.95);
-  backdrop-filter: blur(10px);
-  font-family: "Poppins", sans-serif;
-  font-size: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #f9d84a;
-  box-shadow: 0 6px 24px rgba(249, 216, 74, 0.25);
-}
-
-.search-icon {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #2c4532;
-  opacity: 0.6;
-}
-
-/* Category Filter */
-.category-filter {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-  margin-top: 120px;
-}
-
-.filter-btn {
-  background: rgba(44, 69, 50, 0.9);
-  border: 2px solid transparent;
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-btn:hover {
-  background: rgba(44, 69, 50, 0.95);
-  transform: translateY(-2px);
-}
-
-.filter-btn.active {
-  background: linear-gradient(135deg, #2c4532 0%, #1f3328 100%);
-  color: #f9d84a;
-  border-color: #2c4532;
-  box-shadow: 0 4px 16px rgba(44, 69, 50, 0.3);
-}
-
-.badge {
-  background: #f9d84a;
-  color: #2c4532;
-  min-width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.category-filter input {
+  background-color: rgb(255, 253, 251, 0);
+  border: none;
   font-size: 12px;
-  font-weight: 700;
-  padding: 0 8px;
 }
 
-.filter-btn.active .badge {
-  background: #f9d84a;
-  color: #2c4532;
+.category-filter input:focus {
+  outline: none;
 }
 
-.category-title {
-  font-weight: 700;
-  font-size: 28px;
-  color: #f9d84a;
-  text-align: center;
-  margin: 32px 0 24px;
-  padding: 16px 32px;
-  background: linear-gradient(135deg, #2c4532 0%, #1f3328 100%);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+.search-container i {
+  font-size: 12px;
+  padding: 0 3px;
+  color: #344f1f;
 }
 
-/* Product Grid */
+/* 1. Setup Grid Container */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 20px; /* Jarak antar kartu (atas-bawah-kiri-kanan) */
+  padding: 20px 0; /* Memberi jarak atas bawah pada container */
+  width: 100%;
+}
+
+/* 2. Responsive Logic (Mobile First Approach) */
+
+/* Tampilan Default (Mobile / Layar Kecil) -> 2 Kolom */
+.product-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Tampilan Desktop (Layar Besar) -> 4 Kolom */
+/* Media query ini aktif jika lebar layar di atas 1024px */
+@media screen and (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Opsional: Tampilan Tablet (Agar tidak loncat drastis dari 2 ke 4) */
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .product-card {
-  background: rgba(245, 242, 223, 0.95);
-  backdrop-filter: blur(10px);
   border-radius: 5px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  transition: all 0.4s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.product-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-}
-
-.product-image {
-  height: auto;
-  padding: 20px;
-  background: linear-gradient(
-    135deg,
-    rgba(233, 233, 233, 0.5),
-    rgba(220, 220, 220, 0.5)
-  );
+  overflow: hidden; /* Agar gambar tidak keluar dari radius */
+  /* Flexbox agar isi kartu tertata vertikal & tinggi seragam */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   cursor: pointer;
+}
+
+/* Styling Gambar */
+.product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Membuat kotak gambar selalu persegi */
+  overflow: hidden;
+  background-color: #ebe7e7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,359 +114,180 @@
 .product-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s ease;
+  object-fit: contain; /* Gambar pas di dalam kotak tanpa terpotong */
+  padding: 10px; /* Jarak gambar dari pinggir kotak */
 }
 
-.product-card .description {
-  padding: 10px 20px 0 20px;
+/* Styling Deskripsi */
+.description {
+  padding: 10px 1px;
+  flex-grow: 1; /* Mendorong tombol ke paling bawah */
 }
 
+.description h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.description p {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Styling Bagian Harga & Tombol */
 .product-actions {
-  padding: 10px 20px 20px 20px;
+  padding: 10px;
+  border-top: 1px solid #ebe7e7;
   display: flex;
-  justify-content: left;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
 }
 
 .product-actions span {
-  color: #000;
-  background-color: #f9d84a;
-  padding: 6px 10px;
-  border-radius: 5px;
-}
-
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.qty-label {
-  font-weight: 600;
-  font-size: 13px;
-  color: #2c4532;
-  margin-right: 4px;
-}
-
-.qty-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: rgb(44, 69, 50, 0.9);
-  color: #f9d84a;
-  border-radius: 5px;
-  font-size: 18px;
   font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(44, 69, 50, 0.2);
-}
-
-.qty-btn:hover {
-  background: rgb(44, 69, 50, 1);
-}
-
-.qty-input {
-  width: 60px;
-  text-align: center;
-  border: 2px solid rgba(44, 69, 50, 0.2);
-  border-radius: 10px;
-  padding: 8px;
-  font-weight: 600;
+  color: #222;
   font-size: 14px;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.jumlah-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 2px solid rgba(44, 69, 50, 0.2);
-  border-radius: 12px;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-}
-
-.jumlah-input:focus {
-  outline: none;
-  border-color: #f9d84a;
-  box-shadow: 0 0 0 3px rgba(249, 216, 74, 0.1);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.total-btn {
-  flex: 1;
-  background: linear-gradient(135deg, #f9d84a 0%, #e8c438 100%);
-  border: none;
-  border-radius: 5px;
-  padding: 12px;
-  font-weight: 700;
-  font-size: 13px;
-  color: #2c4532;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .cart-btn {
+  background-color: #222;
+  color: #fff;
   border: none;
   border-radius: 5px;
-  font-size: 20px;
-  padding: 9px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color: #f9d84a;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2c4532;
+  transition: background 0.2s;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  position: relative; 
+.cart-btn:hover {
+  background-color: #444;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('/public/gambargunung.png') no-repeat center center;
-  background-size: cover;
-  z-index: -2; 
-  opacity: 0.4; 
+.cart-btn i {
+  font-size: 18px;
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: -1;
+/* Default: Sembunyikan bar ini di Desktop */
+.mobile-action-bar {
+  display: none;
 }
 
-/* Responsive Design */
-@media (max-width: 992px) {
-  .category-filter {
-    margin-top: 60px;
-  }
-
-  .footer-inner {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    text-align: center;
-  }
-
-  .footer-links li,
-  .footer-contact li {
-    justify-content: center;
-  }
-
-  .catalog-title {
-    font-size: 48px;
-  }
+/* Wrapper container filter agar bisa di-animasi */
+.filter-container-wrapper {
+  display: block;
 }
 
-@media (max-width: 768px) {
-  .category-filter {
-    margin-top: 40px;
-  }
-  .product-detail-section {
-    margin-top: 0;
-  }
-
-  .mobile-menu-toggle {
+@media screen and (max-width: 908px) {
+  /* 1. Tampilkan Action Bar (Sticky di atas) */
+  .mobile-action-bar {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff; /* Background putih bersih */
+    padding: 15px 20px;
+    margin: 0 -20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    /* Sticky Position */
+    position: sticky;
+    top: 0;
+    z-index: 999;
   }
 
-  .desktop-nav {
-    display: none;
-  }
-
-  .mobile-nav {
-    display: block;
-  }
-
-  .catalog-title {
-    font-size: 36px;
-    margin-bottom: 40px;
-    letter-spacing: 2px;
-  }
-
-  .catalog-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .card-image-wrapper {
-    min-height: 200px;
-    border-radius: 16px;
-  }
-
-  .card-label {
-    padding: 10px 16px;
-    margin-top: -16px;
-    margin-left: 16px;
-  }
-
-  .card-label span {
+  /* Style Tombol Filter (Hitam) */
+  .btn-toggle-filter {
+    background-color: #222; /* Hitam */
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
     font-size: 14px;
-  }
-
-  .arrow-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     gap: 8px;
   }
 
-  .product-image {
-    height: 220px;
-    padding: 16px;
+  /* Style Bagian Kanan (Berdasarkan: Terbaru) */
+  .sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .product-card .description h2 {
-    font-size: 18px;
-  }
-
-  .product-card .description p {
-    font-size: 14px;
-  }
-
-  .product-actions {
-    padding: 16px;
-  }
-
-  .qty-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-  }
-
-  .qty-input {
-    width: 50px;
+  .sort-label {
     font-size: 13px;
+    color: #666;
   }
 
-  .category-title {
-    font-size: 22px;
-    padding: 12px 24px;
-  }
-
-  .filter-btn {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .catalog-title {
-    font-size: 28px;
-    letter-spacing: 1px;
-  }
-
-  .catalog-grid {
-    gap: 12px;
-  }
-
-  .card-image-wrapper {
-    min-height: 160px;
-  }
-
-  .product-card {
-    padding: 5px;
-  }
-
-  .product-actions {
-    padding: 5px;
-  }
-
-  .product-image {
-    height: 120px;
-  }
-
-  .product-card .description {
-    padding: 5px;
-  }
-
-  .product-card .description h2 {
+  .select-container select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
     font-size: 14px;
+    color: #333;
+    outline: none;
   }
 
-  .product-card .description p {
-    font-size: 12px;
-  }
+  /* 2. Sembunyikan Filter & Search Asli secara default */
+  .filter-container-wrapper {
+    display: none;
 
-  .product-actions span {
-    font-size: 12px;
-  }
-
-  .total-btn {
-    font-size: 11px;
-    padding: 10px;
-  }
-
-  .cart-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-  }
-
-  .jumlah-input {
-    height: 28px;
+    /* STICKY CONFIGURATION */
+    position: sticky;
+    /* Nilai top ini disesuaikan dengan tinggi Action Bar Hitam Anda */
+    /* Estimasi: Padding 15px + 15px + Tinggi Button ~40px = sktr 70px */
+    top: 70px;
+    z-index: 998; /* Harus lebih kecil dari action bar (999) biar layer-nya di bawah */
+    /* Styling tambahan biar rapi saat menempel */
+    background-color: #fff;
+    background-color: #fff;
+    padding: 15px;
     border-radius: 10px;
-    font-size: 10px;
+    border: 1px solid #eee;
   }
 
-  .qty-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
+  /* Class untuk memunculkan filter saat tombol diklik */
+  .filter-container-wrapper.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
   }
 
-  .qty-input {
-    height: 28px;
-    font-size: 10px;
+  /* Penyesuaian isi filter di dalam mobile */
+  .category-filter {
+    flex-direction: column-reverse; /* Search atas, tombol bawah */
+    gap: 15px;
+    position: static; /* Matikan sticky bawaan desktop */
+    padding: 0;
+    border: none;
+    margin: 0;
   }
 
-  .qty-label {
-    font-size: 10px;
-  }
-}
-
-@media (min-width: 1400px) {
-  .catalog-container,
-  .product-detail-section {
-    max-width: 1400px;
+  .search-container {
+    width: 90%;
   }
 
-  .catalog-grid {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 48px;
+  .btn-filter {
+    display: none !important;
   }
 
-  .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 32px;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

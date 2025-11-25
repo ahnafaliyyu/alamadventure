@@ -1,91 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pesanan Saya - ALAMADVENTURE_SMD</title> 
+    <title>Pesanan Saya - ALAMADVENTURE_SMD</title>
     <link rel="icon" href="/public/logo.png" type="image/png" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
-    <link href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css" rel="stylesheet"/>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="./public/css/main.css" />
     <link rel="stylesheet" href="./public/css/transaksi.css" />
-</head>
-<body>
-    <button class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
-      <span>Alam Adventure Samarinda</span>
-      <span class="hamburger"></span>
-    </button>
-
-    <nav class="desktop-nav" data-aos="fade-down" data-aos-duration="1000">
-      <div class="logo"><img src="/public/logo.png" alt="Logo" /></div>
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="tentang-kami.html" class="nav-link">Tentang Kami</a></li>
-        <li><a href="katalog.html" class="nav-link">Katalog</a></li>
-        <li><a href="kontak.html" class="nav-link">Kontak</a></li>
-      </ul>
-    </nav>
-
-    <nav class="mobile-nav" id="mobileNav">
-      <div class="mobile-nav-header">
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="desktop-nav">
+        <div class="logo">
+          <img src="/public/logo.png" width="30px" alt="Logo" />
+        </div>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Beranda</a></li>
+          <li>
+            <a href="tentang-kami.html" class="nav-link">Tentang Kami</a>
+          </li>
+          <li><a href="katalog.html" class="nav-link">Katalog</a></li>
+          <li><a href="kontak.html" class="nav-link">Kontak</a></li>
+        </ul>
       </div>
-      <ul class="mobile-nav-menu">
-        <li><a href="index.html" class="mobile-nav-link">Beranda</a></li>
-        <li><a href="tentang-kami.html" class="mobile-nav-link">Tentang Kami</a></li>
-        <li><a href="katalog.html" class="mobile-nav-link">Katalog</a></li>
-        <li><a href="kontak.html" class="mobile-nav-link">Kontak</a></li>
-      </ul>
+      <button>Sewa Sekarang</button>
     </nav>
 
     <div class="transaksi-wrapper" data-aos="fade-up">
-        <h1 class="transaksi-title">PESANAN SAYA</h1>
-        <div class="tabs" role="tablist" aria-label="Menu Pesanan">
-            <div class="tab active" data-tab="all">All</div>
-            <div class="tab" data-tab="resi">Daftar Resi</div>
-            <div class="tab" data-tab="selesai">Selesai</div>
-        </div>
+      <h1 class="transaksi-title">PESANAN SAYA</h1>
+      <div class="tabs" role="tablist" aria-label="Menu Pesanan">
+        <div class="tab active" data-tab="all">All</div>
+        <div class="tab" data-tab="resi">Daftar Resi</div>
+        <div class="tab" data-tab="selesai">Selesai</div>
+      </div>
 
-        <main class="container" id="app">
-            <section id="tab-all" class="tab-panel">
-            <div class="list" id="ordersList">
+      <main class="container" id="app">
+        <section id="tab-all" class="tab-panel">
+          <div class="list" id="ordersList"></div>
+        </section>
+
+        <section id="tab-resi" class="tab-panel" style="display: none">
+          <div style="padding: 40px; text-align: center; color: #314a34">
+            <h3 style="margin: 0 0 8px 0">Daftar Resi</h3>
+            <p style="margin: 0; color: var(--muted)">
+              Belum ada resi saat ini.
+            </p>
+          </div>
+        </section>
+
+        <section id="tab-selesai" class="tab-panel" style="display: none">
+          <div style="display: flex; flex-direction: column; gap: 18px">
+            <div class="order-card">
+              <div class="img-wrap">
+                <img src="/public/lampu_tenda.png" alt="" />
+              </div>
+              <div class="order-main">
+                <h3>LAMPU TENDA</h3>
+                <div class="meta">
+                  <div>Rp. 5.000/day</div>
                 </div>
-            </section>
-
-            <section id="tab-resi" class="tab-panel" style="display:none">
-            <div style="padding:40px;text-align:center;color:#314a34">
-                <h3 style="margin:0 0 8px 0">Daftar Resi</h3>
-                <p style="margin:0;color:var(--muted)">Belum ada resi saat ini.</p>
+                <div style="color: var(--muted); margin-top: 6px">
+                  Tanggal Pemesanan: <strong>13-02-2025</strong>
+                </div>
+                <div style="color: var(--muted)">
+                  Tanggal Pengembalian: <strong>16-02-2025</strong>
+                </div>
+              </div>
+              <div class="order-side">
+                <div class="done-badge">Pesanan Selesai</div>
+                <button class="btn-yellow" onclick="reorderSample()">
+                  Pesan Ulang
+                </button>
+              </div>
             </div>
-            </section>
 
-            <section id="tab-selesai" class="tab-panel" style="display:none">
-            <div style="display:flex;flex-direction:column;gap:18px">
-                <div class="order-card">
-                <div class="img-wrap"><img src="/public/lampu_tenda.png" alt=""></div>
-                <div class="order-main">
-                    <h3>LAMPU TENDA</h3>
-                    <div class="meta">
-                    <div>Rp. 5.000/day</div>
-                    </div>
-                    <div style="color:var(--muted);margin-top:6px">Tanggal Pemesanan: <strong>13-02-2025</strong></div>
-                    <div style="color:var(--muted)">Tanggal Pengembalian: <strong>16-02-2025</strong></div>
-                </div>
-                <div class="order-side">
-                    <div class="done-badge">Pesanan Selesai</div>
-                    <button class="btn-yellow" onclick="reorderSample()">Pesan Ulang</button>
-                </div>
-                </div>
-
-                <div style="text-align:center;color:var(--muted);padding:18px;background:rgba(0,0,0,0.03);border-radius:8px">
-                <strong>Contoh halaman selesai — produk ditampilkan seperti pada foto.</strong>
-                </div>
+            <div
+              style="
+                text-align: center;
+                color: var(--muted);
+                padding: 18px;
+                background: rgba(0, 0, 0, 0.03);
+                border-radius: 8px;
+              "
+            >
+              <strong
+                >Contoh halaman selesai — produk ditampilkan seperti pada
+                foto.</strong
+              >
             </div>
-            </section>
-        </main>
+          </div>
+        </section>
+      </main>
     </div>
 
     <div class="overlay" id="overlay">
@@ -96,7 +116,7 @@
         </div>
         <div class="modal-body">
           <div class="modal-product">
-            <img id="modalImg" src="" alt="Product Image">
+            <img id="modalImg" src="" alt="Product Image" />
             <div>
               <h3 id="modalName"></h3>
               <p>Harga: Rp. <span id="modalHarga"></span>/hari</p>
@@ -113,21 +133,25 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-secondary" onclick="cancelFromModal()">Batal</button>
-          <button class="btn-yellow" onclick="startPayment()">Lanjutkan Pembayaran</button>
+          <button class="btn-secondary" onclick="cancelFromModal()">
+            Batal
+          </button>
+          <button class="btn-yellow" onclick="startPayment()">
+            Lanjutkan Pembayaran
+          </button>
         </div>
       </div>
     </div>
 
     <div class="small-card" id="waitingCard" aria-hidden="true">
-        <div class="wait-animation">
-            <div class="wait-bar" id="waitBar"></div>
-        </div>
-        <div class="wait-text">Menunggu pembayaran...</div>
+      <div class="wait-animation">
+        <div class="wait-bar" id="waitBar"></div>
+      </div>
+      <div class="wait-text">Menunggu pembayaran...</div>
     </div>
     <div class="small-card success" id="successCard" aria-hidden="true">
-        <div class="success-icon">✓</div>
-        <div class="success-text">Pembayaran Berhasil!</div>
+      <div class="success-icon">✓</div>
+      <div class="success-text">Pembayaran Berhasil!</div>
     </div>
 
     <footer
@@ -164,7 +188,10 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script> AOS.init({ once: true, mirror: false }); </script>
+    <script>
+      AOS.init({ once: true, mirror: false });
+    </script>
     <script src="./public/js/transaksi.js"></script>
-    <script src="./public/js/script.js"></script> </body>
+    <script src="./public/js/script.js"></script>
+  </body>
 </html>

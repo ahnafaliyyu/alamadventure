@@ -1,0 +1,126 @@
+/* === public/css/tentang.css === */
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  position: relative; 
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/public/camping.png') no-repeat center center;
+  background-size: cover;
+  z-index: -2; 
+  opacity: 0.3; 
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+
+/* Konten utama di-wrap dengan style yang sama seperti halaman lain */
+.tentang-container {
+  width: 100%;
+  max-width: 1100px;
+  padding: 40px 24px;
+  margin: 40px 0; /* Memberi jarak dari Nav */
+  background: rgba(245, 242, 223, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  margin-top: 140px;
+}
+
+.tentang-title {
+  font-family: "Viga", sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: #2c4532;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+}
+
+.tentang-content {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.tentang-kiri {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  /* Pin di atas saat di-scroll di layar besar */
+  position: sticky;
+  top: 120px;
+}
+
+.tentang-logo {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  bottom: 30px;
+}
+
+.tentang-badge {
+  background: #2c4532;
+  color: #f9d84a;
+  font-family: "Viga", sans-serif;
+  font-size: 24px;
+  position: relative;
+  bottom: 30px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.tentang-kanan {
+  flex: 2;
+}
+
+.tentang-kanan p {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .tentang-container {
+    margin-top: 20px;
+    padding: 24px 16px;
+  }
+  .tentang-content {
+    /* Stacking di mobile */
+    flex-direction: column;
+  }
+  .tentang-title {
+    font-size: 32px;
+  }
+  .tentang-kiri {
+    /* Hapus sticky di mobile */
+    position: static;
+    margin-bottom: 20px;
+  }
+}

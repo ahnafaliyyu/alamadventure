@@ -1,0 +1,329 @@
+/* === MAIN.CSS (FILE BARU) === */
+/* Berisi style global untuk Navigasi, Mobile, Font, Body, dan Footer */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* Menggunakan background dari index/katalog */
+  /* background: url(/public/backgroundd.svg);
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover; */
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: auto;
+}
+
+/* === Mobile Menu Toggle === */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 10px;
+  z-index: 1001;
+  background: rgba(245, 242, 223, 0.95);
+  backdrop-filter: blur(10px);
+  border: none;
+  width: 300px;
+  height: 50px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  justify-content: space-evenly;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle span {
+    font-family: "Viga", sans-serif;
+    font-size: 16px;
+}
+
+.mobile-menu-toggle:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #2c4532;
+  position: relative;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background: #2c4532;
+  left: 0;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger::before {
+  top: -7px;
+}
+
+.hamburger::after {
+  bottom: -7px;
+}
+
+/* === Mobile Navigation === */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(180deg, #f5f2df 0%, #e8e5d0 100%);
+  z-index: 1000;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+}
+
+.mobile-nav.active {
+  right: 0;
+}
+
+.mobile-nav-header {
+  padding: 36px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(44, 69, 50, 0.1);
+}
+
+.close-menu {
+  background: rgba(44, 69, 50, 0.1);
+  border: none;
+  font-size: 24px;
+  color: #2c4532;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.close-menu:hover {
+  background: rgba(44, 69, 50, 0.2);
+  transform: rotate(90deg);
+}
+
+.mobile-nav-menu {
+  list-style: none;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav-menu a {
+  display: block;
+  padding: 16px 20px;
+  font-weight: 600;
+  color: #2c4532;
+  text-decoration: none;
+  font-size: 15px;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.mobile-nav-menu a:hover {
+  background: rgba(44, 69, 50, 0.08);
+  transform: translateX(4px);
+}
+
+.mobile-nav-menu a.active {
+  background: linear-gradient(135deg, #2c4532 0%, #1f3328 100%);
+  color: #f9d84a;
+  box-shadow: 0 4px 12px rgba(44, 69, 50, 0.25);
+}
+
+/* === Desktop Navigation === */
+.desktop-nav {
+  background: rgba(245, 242, 223, 0.95);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  margin: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  position: fixed;
+  top: 0; /* Pastikan menempel di atas */
+  z-index: 99;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logo {
+  margin-right: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  position: relative;
+  top: 3px;
+}
+
+.logo img {
+  width: 36px;
+  height: 36px;
+}
+
+/* Logo-text untuk mobile nav */
+.logo-text {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  color: #2c4532;
+  font-size: 14px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-menu a {
+  font-weight: 600;
+  color: #2c4532;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-menu a:hover {
+  background: rgba(44, 69, 50, 0.08);
+}
+
+.nav-menu a.active {
+  background: linear-gradient(135deg, #2c4532 0%, #1f3328 100%);
+  color: #f9d84a;
+  box-shadow: 0 4px 12px rgba(44, 69, 50, 0.2);
+}
+
+/* === Footer === */
+/* Menggunakan style footer dari index/katalog */
+.site-footer {
+  width: 100%;
+  background: #2c4532;
+  color: #e8f1e6;
+  margin-top: auto; /* Mendorong footer ke bawah */
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 32px;
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Dibuat 2 kolom simpel */
+  gap: 48px;
+}
+
+.footer-brand h3 {
+  font-family: "Viga", sans-serif;
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: #f9d84a;
+  margin: 16px 0 12px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #d6e2d9;
+  opacity: 0.9;
+}
+
+.footer-logo img {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.footer-links h4 {
+  font-weight: 700;
+  font-size: 17px;
+  color: #f9d84a;
+  margin-bottom: 16px;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d6e2d9;
+  font-size: 14px;
+}
+
+.footer-links a {
+  color: #e8f1e6;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #f9d84a;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(249, 216, 74, 0.15);
+  padding: 24px 32px;
+  text-align: center;
+  color: #d6e2d9;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* === Responsive === */
+@media (max-width: 992px) {
+  /* body {
+    padding-top: 50px;
+  } */
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .footer-links li {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 590px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  .desktop-nav {
+    display: none;
+  }
+  .mobile-nav {
+    display: block;
+  }
+}

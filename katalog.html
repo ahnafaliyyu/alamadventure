@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALAMADVENTURE_SMD</title>
+    <link rel="icon" href="/public/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Viga&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./public/css/main.css" />
+    <link rel="stylesheet" href="./public/css/katalog.css" />
+  </head>
+  <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+      <span>Alam Adventure Samarinda</span>
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="desktop-nav" data-aos="fade-down" data-aos-duration="1000">
+      <div class="logo"><img src="/public/logo.png" alt="Logo" /></div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="tentang-kami.html" class="nav-link">Tentang Kami</a></li>
+        <li><a href="katalog.html" class="nav-link">Katalog</a></li>
+        <li><a href="kontak.html" class="nav-link">Kontak</a></li>
+      </ul>
+    </nav>
+
+    <nav class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-header"></div>
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link">Beranda</a></li>
+        <li>
+          <a href="index.html#tentang" class="mobile-nav-link">Tentang Kami</a>
+        </li>
+        <li><a href="katalog.html" class="mobile-nav-link">Katalog</a></li>
+        <li><a href="kontak.html" class="mobile-nav-link">Kontak</a></li>
+      </ul>
+    </nav>
+
+    <!-- Product Detail Section -->
+    <div class="product-detail-section" id="productSection">
+      <!-- Category Filter -->
+      <div class="category-filter" data-aos="fade-up" data-aos-delay="200">
+        <button
+          class="filter-btn"
+          onclick="filterCategory('semua')"
+          data-category="semua"
+        >
+          <span>Semua</span>
+          <div class="badge">20</div>
+        </button>
+        <button
+          class="filter-btn active"
+          onclick="filterCategory('tenda')"
+          data-category="tenda"
+        >
+          <span>Tenda</span>
+          <div class="badge">6</div>
+        </button>
+        <button
+          class="filter-btn"
+          onclick="filterCategory('lampu')"
+          data-category="lampu"
+        >
+          <span>Lampu</span>
+          <div class="badge">3</div>
+        </button>
+        <button
+          class="filter-btn"
+          onclick="filterCategory('alat-masak')"
+          data-category="alat-masak"
+        >
+          <span>Alat Masak</span>
+          <div class="badge">4</div>
+        </button>
+        <button
+          class="filter-btn"
+          onclick="filterCategory('paket')"
+          data-category="paket"
+        >
+          <span>Paket</span>
+          <div class="badge">2</div>
+        </button>
+        <button
+          class="filter-btn"
+          onclick="filterCategory('lainnya')"
+          data-category="lainnya"
+        >
+          <span>Lainnya</span>
+          <div class="badge">5</div>
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-container" data-aos="fade-up" data-aos-delay="100">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Cari produk..."
+          class="search-input"
+          onkeyup="searchProducts()"
+        />
+        <span class="search-icon"><i class="bxrds bx-search"></i> </span>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" id="productGrid">
+        <!-- Tenda Products -->
+        <div
+          class="product-card"
+          data-category="tenda"
+          data-name="tenda kapasitas 2 orang"
+        >
+          <div class="product-image">
+            <img src="/public/tenda2.png" alt="Tenda Kapasitas 2 Orang" />
+          </div>
+          <div class="description">
+            <h2>Tenda 2 Orang</h2>
+            <p>Tenda Single Layer untuk kapasitas sebanyak 2 orang.</p>
+          </div>
+          <div class="product-actions">
+            <span>Rp40.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="tenda"
+          data-name="tenda kapasitas 4-5 orang"
+        >
+          <div class="product-image">
+            <img src="/public/tenda45.png" alt="Tenda Kapasitas 4-5 Orang" />
+          </div>
+          <div class="description">
+            <h2>Tenda 4-5 orang</h2>
+            <p>Tenda Double Layer untuk kapasitas sebanyak 4-5 orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp75.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="tenda"
+          data-name="tenda kapasitas 6-7 orang"
+        >
+          <div class="product-image">
+            <img src="/public/tenda.png" alt="Tenda Kapasitas 6-7 Orang" />
+          </div>
+          <div class="description">
+            <h2>Tenda 6-7 Orang</h2>
+            <p>Tenda Double Layer untuk kapasitas sebanyak 6-7 orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp115.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="tenda"
+          data-name="tenda kapasitas 6-8 orang"
+        >
+          <div class="product-image">
+            <img src="/public/tenda68.png" alt="Tenda Kapasitas 6-8 Orang" />
+          </div>
+          <div class="description">
+            <h2>Tenda 6-8 Orang</h2>
+            <p>Tenda Double Layer untuk kapasitas sebanyak 6-8 orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp130.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="tenda"
+          data-name="tenda moluccas 4 pro"
+        >
+          <div class="product-image">
+            <img src="/public/tendapro.png" alt="Tenda Moluccas 4 Pro" />
+          </div>
+          <div class="description">
+            <h2>Tenda Mollucas 4 Pro</h2>
+            <p>Tenda untuk kapasitas sebanyak 4-5 orang dengan teras seluas 170cm.</p>
+          </div>
+          <div class="product-actions">
+            <span>Rp85.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="tenda" data-name="flysheet">
+          <div class="product-image">
+            <img src="/public/flysheet.png" alt="Flysheet" />
+          </div>
+          <div class="description">
+            <h2>Flysheet 2X3</h2>
+            <p>Flysheet dengan ukuran 2x3 meter beserta 4 tali dan 4 pasak.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="tenda" data-name="flysheet">
+          <div class="product-image">
+            <img src="/public/flysheet.png" alt="Flysheet" />
+          </div>
+          <div class="description">
+            <h2>Flysheet 3X3</h2>
+            <p>Flysheet dengan ukuran 3x3 meter beserta 4 tali dan 4 pasak.</p>
+          </div>
+          <div class="product-actions">
+            <span>Rp25.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lampu Products -->
+        <div
+          class="product-card"
+          data-category="lampu"
+          data-name="lampu lentera"
+        >
+          <div class="product-image">
+            <img src="/public/lentera.png" alt="Lampu Lentera" />
+          </div>
+          <div class="description">
+            <h2>Lampu Lentera</h2>
+            <p>Lampu lentera sebagai sumber penerangan portable.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp10.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="lampu"
+          data-name="lampu tenda"
+        >
+          <div class="product-image">
+            <img src="/public/lamputenda.png" alt="Lampu Tenda" />
+          </div>
+          <div class="description">
+            <h2>Lampu Tenda</h2>
+            <p>Lampu tenda untuk penerangan. (TIDAK TERMASUK BATERAI)</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp5.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="lampu"
+          data-name="headlamp"
+        >
+          <div class="product-image">
+            <img src="/public/headlamp.png" alt="headlamp" />
+          </div>
+          <div class="description">
+            <h2>Headlamp</h2>
+            <p>Lampu penerangan yang dapat dipasang di kepala</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp5.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="lampu"
+          data-name="emergency lamp"
+        >
+          <div class="product-image">
+            <img src="/public/emergency.png" alt="lampu emergency" />
+          </div>
+          <div class="description">
+            <h2>Lampu Emergency</h2>
+            <p>Lampu penerangan emergency dengan 2 mode LED.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp5.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Alat Masak Products -->
+        <div
+          class="product-card"
+          data-category="alat-masak"
+          data-name="kompor portable"
+        >
+          <div class="product-image">
+            <img src="/public/komporportable.png" alt="Kompor Portable" />
+          </div>
+          <div class="description">
+            <h2>Kompor Portable</h2>
+            <p>Kompor praktis untuk masak saat camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="alat-masak"
+          data-name="kompor ultralight"
+        >
+          <div class="product-image">
+            <img src="/public/komporultra.png" alt="Kompor Portable" />
+          </div>
+          <div class="description">
+            <h2>Kompor Ultralight</h2>
+            <p>Kompor super ringan untuk pendakian.<p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp15.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="alat-masak"
+          data-name="nesting"
+        >
+          <div class="product-image">
+            <img src="/public/nesting.png" alt="nesting" />
+          </div>
+          <div class="description">
+            <h2>Nesting</h2>
+            <p>Peralatan masak camping yang mudah dibawa.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp15.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="alat-masak"
+          data-name="gas"
+        >
+          <div class="product-image">
+            <img src="/public/gas.png" alt="gas" />
+          </div>
+          <div class="description">
+            <h2>Gas</h2>
+            <p>Tabung gas kecil untuk kompor portable.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp15.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Paket Products -->
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket healing berempat"
+        >
+          <div class="product-image">
+            <img src="/public/paketberempat.png" alt="Paket Camping" />
+          </div>
+          <div class="description">
+            <h2>Paket Healing Berempat</h2>
+            <p>Paket camping lengkap untuk empat orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp140.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket healing ramean"
+        >
+          <div class="product-image">
+            <img src="/public/paketramean.png" alt="Paket Healing Ramean" />
+          </div>
+          <div class="description">
+            <h2>Paket Healing Ramean</h2>
+            <p>Paket perlengkapan camping untuk rombongan.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp240.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket sultan"
+        >
+          <div class="product-image">
+            <img src="/public/paketsultan.png" alt="Paket Healing Ramean" />
+          </div>
+          <div class="description">
+            <h2>Paket Sultan</h2>
+            <p>Paket camping premium yang lebih lengkap.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp290.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket piknik"
+        >
+          <div class="product-image">
+            <img src="/public/paketpiknik.png" alt="Paket Piknik" />
+          </div>
+          <div class="description">
+            <h2>Paket Piknik</h2>
+            <p>Paket perlengkapan piknik sederhana.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp80.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket berdua"
+        >
+          <div class="product-image">
+            <img src="/public/paketberdua.png" alt="Paket Healing Berdua" />
+          </div>
+          <div class="description">
+            <h2>Paket Healing Berdua</h2>
+            <p>Paket camping praktis untuk dua orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp95.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="product-card"
+          data-category="paket"
+          data-name="paket single"
+        >
+          <div class="product-image">
+            <img src="/public/Paketsingle.png" alt="Paket Healing Single" />
+          </div>
+          <div class="description">
+            <h2>Paket Healing Single</h2>
+            <p>Paket camping praktis untuk satu orang.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp50.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lainnya Products -->
+        <div class="product-card" data-category="lainnya" data-name="hammock">
+          <div class="product-image">
+            <img src="/public/hammock.png" alt="Hammock" />
+          </div>
+          <div class="description">
+            <h2>Hammock</h2>
+            <p>Ayunan kain ringan untuk bersantai outdoor.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp10.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="matras">
+          <div class="product-image">
+            <img src="/public/matrasSingle.png" alt="Matras Single" />
+          </div>
+          <div class="description">
+            <h2>Matras Single</h2>
+            <p>Matras tipis untuk alas tidur camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp5.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="tempat telur">
+          <div class="product-image">
+            <img src="/public/tempatTelur.png" alt="Tempat Telur" />
+          </div>
+          <div class="description">
+            <h2>Tempat Telur</h2>
+            <p>Wadah pelindung telur saat perjalanan.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp5.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="product-card" data-category="lainnya" data-name="Sleeping Bag">
+          <div class="product-image">
+            <img src="/public/sleepingBag.png" alt="Sleeping Bag" />
+          </div>
+          <div class="description">
+            <h2>Sleeping Bag</h2>
+            <p>Kantong tidur hangat untuk bermalam outdoor.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="meja lipat">
+          <div class="product-image">
+            <img src="/public/mejaLipat.png" alt="Meja Lipat" />
+          </div>
+          <div class="description">
+            <h2>Meja Lipat</h2>
+            <p>Meja portabel kecil mudah dibawa saat camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp25.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="tripod">
+          <div class="product-image">
+            <img src="/public/tripod.png" alt="tripod" />
+          </div>
+          <div class="description">
+            <h2>Tripod Remote Selfie</h2>
+            <p>Tripod kecil dengan remote untuk foto.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="kursi lipat">
+          <div class="product-image">
+            <img src="/public/kursiLipat.png" alt="kursi lipat" />
+          </div>
+          <div class="description">
+            <h2>Kursi Lipat Kecil</h2>
+            <p>Kursi lipat kecil yang mudah dibawa saat camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="lainnya" data-name="bantal angin">
+          <div class="product-image">
+            <img src="/public/bantalAngin.png" alt="bantal angin" />
+          </div>
+          <div class="description">
+            <h2>Bantal Angin Single</h2>
+            <p>Bantal tiup nyaman digunakan untuk tidur saat camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp10.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+          
+
+          <div class="product-card" data-category="lainnya" data-name="terpal2x3">
+          <div class="product-image">
+            <img src="/public/terpal.png" alt="terpal" />
+          </div>
+          <div class="description">
+            <h2>Terpal 2X3</h2>
+            <p>Terpal kecil serbaguna untuk camping</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp10.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+          <div class="product-card" data-category="lainnya" data-name="terpal3x4">
+          <div class="product-image">
+            <img src="/public/terpal.png" alt="terpal" />
+          </div>
+          <div class="description">
+            <h2>Terpal 3X4</h2>
+            <p>Terpal ukuran sedang serbaguna untuk camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp15.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+
+          <div class="product-card" data-category="lainnya" data-name="terpal4x6">
+          <div class="product-image">
+            <img src="/public/terpal.png" alt="terpal" />
+          </div>
+          <div class="description">
+            <h2>Terpal 4x6</h2>
+            <p>Terpal besar serbaguna untuk camping.</p>
+          </div>
+
+          <div class="product-actions">
+            <span>Rp20.000</span>
+            <button class="cart-btn" title="Tambah ke Keranjang">
+              <i class="bxrds bx-cart-plus"></i>
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      id="kontak"
+      data-aos="fade-up"
+      data-aos-duration="500"
+      class="site-footer"
+    >
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="/public/logo.png" alt="ALAMADVENTURE_SMD" />
+          </div>
+          <h3>ALAMADVENTURE SMD</h3>
+          <p>
+            Sewa perlengkapan camping terpercaya di Kalimantan Timur. Siap
+            menemani setiap petualanganmu.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h4>Navigasi</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#tentang">Tentang Kami</a></li>
+            <li><a href="katalog.html">Katalog</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ALAMADVENTURE_SMD • Semua hak cipta dilindungi</p>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="./public/js/katalog.js"></script>
+    <script src="./public/js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,257 @@
+/* Hapus :root, *, html, body, header (sudah ada di main.css) */
+
+/* Wrapper baru untuk konten */
+.transaksi-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  padding: 24px;
+  background: rgba(245, 242, 223, 0.95); /* Samakan dengan style konten lain */
+  border-radius: 16px;
+  margin: 140px 0 40px 0; /* Jarak dari Nav */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.transaksi-title {
+    font-family: 'Viga', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: #2C4532;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+/* Style tabs yang disesuaikan */
+.tabs{
+    display:flex;
+    gap: 8px;
+    padding: 8px;
+    background: #DCE9D1; /* Warna lebih muda */
+    align-items:center;
+    justify-content:flex-start;
+    border-radius: 10px;
+}
+.tab{
+    flex: 1; /* Membuat tab memenuhi lebar */
+    text-align: center; /* Teks di tengah */
+    padding: 12px 20px;
+    border-radius: 8px;
+    background:transparent;
+    cursor:pointer;
+    color: #2C4532;
+    font-weight: 600;
+    box-shadow: none;
+    transition:all .18s ease;
+    user-select:none;
+}
+.tab.active{
+    background: #2C4532; /* Warna utama */
+    color: #F9D84A; /* Aksen */
+    transform:none;
+    box-shadow: 0 4px 12px rgba(44, 69, 50, 0.2);
+}
+
+/* Main content (dihilangkan background-nya) */
+.container{
+    max-width:1100px;
+    margin: 22px auto 0 auto; /* Margin atas saja */
+    padding: 0; /* Padding dihapus, diatur oleh wrapper */
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+}
+
+.list{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* Order card (dibuat lebih cerah) */
+.order-card{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+    background: #FFFFFF; /* Ganti jadi putih */
+    border-radius:12px;
+    padding:18px;
+    border:1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.img-wrap{
+    min-width:140px;
+    width:140px;
+    height:140px;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: #f0f0f0; /* Ganti background gambar */
+}
+.img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block
+}
+
+.order-main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:8px
+}
+.order-main h3{
+    margin:0;
+    font-size:18px;
+    color:#0d2616;
+    font-weight:800; 
+    letter-spacing:0.6px
+}
+.meta{
+    display:flex;
+    gap:20px;
+    align-items:center;
+    font-size:14px;
+    color: #6b6b6b;
+    margin-top:4px;
+}
+
+/* controls row */
+.controls{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:8px;
+}
+.qty-box{
+    background:#fff;
+    border-radius:8px;
+    padding:10px 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    display:flex;
+    gap:8px;
+    align-items:center;
+    min-width:220px;
+    border: 1px solid #eee;
+}
+.qty-box button{
+    width:34px;height:34px;border-radius:8px;border:none;background:#f7f7f7;font-weight:700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);cursor:pointer;
+}
+
+/* right column */
+.order-side{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:12px;
+    min-width:220px;
+}
+.price-big{
+    font-size:20px;
+    font-weight:800
+}
+
+.btn-yellow{
+    background: #F9D84A; /* Samakan dengan aksen web */
+    color: #2C4532;
+    border:none;
+    border-radius:10px;
+    padding:12px 22px;
+    font-weight:800;
+    font-size:15px;
+    cursor:pointer;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+    transition:transform .12s;
+}
+.btn-yellow:hover {
+    filter: brightness(1.05);
+}
+.btn-yellow:active{
+    transform:translateY(2px)
+}
+
+/* === MODAL & POPUP (Sisanya tetap sama) === */
+.overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:1000;
+}
+.overlay.show{
+    display:flex
+}
+.modal{
+    /* ... (style modal dari file asli Anda tetap di sini) ... */
+    width:92%;
+    max-width:920px;
+    background:#6b7f6b;
+    border-radius:12px;
+    padding:22px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+    position:relative;
+    color:#0b0b0b;
+}
+/* ... (salin sisa style .modal, .small-card, .checkmark, dll dari file asli Anda ke sini) ... */
+
+/* === Responsive === */
+@media (max-width:900px){
+    .order-card{
+        flex-direction:column;
+        align-items:stretch; /* Ubah agar rata */
+    }
+    .img-wrap {
+        width: 100%; /* Buat gambar jadi full-width */
+        height: 200px; /* Tentukan tinggi */
+    }
+    .order-side{
+        align-items:flex-start; /* Ubah agar rata kiri */
+        min-width:unset;
+        margin-top: 16px;
+    }
+    .modal div[style*="flex:1"] { /* Target modal flex-wrap */
+        min-width: 300px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .transaksi-wrapper {
+        margin-top: 20px;
+        padding: 16px;
+    }
+    .transaksi-title {
+        font-size: 32px;
+    }
+    .tabs {
+        flex-direction: column;
+    }
+    .tab {
+        padding: 14px;
+    }
+}
+
+@media (max-width:520px){
+    .transaksi-wrapper {
+        padding: 12px;
+    }
+    .img-wrap{
+        height:160px
+    }
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .qty-box {
+        min-width: 100%;
+        justify-content: center;
+    }
+}
+
+/* small helpers for "Selesai" card state */
+.done-badge{
+    background:rgba(255,255,255,0.85);
+    padding:10px 14px;border-radius:8px;border:1px solid rgba(0,0,0,0.05);font-weight:700;
+}

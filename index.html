@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALAMADVENTURE_SMD</title>
+    <link rel="icon" href="/public/logo.png" type="image/png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Viga&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./public/css/main.css" />
+    <link rel="stylesheet" href="./public/css/style.css" />
+  </head>
+  <body>
+    <button class="mobile-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+      <span>Alam Adventure Samarinda</span>
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="desktop-nav" data-aos="fade-down" data-aos-duration="1000">
+      <div class="logo"><img src="/public/logo.png" alt="Logo" /></div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="tentang-kami.html" class="nav-link">Tentang Kami</a></li>
+        <li><a href="katalog.html" class="nav-link">Katalog</a></li>
+        <li><a href="kontak.html" class="nav-link">Kontak</a></li>
+      </ul>
+    </nav>
+
+    <nav class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-header">
+      </div>
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link">Beranda</a></li>
+        <li>
+          <a href="tentang-kami.html" class="mobile-nav-link">Tentang Kami</a>
+        </li>
+        <li><a href="katalog.html" class="mobile-nav-link">Katalog</a></li>
+        <li><a href="kontak.html" class="mobile-nav-link">Kontak</a></li>
+      </ul>
+    </nav>
+
+    <div class="main-content">
+      <div
+        class="logo-container"
+        data-aos="zoom-in"
+        data-aos-duration="1000"
+        data-aos-delay="600"
+      >
+        <img src="/public/logo.png" alt="" />
+      </div>
+
+      <div class="main-text">
+        <h1 data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+          ALAM ADVENTURE SMD
+        </h1>
+
+        <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+          Kami menyediakan berbagai peralatan camping lengkap dan terawat untuk
+          mendukung petualangan outdoor kamu di Kalimantan Timur. Nikmati
+          kemudahan sewa dengan harga bersahabat, sistem booking cepat, dan
+          layanan ramah.
+        </p>
+
+        <div class="button-container">
+          <button
+            class="action-button"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="800"
+          >
+            <span>Instagram</span>
+            <div class="icon cart-icon"><i class="bxr bx-camera-home"></i></div>
+          </button>
+
+          <button
+            class="action-button"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="1000"
+          >
+            <span>Whatsapp</span>
+            <div class="icon whatsapp-icon">
+              <i class="bxrds bx-phone-book"></i>
+            </div>
+          </button>
+
+          <button
+            class="action-button"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="1200"
+          >
+            <span>Lokasi</span>
+            <div class="icon location-icon">
+              <i class="bxrds bx-location"></i>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Produk Unggulan Section -->
+    <section class="produk-section" data-aos="fade-up" data-aos-duration="1000">
+      <h2 class="produk-title">Produk Unggulan</h2>
+
+      <div class="carousel-container">
+        <button class="carousel-btn prev-btn" onclick="prevSlide()">
+          <span>&lt;</span>
+        </button>
+
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carouselTrack">
+            <div class="product-card" data-index="0">
+              <img src="/public/hammock.png" style="width: 250px" />
+            </div>
+
+            <div class="product-card" data-index="1">
+              <img src="/public/tenda.png" style="width: 250px" />
+            </div>
+
+            <div class="product-card" data-index="2">
+              <img src="/public/lentera.png" style="width: 250px" />
+            </div>
+
+            <div class="product-card" data-index="3">
+              <img src="/public/tendapro.png" style="width: 250px" alt="" />
+            </div>
+
+            <div class="product-card" data-index="4">
+              <img
+                src="/public/komporportable.png"
+                style="width: 250px"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-btn next-btn" onclick="nextSlide()">
+          <span>&gt;</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Cara Sewa Section -->
+    <section
+      id="tentang"
+      class="cara-sewa-section"
+      data-aos="fade-up"
+      data-aos-duration="1000"
+    >
+      <h2 class="section-title">CARA SEWA</h2>
+      <p class="section-subtitle">
+        Proses sewa yang mudah dan cepat. Ikuti langkah-langkah berikut untuk
+        menyewa peralatan camping kami.
+      </p>
+
+      <div class="steps-container">
+        <div class="step-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="step-number">1</div>
+          <div class="step-icon">
+            <img src="/public/katalog.png" style="width: 64px" alt="" />
+          </div>
+          <p class="step-text">
+            Buka katalog harga dan pilih barang yang ingin disewa
+          </p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <img src="/public/keranjangcara.png" style="width: 64px" alt="" />
+          </div>
+          <p class="step-text">
+            Klik tombol "Tambah ke Keranjang" pada barang pilihanmu.
+          </p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="300">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <img src="/public/durasicara.png" style="width: 79px" alt="" />
+          </div>
+          <p class="step-text">Tentukan durasi sewa.</p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="400">
+          <div class="step-number">4</div>
+          <div class="step-icon">
+            <img src="/public/konfirmasicara.png" style="width: 64px" alt="" />
+          </div>
+          <p class="step-text">
+            Setelah selesai memilih, klik "Konfirmasi Sewa"
+          </p>
+        </div>
+        <div class="step-item" data-aos="fade-up" data-aos-delay="500">
+          <div class="step-number">5</div>
+          <div class="step-icon">
+            <img src="/public/duit.png" style="width: 101px" alt="" />
+          </div>
+          <p class="step-text">
+            Selesaikan pembayaran (transfer/cash) dan ambil alat di
+            lokasi/antar.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ketentuan Section -->
+    <section
+      class="ketentuan-section"
+      data-aos="fade-up"
+      data-aos-duration="1000"
+    >
+      <h2 class="ketentuan-title">KETENTUAN</h2>
+
+      <div class="ketentuan-container">
+        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="100">
+          <p>Kartu identitas penyewa sebagai jaminan</p>
+        </div>
+
+        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="200">
+          <p>
+            Barang harus dikembalikan sesuai jadwal dalam kondisi baik dan
+            lengkap.
+          </p>
+        </div>
+
+        <div class="ketentuan-card" data-aos="fade-up" data-aos-delay="300">
+          <p>Denda berlaku untuk kerusakan atau keterlambatan.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      id="kontak"
+      data-aos="fade-up"
+      data-aos-duration="500"
+      class="site-footer"
+    >
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="/public/logo.png" alt="ALAMADVENTURE_SMD" />
+          </div>
+          <h3>ALAMADVENTURE SMD</h3>
+          <p>
+            Sewa perlengkapan camping terpercaya di Kalimantan Timur. Siap
+            menemani setiap petualanganmu.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h4>Navigasi</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#tentang">Tentang Kami</a></li>
+            <li><a href="katalog.html">Katalog</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ALAMADVENTURE_SMD • Semua hak cipta dilindungi</p>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="./public/css/style.css" />
+    <script src="./public/js/script.js"></script>
+  </body>
+</html>

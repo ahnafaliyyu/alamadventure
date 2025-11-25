@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Produk - Alam Adventure</title>
+    <link rel="stylesheet" href="css/admin-style.css">
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d6e2d9;
+            background-color: #fff;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+        }
+        #message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        #message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Alam Adventure
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="produk.html" class="active">Produk</a></li>
+                <li><a href="transaksi.html">Transaksi</a></li>
+                <li class="logout"><a href="login.html">Logout</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="main-header">
+                <h1>Edit Produk</h1>
+                <a href="produk.html" class="btn">Kembali</a>
+            </div>
+
+            <div class="card">
+                <form id="edit-product-form">
+                    <input type="hidden" id="id" name="id">
+                    <div class="form-group">
+                        <label for="name">Nama Produk</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Deskripsi</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price_per_day">Harga Sewa / hari (Rp)</label>
+                        <input type="number" id="price_per_day" name="price_per_day" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Stok</label>
+                        <input type="number" id="stock" name="stock" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image_url">URL Gambar</label>
+                        <input type="text" id="image_url" name="image_url" placeholder="Contoh: public/nama_gambar.png">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </form>
+                <div id="message"></div>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('edit-product-form');
+            const messageDiv = document.getElementById('message');
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                window.location.href = 'produk.html';
+                return;
+            }
+
+            // 1. Ambil data produk dan isi form
+            fetch(`../api/get_product_details.php?id=${productId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const product = result.data;
+                        document.getElementById('id').value = product.id;
+                        document.getElementById('name').value = product.name;
+                        document.getElementById('description').value = product.description;
+                        document.getElementById('price_per_day').value = product.price_per_day;
+                        document.getElementById('stock').value = product.stock;
+                        document.getElementById('image_url').value = product.image_url;
+                    } else {
+                        throw new Error(result.message);
+                    }
+                })
+                .catch(error => {
+                    messageDiv.textContent = `Gagal memuat data produk: ${error.message}`;
+                    messageDiv.className = 'error';
+                    messageDiv.style.display = 'block';
+                });
+
+            // 2. Handle submit form untuk update
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                fetch('../api/update_product.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    messageDiv.textContent = result.message;
+                    messageDiv.className = result.success ? 'success' : 'error';
+                    messageDiv.style.display = 'block';
+                })
+                .catch(error => {
+                    messageDiv.textContent = 'Tidak dapat terhubung ke server.';
+                    messageDiv.className = 'error';
+                    messageDiv.style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

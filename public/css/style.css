@@ -2,8 +2,8 @@
   margin: 20px 20px;
   border-radius: 20px;
   height: auto;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url(../main-background.jpg);
+  background-image: linear-gradient(rgba(0, 15, 2, 0.2), rgba(0, 81, 65, 0.2)),
+    url(../campmount.png);
   flex-grow: 1;
   background-repeat: no-repeat;
   background-position: center;
@@ -17,12 +17,14 @@
   color: #fff;
 }
 .main-content h1 {
-  font-size: 120px;
-  line-height: 130px;
+  font-size: 100px;
+  line-height: 100px;
   font-weight: 900;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 }
 .main-content p {
   font-size: 16px;
+  line-height: 1.8; /* Tambah jarak antar baris */
 }
 
 .button-container {
@@ -63,7 +65,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 40px;
+  gap: 28px;
   height: 100%;
   min-height: 100vh;
 }
@@ -71,6 +73,19 @@
 .left-section {
   flex: 2;
   padding-right: 40px;
+  position: relative;
+}
+
+.left-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  width: 120px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #344f1f, rgba(52,79,31,0));
+  opacity: 0.3;
 }
 
 .main-title {
@@ -87,7 +102,12 @@
 .description {
   color: #555;
   line-height: 1.6;
-  margin-bottom: 25px;
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.social-icons {
+  margin-top: 8px;
 }
 
 .social-icons a {
@@ -105,12 +125,13 @@
 .stats-grid {
   display: flex;
   justify-content: space-between;
-  margin-top: 100px;
+  margin-top: 48px;
+  gap: 24px;
 }
 
 .stat-item {
   text-align: left;
-  width: 30%;
+  width: 32%;
 }
 
 .stat-item i {
@@ -191,7 +212,7 @@
 .product-unggulan-section {
   margin: 20px;
   padding: 30px;
-  background-color: #f2ead3;
+  background-color: #46543b;
   border-radius: 15px;
   justify-content: center;
   align-items: center;
@@ -209,15 +230,16 @@
 }
 
 .section-title {
-  font-size: 28px;
+  font-size: 27px;
   font-weight: bold;
-  color: #333;
+  color: #e3e3e3;
   margin: 0;
+  text-shadow: 2px 2px 1px #1e1c1c49
 }
 
 .section-description {
   font-size: 14px;
-  color: #555;
+  color: #e3e3e3;
   max-width: 500px;
   text-align: right;
   margin: 0;
@@ -303,8 +325,8 @@
 
 .view-more {
   padding: 10px 20px;
-  background-color: #333;
-  color: #fff;
+  background-color: #f0c33c;
+  color: #000000;
   border: none;
   border-radius: 25px;
   font-weight: 600;
@@ -358,7 +380,7 @@
 .cara-sewa-section .section-title {
   font-size: 36px;
   font-weight: bold;
-  color: #344f1f;
+  color: #2e431e;
   margin-bottom: 15px;
   letter-spacing: 2px;
 }
@@ -377,8 +399,8 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
-  gap: 25px;
-  flex-wrap: wrap;
+  gap: 20px;
+  flex-wrap: nowrap;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -388,13 +410,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
-  min-width: 200px;
-  max-width: 220px;
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: none;
   text-align: center;
-  background-color: #fff;
+  background-color: #46543b;
   border-radius: 15px;
   padding: 40px 20px 30px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.step-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
 .step-number {
@@ -402,8 +431,8 @@
   top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #344f1f, #5a7f3a);
-  color: #fff;
+  background: linear-gradient(135deg, #fcc309, #f3ea8a);
+  color: #1c2c0f;
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -425,19 +454,19 @@
   align-items: center;
   margin-bottom: 25px;
   font-size: 48px;
-  color: #344f1f;
+  color: #1c2c0f;
 }
 
 .step-title {
   font-size: 18px;
   font-weight: bold;
-  color: #344f1f;
+  color: #ffffff;
   margin-bottom: 10px;
 }
 
 .step-text {
   font-size: 14px;
-  color: #666;
+  color: #f2ead3;
   line-height: 1.6;
 }
 
@@ -458,7 +487,7 @@
   font-size: 36px;
   font-weight: bold;
   color: #344f1f;
-  margin-bottom: 20px;
+  margin-bottom: 28px; /* beri ruang ekstra dari border/garis atas kartu */
   letter-spacing: 2px;
 }
 
@@ -493,6 +522,13 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ketentuan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
 }
 
 .ketentuan-card::before {
@@ -524,15 +560,19 @@
   color: #666;
   line-height: 1.7;
   margin: 0;
+  text-align: justify; /* rata kiri-kanan */
+  text-justify: inter-word;
 }
 
 .ketentuan-highlight {
-  display: inline-block;
+  display: inline; /* ikut selebar teks saja */
   background-color: #f2ead3;
-  padding: 2px 8px;
-  border-radius: 5px;
+  padding: 0 0.15em; /* padding minimal agar tidak melebar dari teks */
+  border-radius: 4px;
   font-weight: 600;
   color: #344f1f;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone; /* pecah background per baris jika wrap */
 }
 
 /* Laptop Kecil & Tablet (Max Width 1024px) */
@@ -563,6 +603,21 @@
   .right-section {
     width: 100%;
   }
+
+  .stats-grid {
+    margin-top: 28px;
+    gap: 20px;
+  }
+
+  .steps-container {
+    flex-wrap: wrap;
+  }
+
+  .step-item {
+    flex: 1 1 calc(33.333% - 20px);
+    min-width: 0;
+    max-width: none;
+  }
 }
 
 /* Mobile (Max Width 768px) */
@@ -586,8 +641,12 @@
   }
 
   /* --- Stats Section --- */
+  .description {
+    margin-bottom: 14px;
+  }
+
   .stats-grid {
-    margin-top: 40px;
+    margin-top: 24px;
     flex-direction: column; /* Icon statistik berjejer ke bawah */
     gap: 30px;
   }
@@ -635,12 +694,14 @@
   }
 
   .steps-container {
+    flex-wrap: wrap;
     gap: 40px; /* Jarak antar langkah diperlebar */
   }
 
   .step-item {
-    max-width: 100%; /* Card jadi lebar penuh */
-    width: 100%;
+    flex: 1 1 calc(50% - 20px);
+    min-width: 0;
+    max-width: none;
   }
 
   /* --- Ketentuan Section --- */
@@ -680,5 +741,9 @@
 
   .main-title {
     font-size: 24px;
+  }
+
+  .step-item {
+    flex: 1 1 100%;
   }
 }

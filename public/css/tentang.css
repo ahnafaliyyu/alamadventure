@@ -1,29 +1,73 @@
 /* Container Utama */
-.tentang-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-  min-height: 80vh;
-}
-
-.tentang-title {
-  font-size: 36px;
-  font-weight: 800;
-  color: #344f1f;
-  text-align: center;
-  margin-bottom: 40px;
-  letter-spacing: -1px;
-}
 
 /* Layout Content Flexbox */
 .tentang-content {
   display: flex;
-  align-items: flex-start; /* Aligment atas */
+  align-items: flex-start;
   gap: 50px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.82);
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 15px rgba(88, 73, 174, 0.05);
+  position: relative; /* Penting untuk posisi overlay */
+}
+
+.tentang-container {
+  max-width: 1200px;
+  margin: 60px auto; /* beri ruang atas bawah seperti template umum */
+  padding: 60px 24px; /* ruang dalam yang konsisten */
+  min-height: 70vh; /* sedikit lebih pendek dari sebelumnya */
+  position: relative; /* untuk overlay background */
+  border-radius: 20px; /* selaraskan dengan konten di dalam */
+  overflow: hidden; /* ikuti radius untuk background */
+}
+
+/* Overlay di atas background container */
+.tentang-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 50, 74, 0.55); /* sedikit lebih gelap untuk kontras lebih baik */
+  z-index: 0;
+}
+
+/* Pastikan judul dan konten berada di atas overlay */
+.tentang-title,
+.tentang-subtitle,
+.tentang-content {
+  position: relative;
+  z-index: 1;
+}
+
+.tentang-title {
+  font-size: 40px; /* heading hero */
+  font-weight: 800;
+  color: #ffffff; /* putih agar kontras dengan overlay */
+  text-align: center;
+  margin-bottom: 28px; /* beri jarak ke container konten */
+  text-shadow: 0 2px 10px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.65);
+  letter-spacing: -0.5px;
+}
+
+.tentang-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  margin: 0 auto 32px;
+  max-width: 760px;
+  line-height: 1.7;
+}
+
+
+/* Layout Content Flexbox */
+.tentang-content {
+  display: grid; /* grid agar adaptif */
+  grid-template-columns: 1fr 1.4fr; /* kiri:logo, kanan:teks */
+  gap: 40px;
+  background-color: rgba(255, 255, 255, 0.82);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* Bagian Kiri (Gambar & Badge) */
@@ -37,20 +81,22 @@
 
 .tentang-logo {
   width: 100%;
-  max-width: 300px;
+  max-width: 260px;
   height: auto;
   object-fit: contain;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15));
 }
 
 .tentang-badge {
   background-color: #344f1f;
   color: #fff;
-  padding: 10px 25px;
-  border-radius: 50px;
+  padding: 8px 18px;
+  border-radius: 999px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 1px;
+  box-shadow: 0 6px 16px rgba(52,79,31,0.25);
 }
 
 /* Bagian Kanan (Teks) */
@@ -62,10 +108,15 @@
 }
 
 .tentang-kanan p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #555;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #3a3a3a;
   text-align: justify;
+  margin: 0;
+}
+
+.tentang-kanan p + p {
+  margin-top: 14px; /* jarak antar paragraf konsisten */
 }
 
 /* =========================================
@@ -73,25 +124,31 @@
    ========================================= */
 @media screen and (max-width: 900px) {
   .tentang-content {
+    display: flex;
     flex-direction: column; /* Tumpuk ke bawah */
     align-items: center;
-    padding: 30px 20px;
-    gap: 30px;
+    padding: 24px 16px;
+    gap: 24px;
   }
 
   .tentang-kiri,
   .tentang-kanan {
     width: 100%;
-    flex: none;
   }
 
   .tentang-logo {
-    max-width: 150px; /* Perkecil logo di HP */
+    max-width: 140px; /* Perkecil logo di HP */
   }
 
   .tentang-title {
-    font-size: 28px;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+
+  .tentang-subtitle {
+    font-size: 14px;
     margin-bottom: 20px;
+    padding: 0 8px;
   }
 
   .tentang-kanan p {

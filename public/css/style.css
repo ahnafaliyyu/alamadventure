@@ -2,8 +2,8 @@
   margin: 20px 20px;
   border-radius: 20px;
   height: auto;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url(../main-background.jpg);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1920&auto=format&fit=crop);
   flex-grow: 1;
   background-repeat: no-repeat;
   background-position: center;

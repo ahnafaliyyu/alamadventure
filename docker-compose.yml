@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Service untuk Website (PHP + Apache)
+  web:
+    build: .
+    ports:
+      - "8080:80" # Akses web nanti via http://localhost:8080
+    volumes:
+      - .:/var/www/html # Agar perubahan kode di lokal langsung update di container
+    depends_on:
+      - db
+    networks:
+      - alam-network
+
+  # Service untuk Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: alamadventure_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 250507 # Password root
+      MYSQL_DATABASE: alamadventure   # Nama database
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 250507
+    volumes:
+      - db_data:/var/lib/mysql
+      # Script ini akan otomatis dijalankan saat container pertama kali dibuat
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - alam-network
+
+  # Service Adminer (Opsional - untuk cek database via GUI)
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080" # Akses via http://localhost:8081
+    networks:
+      - alam-network
+
+volumes:
+  db_data:
+
+networks:
+  alam-network:
+    driver: bridge

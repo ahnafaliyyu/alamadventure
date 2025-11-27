@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../middleware/auth_api.php';
 
+// Import koneksi database
+require_once __DIR__ . '/../config/database.php';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Metode tidak diizinkan.']);
     exit();
@@ -19,11 +22,6 @@ if ($name === '' || !is_numeric($price_per_day) || !is_numeric($stock)) {
     echo json_encode(['success' => false, 'message' => 'Data tidak lengkap atau tidak valid.']);
     exit();
 }
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "alamadventure";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

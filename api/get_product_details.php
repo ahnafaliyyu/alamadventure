@@ -1,17 +1,15 @@
 <?php
 header('Content-Type: application/json');
 
+// Import koneksi database
+require_once __DIR__ . '/../config/database.php';
+
 $productId = $_GET['id'] ?? null;
 
 if (!$productId) {
     echo json_encode(['success' => false, 'message' => 'ID produk tidak valid.']);
     exit();
 }
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "alamadventure";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../middleware/auth_api.php';
 
+// Import koneksi database
+require_once __DIR__ . '/../config/database.php';
+
 // Hanya izinkan metode POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Metode tidak diizinkan.']);
@@ -14,11 +17,6 @@ if (!$productId) {
     echo json_encode(['success' => false, 'message' => 'ID produk tidak ditemukan.']);
     exit();
 }
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "alamadventure";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

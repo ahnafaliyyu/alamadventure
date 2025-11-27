@@ -1,11 +1,8 @@
 <?php
 require_once __DIR__ . '/../middleware/auth_api.php';
 
-// Database connection details (replace with your actual credentials)
-$servername = "localhost";
-$username = "root";
-$password = ""; // Pastikan ini sesuai dengan password database Anda
-$dbname = "alamadventure";
+// Import koneksi database
+require_once __DIR__ . '/../config/database.php';
 
 $conn = null; // Inisialisasi koneksi ke null
 

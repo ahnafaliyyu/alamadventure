@@ -431,8 +431,8 @@
   top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #fcc309, #f3ea8a);
-  color: #1c2c0f;
+  background: linear-gradient(135deg, #fcc309, #c2a547);
+  color: #ffffff;
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -489,6 +489,7 @@
   color: #344f1f;
   margin-bottom: 28px; /* beri ruang ekstra dari border/garis atas kartu */
   letter-spacing: 2px;
+  text-shadow: 2px 2px 1px #00000065
 }
 
 .ketentuan-subtitle {

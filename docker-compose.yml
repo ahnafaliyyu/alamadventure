@@ -14,18 +14,18 @@ services:
       - alam-network
 
   # Service untuk Database (MySQL)
+# Service untuk Database (MySQL)
   db:
     image: mysql:8.0
     container_name: alamadventure_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 250507 # Password root
-      MYSQL_DATABASE: alamadventure   # Nama database
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 250507
+      MYSQL_ROOT_PASSWORD: "250507" # Password root utama
+      MYSQL_DATABASE: alamadventure
+      # HAPUS BARIS MYSQL_USER: root (Ini penyebab error!)
+      # HAPUS BARIS MYSQL_PASSWORD: ... (Ini penyebab error!)
     volumes:
       - db_data:/var/lib/mysql
-      # Script ini akan otomatis dijalankan saat container pertama kali dibuat
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - alam-network

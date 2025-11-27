@@ -2,13 +2,8 @@
   margin: 20px 20px;
   border-radius: 20px;
   height: auto;
-<<<<<<< HEAD
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  background-image: linear-gradient(rgba(0, 15, 2, 0.5), rgba(0, 0, 0, 0.5)),
     url(https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1920&auto=format&fit=crop);
-=======
-  background-image: linear-gradient(rgba(0, 15, 2, 0.2), rgba(0, 81, 65, 0.2)),
-    url(../campmount.png);
->>>>>>> f905e6eba773c384ceda51c5a34bebd54f14bd08
   flex-grow: 1;
   background-repeat: no-repeat;
   background-position: center;

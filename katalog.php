@@ -2,8 +2,10 @@
 // katalog.php
 require 'config/init.php';
 
-// --- 1. LOGIKA KERANJANG ---
-if (isset($_POST['add_to_cart'])) {
+// --- 1. LOGIKA KERANJANG AJAX ---
+if (isset($_POST['ajax_add_to_cart'])) {
+  header('Content-Type: application/json');
+
   $product_id = $_POST['product_id'];
   $qty = 1;
 
@@ -23,12 +25,105 @@ if (isset($_POST['add_to_cart'])) {
         'qty' => $qty
       ];
     }
-    echo "<script>alert('Berhasil ditambahkan ke keranjang!'); window.location.href='katalog.php';</script>";
-    exit;
+
+    $cartCount = count($_SESSION['cart']);
+    echo json_encode([
+      'success' => true,
+      'message' => 'Berhasil ditambahkan ke keranjang!',
+      'cartCount' => $cartCount
+    ]);
+  } else {
+    echo json_encode([
+      'success' => false,
+      'message' => 'Produk tidak ditemukan'
+    ]);
   }
+  exit;
 }
 
-// --- 2. HELPER KATEGORI ---
+// --- 2. AJAX LOAD PRODUCTS ---
+if (isset($_GET['ajax_load_products'])) {
+  header('Content-Type: application/json');
+
+  $limit = 8;
+  $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+  $offset = ($page - 1) * $limit;
+
+  $search = isset($_GET['q']) ? $_GET['q'] : '';
+  $kategori_aktif = isset($_GET['category']) ? $_GET['category'] : 'semua';
+  $sort = isset($_GET['sort']) ? $_GET['sort'] : 'terbaru';
+
+  $where_clauses = ["1=1"];
+  $params = [];
+  $types = "";
+
+  if (!empty($search)) {
+    $where_clauses[] = "name LIKE ?";
+    $params[] = "%$search%";
+    $types .= "s";
+  }
+
+  if ($kategori_aktif != 'semua') {
+    if ($kategori_aktif == 'tenda') {
+      $where_clauses[] = "(name LIKE '%tenda%' OR name LIKE '%flysheet%')";
+    } elseif ($kategori_aktif == 'lampu') {
+      $where_clauses[] = "(name LIKE '%lampu%' OR name LIKE '%senter%' OR name LIKE '%headlamp%')";
+    } elseif ($kategori_aktif == 'alat-masak') {
+      $where_clauses[] = "(name LIKE '%kompor%' OR name LIKE '%nesting%' OR name LIKE '%gas%')";
+    } elseif ($kategori_aktif == 'paket') {
+      $where_clauses[] = "name LIKE '%paket%'";
+    } elseif ($kategori_aktif == 'lainnya') {
+      $where_clauses[] = "(name NOT LIKE '%tenda%' AND name NOT LIKE '%flysheet%' 
+                               AND name NOT LIKE '%lampu%' AND name NOT LIKE '%senter%' 
+                               AND name NOT LIKE '%kompor%' AND name NOT LIKE '%paket%')";
+    }
+  }
+
+  $sql_where = implode(" AND ", $where_clauses);
+
+  $sql_order = "ORDER BY id DESC";
+  if ($sort == 'termurah')
+    $sql_order = "ORDER BY price_per_day ASC";
+  if ($sort == 'termahal')
+    $sql_order = "ORDER BY price_per_day DESC";
+
+  $sql_count = "SELECT COUNT(*) as total FROM products WHERE $sql_where";
+  $stmt_count = $conn->prepare($sql_count);
+  if (!empty($params)) {
+    $stmt_count->bind_param($types, ...$params);
+  }
+  $stmt_count->execute();
+  $total_data = $stmt_count->get_result()->fetch_assoc()['total'];
+  $total_pages = ceil($total_data / $limit);
+
+  $sql_data = "SELECT * FROM products WHERE $sql_where $sql_order LIMIT ? OFFSET ?";
+  $params[] = $limit;
+  $params[] = $offset;
+  $types .= "ii";
+
+  $stmt = $conn->prepare($sql_data);
+  $stmt->bind_param($types, ...$params);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  $products = [];
+  while ($row = $result->fetch_assoc()) {
+    $products[] = $row;
+  }
+
+  echo json_encode([
+    'success' => true,
+    'products' => $products,
+    'pagination' => [
+      'current_page' => $page,
+      'total_pages' => $total_pages,
+      'total_data' => $total_data
+    ]
+  ]);
+  exit;
+}
+
+// --- 3. HELPER KATEGORI ---
 function tebakKategori($nama)
 {
   $nama = strtolower($nama);
@@ -43,67 +138,24 @@ function tebakKategori($nama)
   return 'lainnya';
 }
 
-// --- 3. SERVER-SIDE LOGIC ---
+// --- 4. INITIAL SERVER-SIDE LOAD ---
 $limit = 8;
-$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-$offset = ($page - 1) * $limit;
+$page = 1;
+$offset = 0;
 
-$search = isset($_GET['q']) ? $_GET['q'] : '';
-$kategori_aktif = isset($_GET['category']) ? $_GET['category'] : 'semua';
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'terbaru';
+$search = '';
+$kategori_aktif = 'semua';
+$sort = 'terbaru';
 
-$where_clauses = ["1=1"];
-$params = [];
-$types = "";
-
-if (!empty($search)) {
-  $where_clauses[] = "name LIKE ?";
-  $params[] = "%$search%";
-  $types .= "s";
-}
-
-if ($kategori_aktif != 'semua') {
-  if ($kategori_aktif == 'tenda') {
-    $where_clauses[] = "(name LIKE '%tenda%' OR name LIKE '%flysheet%')";
-  } elseif ($kategori_aktif == 'lampu') {
-    $where_clauses[] = "(name LIKE '%lampu%' OR name LIKE '%senter%' OR name LIKE '%headlamp%')";
-  } elseif ($kategori_aktif == 'alat-masak') {
-    $where_clauses[] = "(name LIKE '%kompor%' OR name LIKE '%nesting%' OR name LIKE '%gas%')";
-  } elseif ($kategori_aktif == 'paket') {
-    $where_clauses[] = "name LIKE '%paket%'";
-  } elseif ($kategori_aktif == 'lainnya') {
-    $where_clauses[] = "(name NOT LIKE '%tenda%' AND name NOT LIKE '%flysheet%' 
-                             AND name NOT LIKE '%lampu%' AND name NOT LIKE '%senter%' 
-                             AND name NOT LIKE '%kompor%' AND name NOT LIKE '%paket%')";
-  }
-}
-
-$sql_where = implode(" AND ", $where_clauses);
-
-$sql_order = "ORDER BY id DESC";
-if ($sort == 'termurah')
-  $sql_order = "ORDER BY price_per_day ASC";
-if ($sort == 'termahal')
-  $sql_order = "ORDER BY price_per_day DESC";
-
-$sql_count = "SELECT COUNT(*) as total FROM products WHERE $sql_where";
-$stmt_count = $conn->prepare($sql_count);
-if (!empty($params)) {
-  $stmt_count->bind_param($types, ...$params);
-}
-$stmt_count->execute();
-$total_data = $stmt_count->get_result()->fetch_assoc()['total'];
-$total_pages = ceil($total_data / $limit);
-
-$sql_data = "SELECT * FROM products WHERE $sql_where $sql_order LIMIT ? OFFSET ?";
-$params[] = $limit;
-$params[] = $offset;
-$types .= "ii";
-
+$sql_data = "SELECT * FROM products ORDER BY id DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql_data);
-$stmt->bind_param($types, ...$params);
+$stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
+
+$sql_count = "SELECT COUNT(*) as total FROM products";
+$total_data = $conn->query($sql_count)->fetch_assoc()['total'];
+$total_pages = ceil($total_data / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -117,6 +169,138 @@ $result = $stmt->get_result();
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="./public/css/main.css" />
   <link rel="stylesheet" href="./public/css/katalog.css" />
+  <style>
+    /* Styling untuk notifikasi toast */
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+      max-width: 300px;
+    }
+
+    .toast-notification.error {
+      background: #f44336;
+    }
+
+    .toast-notification i {
+      font-size: 20px;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    .toast-notification.hiding {
+      animation: slideOut 0.3s ease-in;
+    }
+
+    /* Badge counter animasi */
+    .cart-badge {
+      position: relative;
+    }
+
+    .cart-badge.updated {
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      border-radius: 8px;
+    }
+
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .product-grid {
+      position: relative;
+      min-height: 400px;
+    }
+
+    /* Animasi fade in untuk produk */
+    .product-card {
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -133,8 +317,10 @@ $result = $stmt->get_result();
       </ul>
     </div>
     <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link"><i
-          class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
+      <a href="keranjang.php" class="nav-link cart-badge" id="cartLink">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
+      </a>
       <a href="/admin/login.php">Login</a>
     </div>
   </nav>
@@ -148,10 +334,10 @@ $result = $stmt->get_result();
       <div class="sort-wrapper">
         <span class="sort-label">Filter:</span>
         <div class="select-container">
-          <select id="sortSelect" onchange="applyParams('sort', this.value)">
-            <option value="terbaru" <?= $sort == 'terbaru' ? 'selected' : '' ?>>Semua</option>
-            <option value="termurah" <?= $sort == 'termurah' ? 'selected' : '' ?>>Termurah</option>
-            <option value="termahal" <?= $sort == 'termahal' ? 'selected' : '' ?>>Termahal</option>
+          <select id="sortSelect">
+            <option value="terbaru">Semua</option>
+            <option value="termurah">Termurah</option>
+            <option value="termahal">Termahal</option>
           </select>
         </div>
       </div>
@@ -161,31 +347,29 @@ $result = $stmt->get_result();
       <div class="category-filter">
 
         <div class="btn-filter">
-          <button class="filter-btn <?= $kategori_aktif == 'semua' ? 'active' : '' ?>" data-val="semua">
+          <button class="filter-btn active" data-val="semua">
             <span>Semua</span>
           </button>
-          <button class="filter-btn <?= $kategori_aktif == 'tenda' ? 'active' : '' ?>" data-val="tenda">
+          <button class="filter-btn" data-val="tenda">
             <span>Tenda</span>
           </button>
-          <button class="filter-btn <?= $kategori_aktif == 'lampu' ? 'active' : '' ?>" data-val="lampu">
+          <button class="filter-btn" data-val="lampu">
             <span>Lampu</span>
           </button>
-          <button class="filter-btn <?= $kategori_aktif == 'alat-masak' ? 'active' : '' ?>" data-val="alat-masak">
+          <button class="filter-btn" data-val="alat-masak">
             <span>Alat Masak</span>
           </button>
-          <button class="filter-btn <?= $kategori_aktif == 'paket' ? 'active' : '' ?>" data-val="paket">
+          <button class="filter-btn" data-val="paket">
             <span>Paket</span>
           </button>
-          <button class="filter-btn <?= $kategori_aktif == 'lainnya' ? 'active' : '' ?>" data-val="lainnya">
+          <button class="filter-btn" data-val="lainnya">
             <span>Lainnya</span>
           </button>
         </div>
 
         <div class="search-container">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Cari produk..." class="search-input"
-            value="<?= htmlspecialchars($search) ?>"
-            onkeypress="if(event.key === 'Enter') applyParams('q', this.value)" />
+          <input type="text" id="searchInput" placeholder="Cari produk..." class="search-input" />
         </div>
       </div>
     </div>
@@ -208,45 +392,31 @@ $result = $stmt->get_result();
             </div>
             <div class="product-actions">
               <span>Rp <?= number_format($row['price_per_day'], 0, ',', '.') ?></span>
-              <form method="POST" style="display:inline;">
-                <input type="hidden" name="product_id" value="<?= $row['id'] ?>">
-                <button type="submit" name="add_to_cart" class="cart-btn" title="Tambahkan ke Keranjang">
-                  <i class="fa-solid fa-cart-plus"></i>
-                </button>
-              </form>
+              <button class="cart-btn add-to-cart-btn" data-product-id="<?= $row['id'] ?>" title="Tambahkan ke Keranjang">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
             </div>
           </div>
-        <?php
+          <?php
         }
-      } else {
-        echo "<p style='text-align:center; width:100%; grid-column: 1 / -1; padding: 50px;'>Produk tidak ditemukan.</p>";
       }
       ?>
 
-      <?php if ($total_pages > 1): ?>
-        <div style="grid-column: 1 / -1; width: 100%;">
-          <div class="pagination-wrapper">
-            <?php $baseUrl = "?category=$kategori_aktif&q=$search&sort=$sort&page="; ?>
-            <?php if ($page > 1): ?>
-              <a href="<?= $baseUrl . ($page - 1) ?>" class="pagination-link">&laquo; Prev</a>
-            <?php endif; ?>
+      <div style="grid-column: 1 / -1; width: 100%;">
+        <div class="pagination-wrapper" id="paginationContainer">
+          <?php if ($total_pages > 1): ?>
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-              <a href="<?= $baseUrl . $i ?>" class="pagination-link <?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
+              <a href="#" data-page="<?= $i ?>" class="pagination-link <?= $i == 1 ? 'active' : '' ?>"><?= $i ?></a>
             <?php endfor; ?>
-            <?php if ($page < $total_pages): ?>
-              <a href="<?= $baseUrl . ($page + 1) ?>" class="pagination-link">Next &raquo;</a>
-            <?php endif; ?>
-          </div>
+          <?php endif; ?>
         </div>
-      <?php endif; ?>
+      </div>
     </div>
   </div>
 
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-inner">
-
-      <!-- Brand Section -->
       <div class="footer-brand">
         <div class="footer-logo">
           <img src="../public/logo.png" alt="ALAMADVENTURE SMD" />
@@ -258,7 +428,6 @@ $result = $stmt->get_result();
         </p>
       </div>
 
-      <!-- Navigation Section -->
       <div class="footer-navigation">
         <h4>Navigasi</h4>
         <ul>
@@ -271,7 +440,6 @@ $result = $stmt->get_result();
         </ul>
       </div>
 
-      <!-- Features Section -->
       <div class="footer-features-section">
         <h4>Keunggulan Kami</h4>
         <div class="feature-item">
@@ -310,27 +478,286 @@ $result = $stmt->get_result();
   </footer>
 
   <script>
-    // 1. Script Pindah Active Class
+    // ===== STATE MANAGEMENT =====
+    let currentFilters = {
+      category: 'semua',
+      search: '',
+      sort: 'terbaru',
+      page: 1
+    };
+
+    let searchTimeout = null;
+
+    // ===== HELPER FUNCTIONS =====
+    function showToast(message, isError = false) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification' + (isError ? ' error' : '');
+      toast.innerHTML = `
+        <i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}"></i>
+        <span>${message}</span>
+      `;
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    function updateCartCount(count) {
+      const cartCountElement = document.getElementById('cartCount');
+      const cartLink = document.getElementById('cartLink');
+
+      cartCountElement.textContent = count;
+      cartLink.classList.add('updated');
+      setTimeout(() => {
+        cartLink.classList.remove('updated');
+      }, 500);
+    }
+
+    function showLoading() {
+      const productGrid = document.getElementById('productGrid');
+      const loadingOverlay = document.createElement('div');
+      loadingOverlay.className = 'loading-overlay';
+      loadingOverlay.id = 'loadingOverlay';
+      loadingOverlay.innerHTML = '<div class="loading-spinner"></div>';
+      productGrid.appendChild(loadingOverlay);
+    }
+
+    function hideLoading() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.remove();
+      }
+    }
+
+    function tebakKategori(nama) {
+      nama = nama.toLowerCase();
+      if (nama.includes('tenda') || nama.includes('flysheet')) return 'tenda';
+      if (nama.includes('lampu') || nama.includes('senter') || nama.includes('headlamp')) return 'lampu';
+      if (nama.includes('kompor') || nama.includes('nesting') || nama.includes('gas')) return 'alat-masak';
+      if (nama.includes('paket')) return 'paket';
+      return 'lainnya';
+    }
+
+    // ===== LOAD PRODUCTS FUNCTION =====
+    function loadProducts() {
+      showLoading();
+
+      const params = new URLSearchParams({
+        ajax_load_products: '1',
+        category: currentFilters.category,
+        q: currentFilters.search,
+        sort: currentFilters.sort,
+        page: currentFilters.page
+      });
+
+      fetch(`katalog.php?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            renderProducts(data.products);
+            renderPagination(data.pagination);
+          } else {
+            showToast('Gagal memuat produk', true);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('Terjadi kesalahan saat memuat produk', true);
+        })
+        .finally(() => {
+          hideLoading();
+        });
+    }
+
+    // ===== RENDER FUNCTIONS =====
+    function renderProducts(products) {
+      const productGrid = document.getElementById('productGrid');
+      const paginationContainer = document.getElementById('paginationContainer');
+
+      // Hapus semua produk kecuali pagination
+      const productCards = productGrid.querySelectorAll('.product-card');
+      productCards.forEach(card => card.remove());
+
+      // Hapus pesan "tidak ditemukan" jika ada
+      const existingNoProduct = productGrid.querySelector('.no-product-message');
+      if (existingNoProduct) {
+        existingNoProduct.remove();
+      }
+
+      if (products.length === 0) {
+        const noProduct = document.createElement('p');
+        noProduct.className = 'no-product-message';
+        noProduct.style.cssText = 'text-align:center; width:100%; grid-column: 1 / -1; padding: 50px;';
+        noProduct.textContent = 'Produk tidak ditemukan.';
+        productGrid.insertBefore(noProduct, paginationContainer.parentElement);
+        return;
+      }
+
+      products.forEach(product => {
+        const category = tebakKategori(product.name);
+        const imageUrl = product.image_url || '/public/logo.png';
+        const description = product.description.substring(0, 80) + '...';
+        const price = new Intl.NumberFormat('id-ID').format(product.price_per_day);
+
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.setAttribute('data-category', category);
+        productCard.setAttribute('data-name', product.name.toLowerCase());
+
+        productCard.innerHTML = `
+          <div class="product-image">
+            <img src="${imageUrl}" alt="${product.name}" />
+          </div>
+          <div class="description">
+            <h2>${product.name}</h2>
+            <p>${description}</p>
+          </div>
+          <div class="product-actions">
+            <span>Rp ${price}</span>
+            <button class="cart-btn add-to-cart-btn" data-product-id="${product.id}" title="Tambahkan ke Keranjang">
+              <i class="fa-solid fa-cart-plus"></i>
+            </button>
+          </div>
+        `;
+
+        productGrid.insertBefore(productCard, paginationContainer.parentElement);
+      });
+
+      // Re-attach event listeners untuk tombol add to cart
+      attachCartButtonListeners();
+    }
+
+    function renderPagination(pagination) {
+      const paginationContainer = document.getElementById('paginationContainer');
+      paginationContainer.innerHTML = '';
+
+      if (pagination.total_pages <= 1) return;
+
+      // Previous button
+      if (pagination.current_page > 1) {
+        const prevLink = document.createElement('a');
+        prevLink.href = '#';
+        prevLink.className = 'pagination-link';
+        prevLink.setAttribute('data-page', pagination.current_page - 1);
+        prevLink.innerHTML = '&laquo; Prev';
+        paginationContainer.appendChild(prevLink);
+      }
+
+      // Page numbers
+      for (let i = 1; i <= pagination.total_pages; i++) {
+        const pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.className = 'pagination-link' + (i === pagination.current_page ? ' active' : '');
+        pageLink.setAttribute('data-page', i);
+        pageLink.textContent = i;
+        paginationContainer.appendChild(pageLink);
+      }
+
+      // Next button
+      if (pagination.current_page < pagination.total_pages) {
+        const nextLink = document.createElement('a');
+        nextLink.href = '#';
+        nextLink.className = 'pagination-link';
+        nextLink.setAttribute('data-page', pagination.current_page + 1);
+        nextLink.innerHTML = 'Next &raquo;';
+        paginationContainer.appendChild(nextLink);
+      }
+
+      // Attach event listeners
+      attachPaginationListeners();
+    }
+
+    // ===== EVENT LISTENERS =====
+    function attachCartButtonListeners() {
+      document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const productId = this.getAttribute('data-product-id');
+          const buttonIcon = this.querySelector('i');
+
+          this.disabled = true;
+          buttonIcon.className = 'fas fa-spinner fa-spin';
+
+          const formData = new FormData();
+          formData.append('ajax_add_to_cart', '1');
+          formData.append('product_id', productId);
+
+          fetch('katalog.php', {
+            method: 'POST',
+            body: formData
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showToast(data.message);
+                updateCartCount(data.cartCount);
+              } else {
+                showToast(data.message, true);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showToast('Terjadi kesalahan, silakan coba lagi', true);
+            })
+            .finally(() => {
+              this.disabled = false;
+              buttonIcon.className = 'fa-solid fa-cart-plus';
+            });
+        });
+      });
+    }
+
+    function attachPaginationListeners() {
+      document.querySelectorAll('.pagination-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const page = parseInt(this.getAttribute('data-page'));
+          currentFilters.page = page;
+          loadProducts();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    // Category filter buttons
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(button => {
       button.addEventListener('click', function () {
         filterButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active'); // Styling langsung berubah
+        this.classList.add('active');
 
-        const categoryValue = this.getAttribute('data-val');
-        applyParams('category', categoryValue);
+        currentFilters.category = this.getAttribute('data-val');
+        currentFilters.page = 1;
+        loadProducts();
       });
     });
 
-    function applyParams(key, value) {
-      const url = new URL(window.location.href);
-      url.searchParams.set(key, value);
-      if (key === 'category' || key === 'q') {
-        url.searchParams.set('page', 1);
-      }
-      window.location.href = url.toString();
-    }
+    // Search input with debounce
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function () {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentFilters.search = this.value;
+        currentFilters.page = 1;
+        loadProducts();
+      }, 500); // 500ms debounce
+    });
 
+    // Sort select
+    const sortSelect = document.getElementById('sortSelect');
+    sortSelect.addEventListener('change', function () {
+      currentFilters.sort = this.value;
+      currentFilters.page = 1;
+      loadProducts();
+    });
+
+    // Mobile filter toggle
     const mobileFilterBtn = document.getElementById('mobileFilterBtn');
     const filterContainer = document.getElementById('filterContainer');
     if (mobileFilterBtn) {
@@ -338,6 +765,10 @@ $result = $stmt->get_result();
         filterContainer.style.display = (filterContainer.style.display === 'block') ? 'none' : 'block';
       });
     }
+
+    // Initial setup
+    attachCartButtonListeners();
+    attachPaginationListeners();
   </script>
 </body>
 

@@ -1,45 +1,49 @@
 <?php
-// api/get_products.php
+// api/get_transactions.php
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../middleware/auth_api.php';
 require_once __DIR__ . '/../config/database.php';
 
-$response = [];
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 try {
     if ($conn->connect_error) throw new Exception("Connection failed");
 
-    // 1. Parameter Pagination & Search
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $limit = 10; // Maksimal 10 data per halaman
+    $limit = 10;
     $offset = ($page - 1) * $limit;
     $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-    // 2. Base Query
+    // Logic Pencarian
     $whereSQL = "WHERE 1=1";
     $params = [];
     $types = "";
 
     if (!empty($search)) {
-        $whereSQL .= " AND (name LIKE ? OR description LIKE ?)";
-        $searchTerm = "%$search%";
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $types .= "ss";
+        $whereSQL .= " AND (o.order_code LIKE ? OR o.customer_name LIKE ? OR i.invoice_no LIKE ?)";
+        $s = "%$search%";
+        $params = [$s, $s, $s];
+        $types = "sss";
     }
 
-    // 3. Hitung Total Data (Untuk Pagination)
-    $stmtCount = $conn->prepare("SELECT COUNT(*) as total FROM products $whereSQL");
+    // Hitung Total
+    $sqlCount = "SELECT COUNT(*) as total FROM orders o LEFT JOIN invoices i ON o.order_code = i.order_code $whereSQL";
+    $stmtCount = $conn->prepare($sqlCount);
     if (!empty($params)) $stmtCount->bind_param($types, ...$params);
     $stmtCount->execute();
     $totalData = $stmtCount->get_result()->fetch_assoc()['total'];
     $totalPages = ceil($totalData / $limit);
 
-    // 4. Ambil Data
-    $sql = "SELECT id, name, price_per_day, stock FROM products $whereSQL ORDER BY id DESC LIMIT ? OFFSET ?";
+    // Ambil Data
+    $sql = "SELECT o.*, i.invoice_no 
+            FROM orders o 
+            LEFT JOIN invoices i ON o.order_code = i.order_code 
+            $whereSQL 
+            ORDER BY o.created_at DESC 
+            LIMIT ? OFFSET ?";
+    
     $params[] = $limit;
     $params[] = $offset;
     $types .= "ii";
@@ -49,17 +53,16 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $products = [];
+    $data = [];
     while ($row = $result->fetch_assoc()) {
-        $row['price_per_day'] = (int)$row['price_per_day'];
-        $products[] = $row;
+        $row['total_amount'] = (int)$row['total_amount'];
+        $data[] = $row;
     }
 
     echo json_encode([
         'success' => true,
-        'data' => $products,
+        'data' => $data,
         'pagination' => [
-            'total_data' => $totalData,
             'total_pages' => $totalPages,
             'current_page' => $page
         ]
@@ -67,7 +70,5 @@ try {
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-} finally {
-    if ($conn) $conn->close();
 }
 ?>

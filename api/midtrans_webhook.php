@@ -109,7 +109,7 @@ if ($new_status == 'paid') {
             // E. KIRIM WHATSAPP (Fonnte)
             // GANTI URL NGROK DI BAWAH INI SETIAP KALI RESTART NGROK
             // GANTI JUGA Notification URL Endpoint di sandbox midtrans
-            $ngrok_url = "https://6033c3a0fff3.ngrok-free.app";
+            $ngrok_url = " https://b29029ed4e59.ngrok-free.app";
             $link_faktur = $ngrok_url . "/alamadventure/invoice.php?order=" . $order_id;
             
             // Format Rupiah Helper

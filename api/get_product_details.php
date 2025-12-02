@@ -1,32 +1,27 @@
 <?php
+// api/get_product_details.php
 header('Content-Type: application/json');
-
-// Import koneksi database
+require_once __DIR__ . '/../middleware/auth_api.php';
 require_once __DIR__ . '/../config/database.php';
-
-$productId = $_GET['id'] ?? null;
-
-if (!$productId) {
-    echo json_encode(['success' => false, 'message' => 'ID produk tidak valid.']);
-    exit();
-}
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Koneksi database gagal.']);
-    exit();
+if (!isset($_GET['id'])) {
+    echo json_encode(['success' => false, 'message' => 'ID tidak ditemukan']);
+    exit;
 }
 
-$stmt = $conn->prepare("SELECT id, name, description, price_per_day, stock, image_url FROM products WHERE id = ?");
-$stmt->bind_param("i", $productId);
+$id = (int) $_GET['id'];
+
+$stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+$stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if ($product = $result->fetch_assoc()) {
-    echo json_encode(['success' => true, 'data' => $product]);
+if ($row = $result->fetch_assoc()) {
+    echo json_encode(['success' => true, 'data' => $row]);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Produk tidak ditemukan.']);
+    echo json_encode(['success' => false, 'message' => 'Produk tidak ditemukan']);
 }
 
 $stmt->close();

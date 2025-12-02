@@ -192,7 +192,7 @@
                                     <td>${price}</td>
                                     <td align="center">${stockDisplay}</td>
                                     <td>
-                                        <a href="../api/edit_produk.html?id=${p.id}" class="btn btn-edit"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="edit_produk.php?id=${p.id}" class="btn btn-edit"><i class="fa-solid fa-pen"></i></a>
                                         <button class="btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
                                     </td>
                                 </tr>

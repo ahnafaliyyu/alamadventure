@@ -378,13 +378,14 @@ if ($inv['payment_method'] === 'cod') {
         </table>
 
         <div class="footer">
-
             <div class="disclaimer">
-                <span class="warning-text">MOHON DIPERIKSA KEMBALI BARANG PESANAN/SEWAAN, SEBELUM MENINGGALKAN
-                    TEMPAT.</span><br>
-                PERIKSA KEMBALI KONDISI TENDA ATAU ALAT CAMPING.<br>
-                KERUSAKAN SETELAH PENGAMBILAN MENJADI TANGGUNG JAWAB PENYEWA.<br>
-                BARANG YANG SUDAH DIAMBIL TIDAK DAPAT DIKEMBALIKAN UANG SEWA.
+                <strong>KETENTUAN SEWA & DENDA:</strong><br>
+                1. Mohon periksa kembali kondisi barang sebelum meninggalkan tempat.<br>
+                2. Kerusakan atau kehilangan barang menjadi tanggung jawab penyewa sepenuhnya.<br>
+                <span style="color: #c0392b; font-weight: bold; background: #fff3cd; padding: 2px 5px;">
+                    3. Keterlambatan pengembalian dikenakan DENDA Rp 50.000 / Hari.
+                </span><br>
+                4. Barang yang sudah disewa tidak dapat dikembalikan uang sewanya.
             </div>
 
             <div class="status-info">

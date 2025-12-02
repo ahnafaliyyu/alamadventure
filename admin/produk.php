@@ -1,6 +1,7 @@
 <?php require_once __DIR__ . '/../middleware/auth.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,82 @@
     <link rel="stylesheet" href="css/admin-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .pagination-container { margin-top: 20px; display: flex; justify-content: flex-end; gap: 5px; }
-        .page-btn { padding: 8px 12px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 6px; }
-        .page-btn.active { background: #2c4532; color: white; border-color: #2c4532; }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .page-btn.active {
+            background: #2c4532;
+            color: white;
+            border-color: #2c4532;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Style untuk Badge Stok */
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .stock-safe {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* Hijau */
+        .stock-full {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Merah */
+        .stock-label {
+            font-size: 10px;
+            color: #666;
+            display: block;
+            margin-top: 2px;
+        }
     </style>
 </head>
+
 <body>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="admin-wrapper">
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header"><h2>ALAM<span style="color:#fff">ADVENTURE</span></h2></div>
+            <div class="sidebar-header">
+                <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
+            </div>
             <ul class="sidebar-nav">
                 <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
-                <li><a href="produk.php" class="active"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a></li>
-                <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a></li>
+                <li><a href="produk.php" class="active"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a>
+                </li>
+                <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a>
+                </li>
                 <li><a href="#"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a></li>
-                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Keluar</span></a></li>
+                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Keluar</span></a></li>
             </ul>
         </aside>
 
@@ -52,12 +112,14 @@
                                 <th width="10%">ID</th>
                                 <th width="30%">Nama Produk</th>
                                 <th width="20%">Harga/hari</th>
-                                <th width="15%">Stok</th>
-                                <th width="25%">Aksi</th>
+                                <th width="20%">Stok (Dipinjam/Total)</th>
+                                <th width="20%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="product-table-body">
-                            <tr><td colspan="5" align="center">Memuat...</td></tr>
+                            <tr>
+                                <td colspan="5" align="center">Memuat...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -72,7 +134,7 @@
         const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.getElementById('sidebarToggle');
         function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
-        if(toggleBtn) { toggleBtn.addEventListener('click', toggleSidebar); overlay.addEventListener('click', toggleSidebar); }
+        if (toggleBtn) { toggleBtn.addEventListener('click', toggleSidebar); overlay.addEventListener('click', toggleSidebar); }
 
         // --- AJAX LOGIC ---
         let currentPage = 1;
@@ -81,12 +143,11 @@
 
         document.addEventListener('DOMContentLoaded', () => fetchProducts());
 
-        // Event Listener Search (Debounce agar tidak spam server)
-        document.getElementById('searchInput').addEventListener('input', function(e) {
+        document.getElementById('searchInput').addEventListener('input', function (e) {
             clearTimeout(debounceTimer);
             searchKeyword = e.target.value;
             debounceTimer = setTimeout(() => {
-                currentPage = 1; // Reset ke halaman 1 saat search
+                currentPage = 1;
                 fetchProducts();
             }, 300);
         });
@@ -94,8 +155,7 @@
         function fetchProducts() {
             const tbody = document.getElementById('product-table-body');
             const paginationDiv = document.getElementById('paginationContainer');
-            
-            // Loading State
+
             tbody.innerHTML = '<tr><td colspan="5" align="center"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td></tr>';
 
             fetch(`../api/get_products.php?page=${currentPage}&q=${searchKeyword}`)
@@ -105,17 +165,32 @@
                     paginationDiv.innerHTML = '';
 
                     if (result.success && result.data.length > 0) {
-                        // Render Table
                         result.data.forEach(p => {
-                            const price = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits:0 }).format(p.price_per_day);
-                            const badge = p.stock > 0 ? `<span style="background:#e8f5e9; color:green; padding:4px 8px; border-radius:4px; font-size:12px;">${p.stock} Unit</span>` : `<span style="background:#ffebee; color:red; padding:4px 8px; border-radius:4px; font-size:12px;">Habis</span>`;
-                            
+                            const price = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(p.price_per_day);
+
+                            // FORMAT STOK: Dipinjam / Total
+                            // Contoh: 2 / 4
+                            const rented = p.rented || 0;
+                            const total = p.stock || 0;
+
+                            // Warna Badge: Merah jika penuh (rented >= total), Hijau jika aman
+                            const badgeClass = (rented >= total && total > 0) ? 'stock-full' : 'stock-safe';
+
+                            const stockDisplay = `
+                                <div style="display:flex; flex-direction:column; align-items:center;">
+                                    <span class="stock-badge ${badgeClass}">
+                                        ${rented} / ${total}
+                                    </span>
+                                    <small class="stock-label">Dipinjam / Total</small>
+                                </div>
+                            `;
+
                             tbody.innerHTML += `
                                 <tr>
                                     <td>#${p.id}</td>
                                     <td><strong>${p.name}</strong></td>
                                     <td>${price}</td>
-                                    <td>${badge}</td>
+                                    <td align="center">${stockDisplay}</td>
                                     <td>
                                         <a href="../api/edit_produk.html?id=${p.id}" class="btn btn-edit"><i class="fa-solid fa-pen"></i></a>
                                         <button class="btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
@@ -124,7 +199,6 @@
                             `;
                         });
 
-                        // Render Pagination
                         renderPagination(result.pagination, paginationDiv);
 
                     } else {
@@ -136,34 +210,24 @@
 
         function renderPagination(meta, container) {
             if (meta.total_pages <= 1) return;
-
-            let html = '';
-            // Prev Button
-            html += `<button class="page-btn" ${meta.current_page === 1 ? 'disabled' : ''} onclick="changePage(${meta.current_page - 1})">&laquo;</button>`;
-            
-            // Numbers
+            let html = `<button class="page-btn" ${meta.current_page === 1 ? 'disabled' : ''} onclick="changePage(${meta.current_page - 1})">&laquo;</button>`;
             for (let i = 1; i <= meta.total_pages; i++) {
                 html += `<button class="page-btn ${i === meta.current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
             }
-
-            // Next Button
             html += `<button class="page-btn" ${meta.current_page === meta.total_pages ? 'disabled' : ''} onclick="changePage(${meta.current_page + 1})">&raquo;</button>`;
-            
             container.innerHTML = html;
         }
 
-        function changePage(page) {
-            currentPage = page;
-            fetchProducts();
-        }
+        function changePage(page) { currentPage = page; fetchProducts(); }
 
         function deleteProduct(id) {
-            if(confirm('Hapus produk ini?')) {
-                fetch('../api/delete_product.php', { method: 'POST', body: JSON.stringify({id: id}) })
-                .then(res => res.json())
-                .then(r => { alert(r.message); fetchProducts(); });
+            if (confirm('Hapus produk ini?')) {
+                fetch('../api/delete_product.php', { method: 'POST', body: JSON.stringify({ id: id }) })
+                    .then(res => res.json())
+                    .then(r => { alert(r.message); fetchProducts(); });
             }
         }
     </script>
 </body>
+
 </html>

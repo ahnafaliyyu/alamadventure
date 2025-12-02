@@ -19,6 +19,13 @@ CREATE TABLE IF NOT EXISTS orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- kolom untuk mendukung COD dan Manajemen Pengembalian
+ALTER TABLE orders
+ADD COLUMN payment_method ENUM('online', 'cod') DEFAULT 'online',
+ADD COLUMN rental_status ENUM('pending_pickup', 'ongoing', 'returned') DEFAULT 'pending_pickup',
+ADD COLUMN actual_return_date DATETIME NULL,
+ADD COLUMN fine_amount DECIMAL(15, 2) DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,

@@ -37,7 +37,7 @@ try {
     $totalPages = ceil($totalData / $limit);
 
     // Ambil Data
-    $sql = "SELECT o.*, i.invoice_no 
+    $sql = "SELECT o.*, i.invoice_no, o.payment_method, o.rental_status, o.created_at
             FROM orders o 
             LEFT JOIN invoices i ON o.order_code = i.order_code 
             $whereSQL 

@@ -21,9 +21,13 @@ $stmt->execute();
 $result = $stmt->get_result();
 $inv = $result->fetch_assoc();
 
+// --- LOGIKA BARU (Pengecualian untuk COD) ---
+$is_cod = ($inv && $inv['payment_method'] === 'cod');
+
 // 3. Logika Auto-Refresh (Menunggu Webhook Masuk)
-// Jika data tidak ditemukan ATAU status masih pending, suruh user tunggu
-if (!$inv || $inv['status'] == 'pending') {
+// LOGIKA: Jika data tidak ditemukan ATAU (status masih pending DAN BUKAN COD), suruh user tunggu.
+// Jadi jika COD, meskipun status 'pending', dia akan lolos (tidak masuk if ini).
+if (!$inv || ($inv['status'] == 'pending' && !$is_cod)) {
     echo "<div style='text-align:center; padding:50px; font-family:sans-serif;'>";
     echo "<h2>⏳ Sedang Memverifikasi Pembayaran...</h2>";
     echo "<p>Sistem sedang menunggu konfirmasi otomatis dari Midtrans/Bank.</p>";
@@ -53,13 +57,32 @@ while ($row = $resItems->fetch_assoc()) {
 $min_rows = 6;
 $current_rows = count($items);
 $empty_rows = max(0, $min_rows - $current_rows);
+
+// --- PERSIAPAN VARIABEL TAMPILAN DINAMIS ---
+// Agar tidak mengubah struktur HTML di bawah secara drastis
+
+// 1. Label Status
+if ($inv['status'] == 'paid') {
+    $status_text = "LUNAS";
+    $status_style = "color: green;"; // Hijau
+} else {
+    // Jika COD dan belum lunas (pending)
+    $status_text = "BELUM LUNAS (COD)";
+    $status_style = "color: #d35400;"; // Merah Bata / Oranye Tua
+}
+
+// 2. Label Metode Pembayaran
+$metode_text = strtoupper($inv['payment_method']);
+if ($inv['payment_method'] === 'cod') {
+    $metode_text = "CASH ON DELIVERY";
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
-    <title>Faktur - <?= e($inv['invoice_no'] ?? 'LUNAS') ?></title>
+    <title>Faktur - <?= e($inv['invoice_no'] ?? 'RENTAL') ?></title>
 </head>
 <style>
     /* Reset & Base */
@@ -203,7 +226,7 @@ $empty_rows = max(0, $min_rows - $current_rows);
         background: #eee;
         padding: 2px 5px;
         font-weight: bold;
-        color: green;
+        /* Warna text dihapus dari sini, dipindah inline via PHP */
     }
 
     /* Total Box (Kanan) */
@@ -367,16 +390,12 @@ $empty_rows = max(0, $min_rows - $current_rows);
             <div class="status-info">
                 <table>
                     <tr>
-                        <td>KASIR</td>
-                        <td>: <?= e($inv['signature_admin']) ?></td>
-                    </tr>
-                    <tr>
                         <td>KETERANGAN</td>
-                        <td>: <span class="lunas-badge">LUNAS</span></td>
+                        <td>: <span class="lunas-badge" style="<?= $status_style ?>"><?= $status_text ?></span></td>
                     </tr>
                     <tr>
                         <td>METODE</td>
-                        <td>: <?= strtoupper(e($inv['payment_method'])) ?></td>
+                        <td>: <?= e($metode_text) ?></td>
                     </tr>
                 </table>
             </div>

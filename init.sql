@@ -26,6 +26,14 @@ ADD COLUMN rental_status ENUM('pending_pickup', 'ongoing', 'returned') DEFAULT '
 ADD COLUMN actual_return_date DATETIME NULL,
 ADD COLUMN fine_amount DECIMAL(15, 2) DEFAULT 0;
 
+-- buat ongkirnyah
+ALTER TABLE orders
+ADD COLUMN delivery_method ENUM('pickup', 'delivery') DEFAULT 'pickup',
+ADD COLUMN delivery_address TEXT NULL,
+ADD COLUMN delivery_lat VARCHAR(50) NULL,
+ADD COLUMN delivery_long VARCHAR(50) NULL,
+ADD COLUMN shipping_cost DECIMAL(15, 2) DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,

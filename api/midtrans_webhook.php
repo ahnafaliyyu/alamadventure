@@ -48,7 +48,7 @@ if ($transaction_status == 'capture' || $transaction_status == 'settlement') {
 
 // 5. Update Database & BUAT FAKTUR RENTAL
 if ($new_status == 'paid') {
-    
+
     // Mulai Transaksi Database
     $conn->begin_transaction();
 
@@ -92,16 +92,17 @@ if ($new_status == 'paid') {
             $stmtInv = $conn->prepare("INSERT INTO invoices 
                 (invoice_no, order_code, customer_name, order_type, duration, total_qty, payment_method, signature_customer, signature_admin) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            
-            $stmtInv->bind_param("sssssisss", 
-                $inv_no, 
-                $order_id, 
-                $order['customer_name'], 
-                $order_type, 
-                $duration_text, 
-                $total_qty, 
-                $payment_type, 
-                $sig_cust, 
+
+            $stmtInv->bind_param(
+                "sssssisss",
+                $inv_no,
+                $order_id,
+                $order['customer_name'],
+                $order_type,
+                $duration_text,
+                $total_qty,
+                $payment_type,
+                $sig_cust,
                 $sig_admin
             );
             $stmtInv->execute();
@@ -110,19 +111,37 @@ if ($new_status == 'paid') {
             // GANTI URL NGROK DI BAWAH INI SETIAP KALI RESTART NGROK
             // GANTI JUGA Notification URL Endpoint di sandbox midtrans
             $ngrok_url = " https://b29029ed4e59.ngrok-free.app";
-            $link_faktur = $ngrok_url . "/alamadventure/invoice.php?order=" . $order_id;
-            
+            $link_faktur = $ngrok_url . "/invoice.php?order=" . $order_id;
+
             // Format Rupiah Helper
             $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
+
+            $stmtInv->execute();
+
+            // $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
+
+            // Link Peta Toko & Pembeli (Format Baru)
+            $shop_map_link = "https://www.google.com/maps?q=-0.502183,117.153801";
+
+            $buyer_map_link = "";
+            if ($order['delivery_method'] === 'delivery' && !empty($order['delivery_lat'])) {
+                $buyer_map_link = "https://www.google.com/maps?q=" . $order['delivery_lat'] . "," . $order['delivery_long'];
+            }
 
             // 1. KIRIM KE ADMIN
             $pesan_admin = "*PEMBAYARAN MASUK!* 💰\n";
             $pesan_admin .= "Faktur: $inv_no\n";
             $pesan_admin .= "Penyewa: " . $order['customer_name'] . "\n";
             $pesan_admin .= "Total: " . $formatted_amount . "\n";
+            $pesan_admin .= "Metode: " . strtoupper($order['delivery_method']) . "\n";
+
+            if ($order['delivery_method'] === 'delivery') {
+                $pesan_admin .= "📍 Lokasi Antar: $buyer_map_link\n";
+                $pesan_admin .= "Alamat: " . $order['delivery_address'] . "\n";
+            }
             $pesan_admin .= "Cek Dashboard untuk memproses.";
 
-            $nomor_admin = "082241559607"; // <--- Nomor Admin
+            $nomor_admin = "082241559607";
             sendWhatsApp($nomor_admin, $pesan_admin);
 
             // 2. KIRIM KE PENYEWA
@@ -130,19 +149,23 @@ if ($new_status == 'paid') {
             if ($nomor_penyewa) {
                 $pesan_user = "*PEMBAYARAN BERHASIL* ✅\n";
                 $pesan_user .= "Halo " . $order['customer_name'] . ",\n";
-                $pesan_user .= "Terima kasih telah menyewa alat camping di Toko Aman.\n\n";
+                $pesan_user .= "Terima kasih telah menyewa alat camping.\n\n";
                 $pesan_user .= "🧾 No Faktur: $inv_no\n";
-                $pesan_user .= "📅 Durasi: " . $order['duration_days'] . " Hari\n";
-                $pesan_user .= "🔗 Unduh Faktur: $link_faktur\n\n";
-                $pesan_user .= "Harap tunjukkan pesan ini saat pengambilan barang.";
 
+                if ($order['delivery_method'] === 'pickup') {
+                    $pesan_user .= "Silakan ambil barang di lokasi kami:\n";
+                    $pesan_user .= "📍 Lokasi Toko: $shop_map_link\n\n";
+                } else {
+                    $pesan_user .= "Barang akan segera kami antar ke lokasi Anda.\n\n";
+                }
+
+                $pesan_user .= "🔗 Unduh Faktur: $link_faktur";
                 sendWhatsApp($nomor_penyewa, $pesan_user);
             }
+
+            $conn->commit();
+            file_put_contents('webhook_log.txt', " - SUKSES: Faktur $inv_no dibuat.\n", FILE_APPEND);
         }
-
-        $conn->commit();
-        file_put_contents('webhook_log.txt', " - SUKSES: Faktur $inv_no dibuat.\n", FILE_APPEND);
-
     } catch (Exception $e) {
         $conn->rollback();
         file_put_contents('webhook_log.txt', " - ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
@@ -151,7 +174,8 @@ if ($new_status == 'paid') {
 }
 
 // 6. FUNGSI KIRIM WA (Fonnte)
-function sendWhatsApp($target, $message) {
+function sendWhatsApp($target, $message)
+{
     $token = "pMEu6MFUdc2f9zQ3JzQk"; // Token Fonnte Anda
 
     $curl = curl_init();
@@ -175,7 +199,7 @@ function sendWhatsApp($target, $message) {
 
     $response = curl_exec($curl);
     curl_close($curl);
-    
+
     // Log response WA untuk debug
     file_put_contents('webhook_log.txt', " - WA Sent to $target: " . $response . "\n", FILE_APPEND);
 }

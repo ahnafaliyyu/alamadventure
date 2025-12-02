@@ -342,11 +342,11 @@ $total_pages = ceil($total_data / $limit);
             
             <?php if($row['available_stock'] > 0): ?>
               <div style="position:absolute; top:10px; left:10px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
-                Stok: <?= $row['available_stock'] ?>
+                Tersedia: <?= $row['available_stock'] ?>
               </div>
             <?php else: ?>
               <div style="position:absolute; top:10px; left:10px; background:#ffebee; color:#c62828; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
-                Habis / Dipinjam
+                Habis / Disewa
               </div>
             <?php endif; ?>
 

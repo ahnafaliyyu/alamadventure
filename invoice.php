@@ -8,9 +8,8 @@ if (empty($order_code)) {
     die("Kode Order tidak ditemukan.");
 }
 
-// 2. Ambil Data Order & Invoice dari Database
-// Kita gunakan LEFT JOIN ke tabel invoices karena mungkin data invoice belum terbuat (jika delay webhook)
-$query = "SELECT o.*, i.invoice_no, i.payment_method, i.signature_admin, i.created_at as invoice_date 
+// 2. Ambil Data Order & Invoice
+$query = "SELECT o.*, i.invoice_no, i.payment_method as inv_method, i.signature_admin, i.created_at as invoice_date 
           FROM orders o
           LEFT JOIN invoices i ON o.order_code = i.order_code
           WHERE o.order_code = ?";
@@ -24,15 +23,12 @@ $inv = $result->fetch_assoc();
 // --- LOGIKA BARU (Pengecualian untuk COD) ---
 $is_cod = ($inv && $inv['payment_method'] === 'cod');
 
-// 3. Logika Auto-Refresh (Menunggu Webhook Masuk)
-// LOGIKA: Jika data tidak ditemukan ATAU (status masih pending DAN BUKAN COD), suruh user tunggu.
-// Jadi jika COD, meskipun status 'pending', dia akan lolos (tidak masuk if ini).
+// 3. Logika Auto-Refresh
 if (!$inv || ($inv['status'] == 'pending' && !$is_cod)) {
     echo "<div style='text-align:center; padding:50px; font-family:sans-serif;'>";
     echo "<h2>⏳ Sedang Memverifikasi Pembayaran...</h2>";
     echo "<p>Sistem sedang menunggu konfirmasi otomatis dari Midtrans/Bank.</p>";
     echo "<p>Halaman ini akan refresh otomatis dalam 3 detik.</p>";
-    // Script Auto Refresh
     echo "<meta http-equiv='refresh' content='3'>";
     echo "<a href='invoice.php?order=$order_code'>Klik di sini jika tidak refresh otomatis</a>";
     echo "</div>";
@@ -45,7 +41,7 @@ $queryItems = "SELECT p.name, oi.qty, oi.price
                JOIN products p ON oi.product_id = p.id 
                WHERE oi.order_id = ?";
 $stmtItems = $conn->prepare($queryItems);
-$stmtItems->bind_param("i", $inv['id']); // Menggunakan ID Order
+$stmtItems->bind_param("i", $inv['id']);
 $stmtItems->execute();
 $resItems = $stmtItems->get_result();
 $items = [];
@@ -53,28 +49,45 @@ while ($row = $resItems->fetch_assoc()) {
     $items[] = $row;
 }
 
-// Hitung baris kosong agar tabel terlihat panjang (estetika struk)
+// Hitung baris kosong
 $min_rows = 6;
 $current_rows = count($items);
 $empty_rows = max(0, $min_rows - $current_rows);
 
-// --- PERSIAPAN VARIABEL TAMPILAN DINAMIS ---
-// Agar tidak mengubah struktur HTML di bawah secara drastis
-
-// 1. Label Status
+// --- LABEL STATUS ---
 if ($inv['status'] == 'paid') {
     $status_text = "LUNAS";
-    $status_style = "color: green;"; // Hijau
+    $status_style = "color: #2c4532; border: 1px solid #2c4532; background: #e8f5e9;";
 } else {
-    // Jika COD dan belum lunas (pending)
     $status_text = "BELUM LUNAS (COD)";
-    $status_style = "color: #d35400;"; // Merah Bata / Oranye Tua
+    $status_style = "color: #d35400; border: 1px solid #d35400; background: #fff3e0;";
 }
 
-// 2. Label Metode Pembayaran
+// Label Metode
 $metode_text = strtoupper($inv['payment_method']);
-if ($inv['payment_method'] === 'cod') {
+if ($inv['payment_method'] === 'cod')
     $metode_text = "CASH ON DELIVERY";
+
+// --- HITUNG ONGKIR & SUBTOTAL ---
+$ongkir = $inv['shipping_cost'] ?? 0;
+$subtotal_barang = $inv['total_amount'] - $ongkir;
+
+// --- LOGIKA LOKASI MAPS (BARU) ---
+// Koordinat Toko (Samarinda)
+$shop_lat = "-0.502183";
+$shop_long = "117.153801";
+
+$maps_url = "";
+$lokasi_label = "";
+
+if ($inv['delivery_method'] == 'delivery') {
+    // Jika Diantar: Link lokasi pembeli
+    $lokasi_label = "Lokasi Tujuan";
+    $maps_url = "https://www.google.com/maps?q=" . $inv['delivery_lat'] . "," . $inv['delivery_long'];
+} else {
+    // Jika Ambil Sendiri: Link lokasi toko
+    $lokasi_label = "Lokasi Toko";
+    $maps_url = "https://www.google.com/maps?q=" . $shop_lat . "," . $shop_long;
 }
 ?>
 
@@ -82,228 +95,245 @@ if ($inv['payment_method'] === 'cod') {
 <html lang="id">
 
 <head>
-    <title>Faktur - <?= e($inv['invoice_no'] ?? 'RENTAL') ?></title>
-</head>
-<style>
-    /* Reset & Base */
-    body {
-        font-family: Arial, sans-serif;
-        background: #555;
-        margin: 0;
-        padding: 20px;
-        font-size: 12px;
-    }
-
-    .page-container {
-        background: white;
-        width: 210mm;
-        min-height: 297mm;
-        /* A4 Size */
-        margin: auto;
-        padding: 15mm;
-        box-sizing: border-box;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        position: relative;
-    }
-
-    /* Header Section */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .logo-section h1 {
-        margin: 0;
-        font-size: 36px;
-        color: #333;
-        font-weight: 800;
-        letter-spacing: -1px;
-    }
-
-    .logo-section span {
-        color: #f39c12;
-    }
-
-    /* Warna Oranye logo */
-    .company-info {
-        margin-top: 5px;
-        font-size: 11px;
-        line-height: 1.4;
-        color: #333;
-    }
-
-    .customer-info {
-        text-align: right;
-        font-size: 12px;
-    }
-
-    .customer-info table {
-        float: right;
-    }
-
-    .customer-info td {
-        padding: 2px 5px;
-        text-align: left;
-    }
-
-    /* Main Table Style (Excel Look) */
-    .main-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        border: 2px solid #000;
-    }
-
-    .main-table th {
-        background-color: #f1c40f;
-        /* Warna Kuning/Oranye Header */
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .main-table td {
-        border: 1px solid #000;
-        padding: 6px 8px;
-        vertical-align: middle;
-        height: 25px;
-    }
-
-    /* Column Widths */
-    .col-desc {
-        width: 55%;
-    }
-
-    .col-price {
-        width: 15%;
-        text-align: right;
-    }
-
-    .col-qty {
-        width: 10%;
-        text-align: center;
-    }
-
-    .col-total {
-        width: 20%;
-        text-align: right;
-    }
-
-    /* Footer Section */
-    .footer {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
-    }
-
-    /* Disclaimer (Kiri) */
-    .disclaimer {
-        width: 40%;
-        font-size: 10px;
-        color: #333;
-        margin-top: 10px;
-    }
-
-    .warning-text {
-        color: red;
-        font-weight: bold;
-    }
-
-    /* Info Tengah (Kasir/Status) */
-    .status-info {
-        width: 25%;
-        font-size: 12px;
-        padding-top: 10px;
-    }
-
-    .status-info table td {
-        padding: 3px;
-    }
-
-    .lunas-badge {
-        background: #eee;
-        padding: 2px 5px;
-        font-weight: bold;
-        /* Warna text dihapus dari sini, dipindah inline via PHP */
-    }
-
-    /* Total Box (Kanan) */
-    .total-box {
-        width: 30%;
-    }
-
-    .total-table {
-        width: 100%;
-        border-collapse: collapse;
-        border: 2px solid #000;
-    }
-
-    .total-table td {
-        border: 1px solid #000;
-        padding: 5px 8px;
-    }
-
-    .total-header {
-        background-color: #f1c40f;
-        font-weight: bold;
-        width: 40%;
-    }
-
-    .total-value {
-        text-align: right;
-    }
-
-    /* Utility */
-    .text-right {
-        text-align: right;
-    }
-
-    .btn-download {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #e74c3c;
-        color: white;
-        padding: 15px 30px;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s;
-    }
-
-    .btn-download:hover {
-        transform: scale(1.05);
-        background: #c0392b;
-    }
-
-    /* Print Settings */
-    @media print {
+    <title>Faktur - <?= htmlspecialchars($inv['invoice_no'] ?? 'RENTAL') ?></title>
+    <style>
+        /* Reset & Base */
         body {
-            background: white;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #555;
+            margin: 0;
+            padding: 20px;
+            font-size: 13px;
+            color: #333;
         }
 
         .page-container {
-            box-shadow: none;
-            width: 100%;
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: auto;
+            padding: 15mm;
+            box-sizing: border-box;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c4532;
+            padding-bottom: 20px;
+        }
+
+        .logo-section h1 {
             margin: 0;
-            padding: 10mm;
+            font-size: 32px;
+            color: #2c4532;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-section span {
+            color: #f9d84a;
+        }
+
+        .company-info {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c4532;
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+        .invoice-no {
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+            font-family: monospace;
+        }
+
+        /* Customer Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #2c4532;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-table td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+
+        .label {
+            color: #666;
+            width: 100px;
+            font-weight: 500;
+        }
+
+        /* Main Table */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .main-table th {
+            background-color: #2c4532;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            border: 1px solid #1f3225;
+        }
+
+        .main-table td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            vertical-align: middle;
+        }
+
+        .main-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Footer & Totals */
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .notes {
+            flex: 1;
+            padding-right: 40px;
+            font-size: 11px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .notes strong {
+            color: #2c4532;
+            font-size: 12px;
+        }
+
+        .totals-box {
+            width: 350px;
+        }
+
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .totals-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .totals-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .grand-total {
+            background-color: #2c4532;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Status Badge */
+        .stamp-box {
+            text-align: center;
+            margin-top: 10px;
+            border: 2px dashed #ccc;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
 
         .btn-download {
-            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #2c4532;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
         }
-    }
-</style>
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            background: #1f3225;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            .btn-download {
+                display: none;
+            }
+        }
+    </style>
+</head>
 
 <body>
 
-    <button onclick="window.print()" class="btn-download">🖨️ Cetak Faktur</button>
+    <button onclick="window.print()" class="btn-download">
+        <span>🖨️ Cetak Invoice</span>
+    </button>
 
     <div class="page-container">
 
@@ -311,29 +341,67 @@ if ($inv['payment_method'] === 'cod') {
             <div class="logo-section">
                 <h1>Alam<span>Adventure</span></h1>
                 <div class="company-info">
-                    Desain dan Penyewaan Alat Camping<br>
-                    Wa: 0812-3456-7890<br>
-                    Email: admin@toko.com<br>
-                    Alamat: Samarinda
-                </div>
-                <div style="margin-top: 10px; font-size: 12px;">
-                    No Kode : <strong><?= e($inv['invoice_no']) ?></strong>
+                    Sewa Alat Camping Terpercaya<br>
+                    Jl. Contoh No. 123, Samarinda<br>
+                    WA: 0822-4155-9607
                 </div>
             </div>
+            <div>
+                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-no">#<?= htmlspecialchars($inv['invoice_no']) ?></div>
+                <div style="text-align:right; margin-top:5px; color:#666;">
+                    <?= date('d F Y H:i', strtotime($inv['invoice_date'])) ?>
+                </div>
+            </div>
+        </div>
 
-            <div class="customer-info">
-                <table>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>Info Penyewa</h3>
+                <table class="info-table">
                     <tr>
-                        <td>Samarinda, </td>
-                        <td><?= date('d F Y', strtotime($inv['created_at'])) ?></td>
+                        <td class="label">Nama</td>
+                        <td>: <strong><?= htmlspecialchars($inv['customer_name']) ?></strong></td>
                     </tr>
                     <tr>
-                        <td>Kepada Yth :</td>
-                        <td><strong><?= e($inv['customer_name']) ?></strong></td>
+                        <td class="label">No. HP</td>
+                        <td>: <?= htmlspecialchars($inv['customer_phone']) ?></td>
                     </tr>
                     <tr>
-                        <td>No HP :</td>
-                        <td><?= e($inv['customer_phone']) ?></td>
+                        <td class="label">Metode</td>
+                        <td>: <?= htmlspecialchars($metode_text) ?></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="info-box">
+                <h3>Info Pengiriman</h3>
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Tipe</td>
+                        <td>:
+                            <?php if ($inv['delivery_method'] == 'delivery'): ?>
+                                <span style="color:#d35400; font-weight:bold;">Delivery (Diantar)</span>
+                            <?php else: ?>
+                                <span style="color:green; font-weight:bold;">Pickup (Ambil Sendiri)</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                    <?php if ($inv['delivery_method'] == 'delivery' && !empty($inv['delivery_address'])): ?>
+                        <tr>
+                            <td class="label">Alamat</td>
+                            <td>: <?= nl2br(htmlspecialchars($inv['delivery_address'])) ?></td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <tr>
+                        <td class="label"><?= $lokasi_label ?></td>
+                        <td>:
+                            <a href="<?= $maps_url ?>" target="_blank"
+                                style="color:#2980b9; text-decoration:none; font-weight:bold;">
+                                📍 Lihat di Google Maps
+                            </a>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -342,27 +410,25 @@ if ($inv['payment_method'] === 'cod') {
         <table class="main-table">
             <thead>
                 <tr>
-                    <th class="col-desc">KETERANGAN PRODUK</th>
-                    <th class="col-price">HARGA</th>
-                    <th class="col-qty">QTY</th>
-                    <th class="col-total">JUMLAH</th>
+                    <th style="width:50%">Item & Deskripsi</th>
+                    <th style="width:15%; text-align:right">Harga/Hari</th>
+                    <th style="width:10%; text-align:center">Qty</th>
+                    <th style="width:25%; text-align:right">Total</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($items as $item):
-                    // Hitung subtotal (Harga x Qty x Durasi di Database Order)
-                    // Asumsi: price di DB adalah harga per hari
                     $durasi = (int) $inv['duration_days'];
                     $subtotal = $item['price'] * $item['qty'] * $durasi;
                     ?>
                     <tr>
                         <td>
-                            <?= e($item['name']) ?>
-                            <span style="font-size:10px; color:#666;">(Sewa: <?= $durasi ?> Hari)</span>
+                            <b><?= htmlspecialchars($item['name']) ?></b>
+                            <br><span style="font-size:11px; color:#666;">Sewa selama <?= $durasi ?> Hari</span>
                         </td>
-                        <td class="text-right"><?= formatRupiah($item['price']) ?></td>
-                        <td class="col-qty"><?= $item['qty'] ?></td>
-                        <td class="text-right"><?= formatRupiah($subtotal) ?></td>
+                        <td style="text-align:right"><?= formatRupiah($item['price']) ?></td>
+                        <td style="text-align:center"><?= $item['qty'] ?></td>
+                        <td style="text-align:right"><?= formatRupiah($subtotal) ?></td>
                     </tr>
                 <?php endforeach; ?>
 
@@ -377,48 +443,48 @@ if ($inv['payment_method'] === 'cod') {
             </tbody>
         </table>
 
-        <div class="footer">
-            <div class="disclaimer">
-                <strong>KETENTUAN SEWA & DENDA:</strong><br>
-                1. Mohon periksa kembali kondisi barang sebelum meninggalkan tempat.<br>
-                2. Kerusakan atau kehilangan barang menjadi tanggung jawab penyewa sepenuhnya.<br>
-                <span style="color: #c0392b; font-weight: bold; background: #fff3cd; padding: 2px 5px;">
-                    3. Keterlambatan pengembalian dikenakan DENDA Rp 50.000 / Hari.
-                </span><br>
-                4. Barang yang sudah disewa tidak dapat dikembalikan uang sewanya.
+        <div class="footer-section">
+            <div class="notes">
+                <strong>SYARAT & KETENTUAN:</strong>
+                <ol style="margin-top:5px; padding-left:15px;">
+                    <li>Wajib meninggalkan kartu identitas (KTP/SIM) asli sebagai jaminan.</li>
+                    <li>Kerusakan atau kehilangan barang menjadi tanggung jawab penyewa sepenuhnya.</li>
+                    <li>Keterlambatan pengembalian dikenakan denda <strong>Rp 50.000 / Hari</strong>.</li>
+                    <li>Barang yang sudah diboking/dibayar tidak dapat dibatalkan (No Refund).</li>
+                </ol>
+
+                <div class="stamp-box">
+                    <div>Status Pembayaran:</div>
+                    <div class="status-badge" style="<?= $status_style ?>; margin-top:5px;">
+                        <?= $status_text ?>
+                    </div>
+                </div>
             </div>
 
-            <div class="status-info">
-                <table>
+            <div class="totals-box">
+                <table class="totals-table">
                     <tr>
-                        <td>KETERANGAN</td>
-                        <td>: <span class="lunas-badge" style="<?= $status_style ?>"><?= $status_text ?></span></td>
+                        <td>Subtotal Barang</td>
+                        <td class="amount">Rp <?= number_format($subtotal_barang, 0, ',', '.') ?></td>
                     </tr>
-                    <tr>
-                        <td>METODE</td>
-                        <td>: <?= e($metode_text) ?></td>
-                    </tr>
-                </table>
-            </div>
 
-            <div class="total-box">
-                <table class="total-table">
-                    <tr>
-                        <td class="total-header">ONGKIR</td>
-                        <td class="total-value"><?= formatRupiah(0) ?></td>
-                    </tr>
-                    <tr>
-                        <td class="total-header">JUMLAH</td>
-                        <td class="total-value" style="font-weight:bold; font-size:14px;">
-                            <?= formatRupiah($inv['total_amount']) ?>
-                        </td>
+                    <?php if ($ongkir > 0): ?>
+                        <tr>
+                            <td>Biaya Pengantaran</td>
+                            <td class="amount">Rp <?= number_format($ongkir, 0, ',', '.') ?></td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <tr class="grand-total">
+                        <td>TOTAL BAYAR</td>
+                        <td class="amount" style="font-size:18px;">Rp
+                            <?= number_format($inv['total_amount'], 0, ',', '.') ?></td>
                     </tr>
                 </table>
             </div>
         </div>
 
     </div>
-
 </body>
 
 </html>

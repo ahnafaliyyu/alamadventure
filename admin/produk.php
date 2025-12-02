@@ -112,7 +112,7 @@
                                 <th width="10%">ID</th>
                                 <th width="30%">Nama Produk</th>
                                 <th width="20%">Harga/hari</th>
-                                <th width="20%">Stok (Dipinjam/Total)</th>
+                                <th width="20%">Stok (Disewa/Total)</th>
                                 <th width="20%">Aksi</th>
                             </tr>
                         </thead>
@@ -181,7 +181,7 @@
                                     <span class="stock-badge ${badgeClass}">
                                         ${rented} / ${total}
                                     </span>
-                                    <small class="stock-label">Dipinjam / Total</small>
+                                    <small class="stock-label">Disewa / Total</small>
                                 </div>
                             `;
 

@@ -29,7 +29,7 @@ try {
         $types .= "ss";
     }
 
-    // --- QUERY UPDATE: Hitung 'rented' (Sedang Dipinjam) ---
+    // --- QUERY UPDATE: Hitung 'rented' (Sedang Disewa) ---
     // Total Stock = Kolom p.stock
     // Rented = Jumlah qty di order_items yang status sewanya 'pending_pickup' atau 'ongoing'
 
@@ -70,7 +70,7 @@ try {
     while ($row = $result->fetch_assoc()) {
         $row['price_per_day'] = (int) $row['price_per_day'];
         $row['stock'] = (int) $row['stock'];
-        $row['rented'] = (int) $row['rented']; // Data jumlah yang sedang dipinjam
+        $row['rented'] = (int) $row['rented']; // Data jumlah yang sedang disewa
         $products[] = $row;
     }
 

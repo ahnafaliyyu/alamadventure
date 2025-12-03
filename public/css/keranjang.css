@@ -21,6 +21,97 @@ body {
   padding-bottom: 40px;
 }
 
+/* --- TAMBAHAN: CSS POPUP KONFIRMASI --- */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: none; /* Sembunyi default */
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
+
+.confirm-box {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.confirm-icon {
+  font-size: 50px;
+  color: #f9d84a;
+  margin-bottom: 20px;
+}
+
+.confirm-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #2c4532;
+  margin-bottom: 10px;
+}
+
+.confirm-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.btn-confirm-final {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: not-allowed;
+  background: #ccc;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.btn-confirm-final.ready {
+  background: #2c4532;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(44, 69, 50, 0.3);
+}
+
+.btn-confirm-final.ready:hover {
+  transform: translateY(-2px);
+}
+
+.btn-cancel-popup {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  margin-top: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* --- WRAPPER --- */
 .cart-wrapper {
   max-width: 1200px;

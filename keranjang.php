@@ -230,6 +230,27 @@ if (isset($_GET['remove'])) {
         <?php endif; ?>
     </div>
 
+    <div class="confirm-overlay" id="confirmModal">
+        <div class="confirm-box">
+            <div class="confirm-icon">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <h3 class="confirm-title">Periksa Pesanan Anda</h3>
+            <p class="confirm-text">
+                Mohon pastikan <strong>Nama</strong>, <strong>No. HP</strong>, dan <strong>Alamat</strong> sudah benar sebelum melanjutkan.
+            </p>
+            
+            <button id="btnFinalConfirm" class="btn-confirm-final" disabled>
+                Mohon Tunggu (3)
+            </button>
+            
+            <br>
+            <button class="btn-cancel-popup" onclick="closeConfirmModal()">
+                Batal & Periksa Lagi
+            </button>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script>
@@ -330,6 +351,57 @@ if (isset($_GET['remove'])) {
                 });
             });
         });
+
+        // --- LOGIKA POPUP KONFIRMASI ---
+    const checkoutForm = document.getElementById('checkoutForm');
+    const confirmModal = document.getElementById('confirmModal');
+    const btnFinal = document.getElementById('btnFinalConfirm');
+    let timerInterval;
+
+    if(checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Cegah submit langsung
+            openConfirmModal();
+        });
+    }
+
+    function openConfirmModal() {
+        confirmModal.style.display = 'flex';
+        
+        let timeLeft = 5;
+        // Reset tombol
+        btnFinal.disabled = true;
+        btnFinal.classList.remove('ready');
+        btnFinal.innerHTML = `Mohon Tunggu (${timeLeft})`;
+
+        // Mulai hitung mundur
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if(timeLeft > 0) {
+                btnFinal.innerHTML = `Mohon Tunggu (${timeLeft})`;
+            } else {
+                clearInterval(timerInterval);
+                btnFinal.disabled = false;
+                btnFinal.classList.add('ready');
+                btnFinal.innerHTML = `Ya, Data Sudah Benar <i class="fas fa-check"></i>`;
+            }
+        }, 1000);
+    }
+
+    function closeConfirmModal() {
+        confirmModal.style.display = 'none';
+        clearInterval(timerInterval);
+    }
+
+    // Klik tombol konfirmasi akhir -> Submit Form
+    if(btnFinal) {
+        btnFinal.addEventListener('click', function() {
+            if(!this.disabled) {
+                checkoutForm.submit();
+            }
+        });
+    }
     </script>
 </body>
 </html>

@@ -364,8 +364,10 @@ $total_pages = ceil($total_data / $limit);
       </ul>
     </div>
     <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link"><i
-          class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
+      <a href="keranjang.php" class="nav-link" id="cartLink">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
+      </a>
       <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
         <a href="/admin/index.php">Admin</a>
       <?php else: ?>
@@ -478,7 +480,6 @@ $total_pages = ceil($total_data / $limit);
   <footer class="site-footer">
     <div class="footer-inner">
 
-      <!-- Brand Section -->
       <div class="footer-brand">
         <div class="footer-logo">
           <img src="public/logo.png" alt="ALAMADVENTURE SMD" />
@@ -490,7 +491,6 @@ $total_pages = ceil($total_data / $limit);
         </p>
       </div>
 
-      <!-- Navigation Section -->
       <div class="footer-navigation">
         <h4>Navigasi</h4>
         <ul>
@@ -501,7 +501,6 @@ $total_pages = ceil($total_data / $limit);
         </ul>
       </div>
 
-      <!-- Features Section -->
       <div class="footer-features-section">
         <h4>Keunggulan Kami</h4>
         <div class="feature-item">
@@ -566,9 +565,11 @@ $total_pages = ceil($total_data / $limit);
     function updateCartCount(count) {
       const cartCountElement = document.getElementById('cartCount');
       const cartLink = document.getElementById('cartLink');
-      cartCountElement.textContent = count;
-      cartLink.classList.add('updated');
-      setTimeout(() => { cartLink.classList.remove('updated'); }, 500);
+      if (cartCountElement) cartCountElement.textContent = count;
+      if (cartLink) {
+        cartLink.classList.add('updated');
+        setTimeout(() => { cartLink.classList.remove('updated'); }, 500);
+      }
     }
 
     function showLoading() {

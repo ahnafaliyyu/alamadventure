@@ -255,8 +255,8 @@ if (isset($_GET['remove'])) {
     
     <script>
         // LOGIKA MAPS SAMA SEPERTI SEBELUMNYA
-        const SHOP_LAT = -0.502183; 
-        const SHOP_LNG = 117.153801;
+        const SHOP_LAT = -0.5454512191833396; 
+        const SHOP_LNG = 117.11993488175007;
         const PRICE_PER_15KM = 20000;
 
         let map, marker;

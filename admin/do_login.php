@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $username = trim($_POST['username'] ?? '');
-$password = (string)($_POST['password'] ?? '');
+$password = (string) ($_POST['password'] ?? '');
 
 if ($username === '' || $password === '') {
     $_SESSION['login_error'] = 'Username dan password wajib diisi.';
@@ -20,6 +20,7 @@ if (auth_login($username, $password)) {
     if (strpos($target, '/admin/') === false && strpos($target, 'index.php') === false) {
         $target = 'index.php';
     }
+    $_SESSION['is_logged_in'] = true;
     header('Location: ' . $target);
     exit();
 }

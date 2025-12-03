@@ -1,65 +1,93 @@
 <?php
-// 1. Matikan tampilan error PHP agar tidak merusak format JSON
-// Error tetap bisa dilihat di log server (error_log), tapi tidak muncul di browser
+// api/get_products.php
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
-
-// 2. Set Header agar browser tahu ini PASTI JSON
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../middleware/auth_api.php';
+require_once __DIR__ . '/../config/database.php';
 
-// 3. Mulai Output Buffering
-// Ini akan menahan semua output (termasuk spasi dari file include) agar tidak langsung dicetak
-ob_start();
-
-$response = [];
-$conn = null;
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 try {
-    // Import file dependensi
-    require_once __DIR__ . '/../middleware/auth_api.php';
-    require_once __DIR__ . '/../config/database.php';
+    if ($conn->connect_error)
+        throw new Exception("Connection failed");
 
-    // Buat koneksi (Pastikan variabel $servername dll ada di database.php)
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
+    $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-    // Periksa koneksi
-    if ($conn->connect_error) {
-        throw new Exception('Koneksi database gagal: ' . $conn->connect_error);
+    $whereSQL = "WHERE 1=1";
+    $params = [];
+    $types = "";
+
+    if (!empty($search)) {
+        $whereSQL .= " AND (name LIKE ? OR description LIKE ?)";
+        $searchTerm = "%$search%";
+        $params[] = $searchTerm;
+        $params[] = $searchTerm;
+        $types .= "ss";
     }
 
-    $sql = "SELECT id, name, price_per_day, stock FROM products ORDER BY id DESC";
-    $result = $conn->query($sql);
+    // --- QUERY UPDATE: Hitung 'rented' (Sedang Disewa) ---
+    // Total Stock = Kolom p.stock
+    // Rented = Jumlah qty di order_items yang status sewanya 'pending_pickup' atau 'ongoing'
 
-    if ($result === false) {
-        throw new Exception('Query gagal: ' . $conn->error);
-    }
+    $sql = "SELECT p.id, p.name, p.price_per_day, p.stock,
+            COALESCE((
+                SELECT SUM(oi.qty) 
+                FROM order_items oi 
+                JOIN orders o ON oi.order_id = o.id 
+                WHERE oi.product_id = p.id 
+                AND o.rental_status IN ('pending_pickup', 'ongoing')
+                AND o.status != 'cancelled' 
+                AND o.status != 'failed'
+            ), 0) as rented
+            FROM products p 
+            $whereSQL 
+            ORDER BY p.id DESC 
+            LIMIT ? OFFSET ?";
+
+    // Hitung Total Data (Pagination)
+    $stmtCount = $conn->prepare("SELECT COUNT(*) as total FROM products $whereSQL");
+    if (!empty($params))
+        $stmtCount->bind_param($types, ...$params);
+    $stmtCount->execute();
+    $totalData = $stmtCount->get_result()->fetch_assoc()['total'];
+    $totalPages = ceil($totalData / $limit);
+
+    // Ambil Data Produk
+    $params[] = $limit;
+    $params[] = $offset;
+    $types .= "ii";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     $products = [];
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            // Pastikan tipe data benar (misal harga jadi integer/number, bukan string)
-            $row['price_per_day'] = (int)$row['price_per_day'];
-            $row['stock'] = (int)$row['stock'];
-            $products[] = $row;
-        }
+    while ($row = $result->fetch_assoc()) {
+        $row['price_per_day'] = (int) $row['price_per_day'];
+        $row['stock'] = (int) $row['stock'];
+        $row['rented'] = (int) $row['rented']; // Data jumlah yang sedang disewa
+        $products[] = $row;
     }
 
-    $response = ['success' => true, 'data' => $products];
+    echo json_encode([
+        'success' => true,
+        'data' => $products,
+        'pagination' => [
+            'total_data' => $totalData,
+            'total_pages' => $totalPages,
+            'current_page' => $page
+        ]
+    ]);
 
 } catch (Exception $e) {
-    // Set HTTP response code ke 500 jika error server, atau 200 dengan status false
-    // http_response_code(500); 
-    $response = ['success' => false, 'message' => $e->getMessage()];
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 } finally {
-    if ($conn) {
+    if ($conn)
         $conn->close();
-    }
 }
-
-// 4. BERSIHKAN BUFFER!
-// Ini langkah krusial: hapus semua teks/spasi/warning yang mungkin muncul dari file include di atas
-ob_clean();
-
-// 5. Cetak JSON bersih
-echo json_encode($response);
 ?>

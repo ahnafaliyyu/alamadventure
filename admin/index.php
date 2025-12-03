@@ -1,210 +1,286 @@
 <?php require_once __DIR__ . '/../middleware/auth.php'; ?>
-<?php /* halaman ini hasil konversi dari index.html agar terproteksi */ ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Alam Adventure</title>
+    <title>Dashboard Admin - Alam Adventure</title>
     <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="admin-wrapper">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                Alam Adventure
+                <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="index.php" class="active">Dashboard</a></li>
-                <li><a href="produk.php">Produk</a></li>
-                <li><a href="transaksi.php">Transaksi</a></li>
-                <li class="logout"><a href="logout.php">Logout</a></li>
+                <li>
+                    <a href="index.php" class="active"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="produk.php">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span>Produk</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="transaksi.php">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Transaksi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+                <li class="beranda">
+                    <a href="../index.php">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Beranda</span>
+                    </a>
+                </li>
             </ul>
         </aside>
+
         <main class="main-content">
             <div class="main-header">
-                <h1>Dashboard</h1>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="btn-toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                    <h1>Dashboard Overview</h1>
+                </div>
             </div>
 
             <div class="summary-cards">
                 <div class="card">
-                    <h3>Total Penjualan</h3>
-                    <p class="value">Rp 15.750.000</p>
+                    <div class="card-info">
+                        <h3>Total Pendapatan</h3>
+                        <p class="value" id="val-revenue">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-wallet"></i></div>
                 </div>
+
                 <div class="card">
-                    <h3>Jumlah Produk</h3>
-                    <p class="value">8</p>
+                    <div class="card-info">
+                        <h3>Transaksi Bulan Ini</h3>
+                        <p class="value" id="val-trx-month">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-calendar-day"></i></div>
                 </div>
+
                 <div class="card">
-                    <h3>Transaksi Bulan Ini</h3>
-                    <p class="value">12</p>
+                    <div class="card-info">
+                        <h3>Transaksi Tahun Ini</h3>
+                        <p class="value" id="val-trx-year">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-calendar-check"></i></div>
                 </div>
+
                 <div class="card">
-                    <h3>Pelanggan Baru</h3>
-                    <p class="value">5</p>
+                    <div class="card-info">
+                        <h3>Total Transaksi</h3>
+                        <p class="value" id="val-trx-total">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-receipt"></i></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-info">
+                        <h3>Jumlah Produk</h3>
+                        <p class="value" id="val-products">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-campground"></i></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-info">
+                        <h3>Total Pelanggan</h3>
+                        <p class="value" id="val-cust">Loading...</p>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
                 </div>
             </div>
 
-            <div class="charts-grid">
-            <!-- Semua chart jadi anak langsung dari .charts-grid -->
-            <div class="chart-container">
-                <h3>Pendapatan Per Bulan</h3>
-                <canvas id="revenueLineChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>Transaksi 7 Hari Terakhir</h3>
-                <canvas id="dailyBarChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>Kategori Produk Populer</h3>
-                <canvas id="categoryDoughnutChart"></canvas>
-            </div>
+            <div class="charts-wrapper">
+                <div class="chart-container">
+                    <h3><i class="fa-solid fa-chart-line"></i> Pendapatan 6 Bulan Terakhir</h3>
+                    <div class="chart-container-body">
+                        <canvas id="revenueLineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-grid-2">
+                    <div class="chart-container">
+                        <h3><i class="fa-solid fa-calendar-week"></i> Transaksi 7 Hari Terakhir</h3>
+                        <div class="chart-container-body">
+                            <canvas id="dailyBarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Kategori Terlaris</h3>
+                        <div class="chart-container-body">
+                            <canvas id="categoryDoughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="content-section">
-                <h2>Transaksi Terbaru</h2>
-                <table class="content-table">
-                    <thead>
-                        <tr>
-                            <th>ID Transaksi</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Total</th>
-                            <th>Tanggal</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>TRX-0012</td>
-                            <td>Budi Santoso</td>
-                            <td>Rp 450.000</td>
-                            <td>12 Nov 2025</td>
-                            <td>Selesai</td>
-                        </tr>
-                        <tr>
-                            <td>TRX-0011</td>
-                            <td>Ani Yudhoyono</td>
-                            <td>Rp 1.200.000</td>
-                            <td>11 Nov 2025</td>
-                            <td>Selesai</td>
-                        </tr>
-                        <tr>
-                            <td>TRX-0010</td>
-                            <td>Charlie</td>
-                            <td>Rp 250.000</td>
-                            <td>10 Nov 2025</td>
-                            <td>Dibatalkan</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2>5 Transaksi Terbaru</h2>
+                    <a href="transaksi.php" style="color:var(--brand); text-decoration:none; font-weight:600;">Lihat
+                        Semua <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="table-responsive">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Order Code</th>
+                                <th>Pelanggan</th>
+                                <th>Total</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-trx-body">
+                            <tr>
+                                <td colspan="5" align="center">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Common Chart Options
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: '#2c4532' }
-                },
-                x: {
-                    ticks: { color: '#2c4532' }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: '#2c4532' }
-                }
-            }
-        };
+        // --- Sidebar Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
+        if (toggleBtn) { toggleBtn.addEventListener('click', toggleSidebar); overlay.addEventListener('click', toggleSidebar); }
 
-        // 1. Line Chart - Monthly Revenue
-        const revenueCtx = document.getElementById('revenueLineChart').getContext('2d');
-        new Chart(revenueCtx, {
-            type: 'line',
-            data: {
-                labels: ['Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: [1250000, 1900000, 2100000, 1800000, 2500000, 3100000],
-                    backgroundColor: 'rgba(44, 69, 50, 0.1)',
-                    borderColor: '#2c4532',
-                    tension: 0.3,
-                    fill: true,
-                }]
-            },
-            options: {
-                ...commonOptions,
-                scales: {
-                    ...commonOptions.scales,
-                    y: {
-                        ...commonOptions.scales.y,
-                        ticks: {
-                            ...commonOptions.scales.y.ticks,
-                            callback: (value) => {
-                                if (value >= 1000000) {
-                                    return 'Rp ' + (value / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + 'jt';
-                                }
-                                return 'Rp ' + value.toLocaleString('id-ID');
-                            }
+        // --- FETCH REAL DATA ---
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchDashboardData();
+        });
+
+        function fetchDashboardData() {
+            fetch('../api/get_dashboard_data.php')
+                .then(response => response.json())
+                .then(res => {
+                    if (res.success) {
+                        // 1. Update Kartu Summary
+                        document.getElementById('val-revenue').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(res.summary.revenue);
+
+                        document.getElementById('val-trx-month').innerText = res.summary.trx_month + " Pesanan";
+
+                        // Update Data Baru
+                        document.getElementById('val-trx-year').innerText = res.summary.trx_year + " Pesanan";
+                        document.getElementById('val-trx-total').innerText = res.summary.trx_total + " Pesanan";
+
+                        document.getElementById('val-products').innerText = res.summary.products + " Unit";
+                        document.getElementById('val-cust').innerText = res.summary.customers + " Orang";
+
+                        // 2. Update Charts
+                        initCharts(res.charts);
+
+                        // 3. Update Tabel Terbaru
+                        const tableBody = document.getElementById('recent-trx-body');
+                        tableBody.innerHTML = '';
+                        if (res.recent.length > 0) {
+                            res.recent.forEach(t => {
+                                const total = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(t.total_amount);
+                                const date = new Date(t.created_at).toLocaleDateString('id-ID');
+
+                                let statusHtml = '';
+                                if (t.status === 'paid') statusHtml = '<span style="color:green; font-weight:bold;">Lunas</span>';
+                                else if (t.status === 'pending') statusHtml = '<span style="color:orange; font-weight:bold;">Pending</span>';
+                                else statusHtml = '<span style="color:red; font-weight:bold;">Batal</span>';
+
+                                tableBody.innerHTML += `
+                                    <tr>
+                                        <td><strong>${t.order_code}</strong></td>
+                                        <td>${t.customer_name}</td>
+                                        <td>${total}</td>
+                                        <td>${date}</td>
+                                        <td>${statusHtml}</td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            tableBody.innerHTML = '<tr><td colspan="5" align="center">Belum ada transaksi.</td></tr>';
                         }
+                    } else {
+                        console.error("Gagal memuat data: " + res.message);
                     }
-                }
-            }
-        });
+                })
+                .catch(err => console.error("Error:", err));
+        }
 
-        // 2. Bar Chart - Daily Transactions
-        const dailyCtx = document.getElementById('dailyBarChart').getContext('2d');
-        new Chart(dailyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                datasets: [{
-                    label: 'Jumlah Transaksi',
-                    data: [5, 8, 3, 6, 4, 7, 2],
-                    backgroundColor: '#f9d84a',
-                    borderColor: '#e8c438',
-                    borderWidth: 1
-                }]
-            },
-            options: commonOptions
-        });
-
-        // 3. Doughnut Chart - Product Categories
-        const categoryCtx = document.getElementById('categoryDoughnutChart').getContext('2d');
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Tenda', 'Kompor', 'Lampu', 'Hammock', 'Lainnya'],
-                datasets: [{
-                    label: 'Penyewaan per Kategori',
-                    data: [45, 25, 15, 10, 5],
-                    backgroundColor: [
-                        '#2c4532',
-                        '#f9d84a',
-                        '#7a8f80',
-                        '#e8c438',
-                        '#a9b4ab'
-                    ],
-                    hoverOffset: 4
-                }]
-            },
-            options: {
+        // --- INIT CHART JS ---
+        function initCharts(data) {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#666';
+            const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { color: '#2c4532' }
-                    }
-                }
-            }
-        });
+                plugins: { legend: { labels: { color: '#2c4532', font: { weight: '600' } } } }
+            };
+
+            // Revenue Chart
+            new Chart(document.getElementById('revenueLineChart'), {
+                type: 'line',
+                data: {
+                    labels: data.revenue.labels,
+                    datasets: [{
+                        label: 'Pendapatan',
+                        data: data.revenue.data,
+                        backgroundColor: 'rgba(249, 216, 74, 0.2)',
+                        borderColor: '#2c4532', borderWidth: 3, tension: 0.4, fill: true
+                    }]
+                }, options: commonOptions
+            });
+
+            // Daily Trx Chart
+            new Chart(document.getElementById('dailyBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.daily.labels,
+                    datasets: [{
+                        label: 'Transaksi',
+                        data: data.daily.data,
+                        backgroundColor: '#2c4532', borderRadius: 6
+                    }]
+                }, options: commonOptions
+            });
+
+            // Category Chart
+            new Chart(document.getElementById('categoryDoughnutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.category.labels,
+                    datasets: [{
+                        data: data.category.data,
+                        backgroundColor: ['#2c4532', '#f9d84a', '#e8c438', '#d3d3d3'], borderWidth: 0
+                    }]
+                }, options: commonOptions
+            });
+        }
     </script>
 </body>
+
 </html>

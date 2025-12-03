@@ -1,136 +1,261 @@
 <?php require_once __DIR__ . '/../middleware/auth.php'; ?>
-<?php /* konversi dari produk.html */ ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Produk - Alam Adventure</title>
     <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .page-btn.active {
+            background: #2c4532;
+            color: white;
+            border-color: #2c4532;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Style untuk Badge Stok */
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .stock-safe {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* Hijau */
+        .stock-full {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Merah */
+        .stock-label {
+            font-size: 10px;
+            color: #666;
+            display: block;
+            margin-top: 2px;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="admin-wrapper">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                Alam Adventure
+                <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="index.php">Dashboard</a></li>
-                <li><a href="produk.php" class="active">Produk</a></li>
-                <li><a href="transaksi.php">Transaksi</a></li>
-                <li class="logout"><a href="logout.php">Logout</a></li>
+                <li>
+                    <a href="index.php">
+                        <i class="fa-solid fa-gauge-high"></i> 
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="produk.php" class="active">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span>Produk</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="transaksi.php">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Transaksi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+                <li class="beranda">
+                    <a href="../index.php">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Beranda</span>
+                    </a>
+                </li>
             </ul>
         </aside>
+
         <main class="main-content">
             <div class="main-header">
-                <h1>Manajemen Produk</h1>
-                <a href="tambah_produk.php" class="btn btn-primary">Tambah Produk Baru</a>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="btn-toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+                    <h1>Daftar Produk</h1>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px; text-align: left; display: flex; justify-content: space-between">
+                <a href="tambah_produk.php" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Produk</a>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Cari nama produk...">
+                </div>
             </div>
 
             <div class="content-section">
-                <table class="content-table">
-                    <thead>
-                        <tr>
-                            <th>ID Produk</th>
-                            <th>Nama Produk</th>
-                            <th>Harga Sewa/hari</th>
-                            <th>Stok</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="product-table-body">
-                        <!-- Data produk akan dimuat di sini oleh JavaScript -->
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Memuat data produk...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th width="10%">ID</th>
+                                <th width="30%">Nama Produk</th>
+                                <th width="20%">Harga/hari</th>
+                                <th width="20%">Stok (Disewa/Total)</th>
+                                <th width="20%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-table-body">
+                            <tr>
+                                <td colspan="5" align="center">Memuat...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="paginationContainer" class="pagination-container"></div>
             </div>
         </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tableBody = document.getElementById('product-table-body');
-            loadProducts(); // Panggil fungsi untuk memuat produk
+        // Sidebar Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
+        if (toggleBtn) { toggleBtn.addEventListener('click', toggleSidebar); overlay.addEventListener('click', toggleSidebar); }
 
-            function loadProducts() {
-                fetch('../api/get_products.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    tableBody.innerHTML = ''; // Kosongkan isi tabel
-                    if (result.success) {
-                        if (result.data.length > 0) {
-                            result.data.forEach(product => {
-                                const row = document.createElement('tr');
-                                
-                                // Format harga ke format Rupiah
-                                const price = new Intl.NumberFormat('id-ID', { 
-                                    style: 'currency', 
-                                    currency: 'IDR', 
-                                    minimumFractionDigits: 0 
-                                }).format(product.price_per_day);
+        // --- AJAX LOGIC ---
+        let currentPage = 1;
+        let searchKeyword = '';
+        let debounceTimer;
 
-                                row.innerHTML = `
-                                    <td>${product.id}</td>
-                                    <td>${product.name}</td>
-                                    <td>${price}</td>
-                                    <td>${product.stock}</td>
-                                    <td>
-                                        <a href="../api/edit_produk.html?id=${product.id}" class="btn btn-edit">Edit</a>
-                                        <button class="btn btn-delete" data-id="${product.id}">Hapus</button>
-                                    </td>
-                                `;
-                                tableBody.appendChild(row);
-                            });
-                        } else {
-                            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data produk.</td></tr>';
-                        }
-                    } else {
-                        throw new Error(result.message || 'Gagal memuat data dari API.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching products:', error);
-                    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Terjadi kesalahan: ${error.message}</td></tr>`;
-                });
-            }
+        document.addEventListener('DOMContentLoaded', () => fetchProducts());
 
-            // Event listener untuk tombol hapus
-            tableBody.addEventListener('click', function(event) {
-                if (event.target.classList.contains('btn-delete')) {
-                    const button = event.target;
-                    const productId = button.dataset.id;
-                    
-                    if (confirm(`Apakah Anda yakin ingin menghapus produk dengan ID ${productId}?`)) {
-                        fetch('../api/delete_product.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: productId })
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                alert(result.message);
-                                // Hapus baris dari tabel tanpa reload halaman
-                                button.closest('tr').remove();
-                            } else {
-                                alert(`Gagal menghapus: ${result.message}`);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Tidak dapat terhubung ke server.');
-                        });
-                    }
-                }
-            });
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            clearTimeout(debounceTimer);
+            searchKeyword = e.target.value;
+            debounceTimer = setTimeout(() => {
+                currentPage = 1;
+                fetchProducts();
+            }, 300);
         });
+
+        function fetchProducts() {
+            const tbody = document.getElementById('product-table-body');
+            const paginationDiv = document.getElementById('paginationContainer');
+
+            tbody.innerHTML = '<tr><td colspan="5" align="center"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td></tr>';
+
+            fetch(`../api/get_products.php?page=${currentPage}&q=${searchKeyword}`)
+                .then(res => res.json())
+                .then(result => {
+                    tbody.innerHTML = '';
+                    paginationDiv.innerHTML = '';
+
+                    if (result.success && result.data.length > 0) {
+                        result.data.forEach(p => {
+                            const price = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(p.price_per_day);
+
+                            // FORMAT STOK: Dipinjam / Total
+                            // Contoh: 2 / 4
+                            const rented = p.rented || 0;
+                            const total = p.stock || 0;
+
+                            // Warna Badge: Merah jika penuh (rented >= total), Hijau jika aman
+                            const badgeClass = (rented >= total && total > 0) ? 'stock-full' : 'stock-safe';
+
+                            const stockDisplay = `
+                                <div style="display:flex; flex-direction:column; align-items:center;">
+                                    <span class="stock-badge ${badgeClass}">
+                                        ${rented} / ${total}
+                                    </span>
+                                    <small class="stock-label">Disewa / Total</small>
+                                </div>
+                            `;
+
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>#${p.id}</td>
+                                    <td><strong>${p.name}</strong></td>
+                                    <td>${price}</td>
+                                    <td align="center">${stockDisplay}</td>
+                                    <td>
+                                        <a href="edit_produk.php?id=${p.id}" class="btn btn-edit"><i class="fa-solid fa-pen"></i></a>
+                                        <button class="btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                        renderPagination(result.pagination, paginationDiv);
+
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="5" align="center">Tidak ada data ditemukan.</td></tr>';
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function renderPagination(meta, container) {
+            if (meta.total_pages <= 1) return;
+            let html = `<button class="page-btn" ${meta.current_page === 1 ? 'disabled' : ''} onclick="changePage(${meta.current_page - 1})">&laquo;</button>`;
+            for (let i = 1; i <= meta.total_pages; i++) {
+                html += `<button class="page-btn ${i === meta.current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn" ${meta.current_page === meta.total_pages ? 'disabled' : ''} onclick="changePage(${meta.current_page + 1})">&raquo;</button>`;
+            container.innerHTML = html;
+        }
+
+        function changePage(page) { currentPage = page; fetchProducts(); }
+
+        function deleteProduct(id) {
+            if (confirm('Hapus produk ini?')) {
+                fetch('../api/delete_product.php', { method: 'POST', body: JSON.stringify({ id: id }) })
+                    .then(res => res.json())
+                    .then(r => { alert(r.message); fetchProducts(); });
+            }
+        }
     </script>
 </body>
+
 </html>

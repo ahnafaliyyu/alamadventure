@@ -90,17 +90,11 @@
     <div class="admin-wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
+                <h2>ALAM<span>ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
-                <li><a href="produk.php" class="active"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a>
+                <li><a href="produk.php" class="active"><i class="fa-solid fa-arrow-left"></i> <span>Kembali</span></a>
                 </li>
-                <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a>
-                </li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a></li>
-                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Keluar</span></a></li>
             </ul>
         </aside>
 

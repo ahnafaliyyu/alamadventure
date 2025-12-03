@@ -156,7 +156,7 @@ body.no-padding-top {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
   gap: 56px;
-  padding: 60px 48px;
+  padding: 50px 48px 20px 48px;
   max-width: 1400px;
   margin: 0 auto;
 }

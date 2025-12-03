@@ -32,7 +32,11 @@
     <div class="btn-kanan">
       <a href="keranjang.php" class="nav-link"><i
           class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
-      <a href="/admin/login.php">Login</a>
+      <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+        <a href="/admin/index.php">Admin</a>
+      <?php else: ?>
+        <a href="/admin/login.php">Login</a>
+      <?php endif; ?>
     </div>
   </nav>
 

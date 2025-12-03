@@ -21,14 +21,14 @@ if (isset($_POST['ajax_add_to_cart'])) {
           AND o.rental_status != 'returned'
       ), 0)) as available_stock
       FROM products p WHERE p.id = ?");
-      
+
   $stmt->bind_param("i", $product_id);
   $stmt->execute();
   $prod = $stmt->get_result()->fetch_assoc();
 
   if ($prod) {
     if ($prod['available_stock'] < $qty) {
-       echo json_encode([
+      echo json_encode([
         'success' => false,
         'message' => 'Stok barang habis atau sedang dipinjam semua!'
       ]);
@@ -38,11 +38,11 @@ if (isset($_POST['ajax_add_to_cart'])) {
     // Cek jika di keranjang sudah ada, apakah melebihi stok?
     $currentQtyInCart = isset($_SESSION['cart'][$product_id]) ? $_SESSION['cart'][$product_id]['qty'] : 0;
     if (($currentQtyInCart + $qty) > $prod['available_stock']) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Sisa stok tidak mencukupi permintaan Anda.'
-        ]);
-        exit;
+      echo json_encode([
+        'success' => false,
+        'message' => 'Sisa stok tidak mencukupi permintaan Anda.'
+      ]);
+      exit;
     }
 
     if (isset($_SESSION['cart'][$product_id])) {
@@ -138,7 +138,7 @@ if (isset($_GET['ajax_load_products'])) {
                   AND o.rental_status != 'returned'
                ), 0)) as available_stock
                FROM products p WHERE $sql_where $sql_order LIMIT ? OFFSET ?";
-  
+
   $params[] = $limit;
   $params[] = $offset;
   $types .= "ii";
@@ -150,8 +150,9 @@ if (isset($_GET['ajax_load_products'])) {
 
   $products = [];
   while ($row = $result->fetch_assoc()) {
-    $row['available_stock'] = (int)$row['available_stock'];
-    if($row['available_stock'] < 0) $row['available_stock'] = 0;
+    $row['available_stock'] = (int) $row['available_stock'];
+    if ($row['available_stock'] < 0)
+      $row['available_stock'] = 0;
     $products[] = $row;
   }
 
@@ -203,7 +204,7 @@ $sql_data = "SELECT p.*,
                 AND o.rental_status != 'returned'
              ), 0)) as available_stock
              FROM products p ORDER BY p.id DESC LIMIT ? OFFSET ?";
-             
+
 $stmt = $conn->prepare($sql_data);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
@@ -226,46 +227,126 @@ $total_pages = ceil($total_data / $limit);
   <link rel="stylesheet" href="./public/css/main.css" />
   <link rel="stylesheet" href="./public/css/katalog.css" />
   <style>
-    /* Styling Notifikasi */
     .toast-notification {
-      position: fixed; top: 20px; right: 20px;
-      background: #4CAF50; color: white;
-      padding: 16px 24px; border-radius: 8px;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -140px);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+      background: #4CAF50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 9999; display: flex; align-items: center; gap: 12px;
-      animation: slideIn 0.3s ease-out; max-width: 300px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 300px;
     }
-    .toast-notification.error { background: #f44336; }
-    .toast-notification i { font-size: 20px; }
-    @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
-    .toast-notification.hiding { animation: slideOut 0.3s ease-in; }
+
+    /* === Kondisi aktif (terlihat) === */
+    .toast-notification.active {
+      transform: translate(-50%, 10px);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Optional: Add error styling */
+    .toast-notification.error {
+      background: #f44336;
+    }
+
+
+    .toast-notification i {
+      font-size: 20px;
+    }
 
     /* Badge Counter */
-    .cart-badge { position: relative; }
-    .cart-badge.updated { animation: pulse 0.5s ease-in-out; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+    .cart-badge {
+      position: relative;
+    }
+
+    .cart-badge.updated {
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+    }
 
     /* Loading Overlay */
     .loading-overlay {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(255, 255, 255, 0.8);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 10; border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      border-radius: 8px;
     }
+
     .loading-spinner {
-      border: 4px solid #f3f3f3; border-top: 4px solid #3498db;
-      border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Layout */
-    .product-grid { position: relative; min-height: 400px; }
-    .product-card { animation: fadeIn 0.3s ease-in; position: relative; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
+    .product-grid {
+      position: relative;
+      min-height: 400px;
+    }
+
+    .product-card {
+      animation: fadeIn 0.3s ease-in;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     /* Style Kartu Habis */
-    .product-card.out-of-stock { opacity: 0.8; filter: grayscale(0.5); }
+    .product-card.out-of-stock {
+      opacity: 0.8;
+      filter: grayscale(0.5);
+    }
   </style>
 </head>
 
@@ -283,11 +364,13 @@ $total_pages = ceil($total_data / $limit);
       </ul>
     </div>
     <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link cart-badge" id="cartLink">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
-      </a>
-      <a href="/admin/login.php">Login</a>
+      <a href="keranjang.php" class="nav-link"><i
+          class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
+      <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+        <a href="/admin/index.php">Admin</a>
+      <?php else: ?>
+        <a href="/admin/login.php">Login</a>
+      <?php endif; ?>
     </div>
   </nav>
 
@@ -332,20 +415,23 @@ $total_pages = ceil($total_data / $limit);
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
           $category = tebakKategori($row['name']);
-          $row['available_stock'] = (int)$row['available_stock'];
-          if($row['available_stock'] < 0) $row['available_stock'] = 0;
-          
+          $row['available_stock'] = (int) $row['available_stock'];
+          if ($row['available_stock'] < 0)
+            $row['available_stock'] = 0;
+
           $stockClass = $row['available_stock'] > 0 ? '' : 'out-of-stock';
           ?>
           <div class="product-card <?= $stockClass ?>" data-category="<?= $category ?>"
             data-name="<?= htmlspecialchars(strtolower($row['name'])) ?>">
-            
-            <?php if($row['available_stock'] > 0): ?>
-              <div style="position:absolute; top:10px; left:10px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
+
+            <?php if ($row['available_stock'] > 0): ?>
+              <div
+                style="position:absolute; top:10px; left:10px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
                 Tersedia: <?= $row['available_stock'] ?>
               </div>
             <?php else: ?>
-              <div style="position:absolute; top:10px; left:10px; background:#ffebee; color:#c62828; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
+              <div
+                style="position:absolute; top:10px; left:10px; background:#ffebee; color:#c62828; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
                 Habis / Disewa
               </div>
             <?php endif; ?>
@@ -359,9 +445,9 @@ $total_pages = ceil($total_data / $limit);
               <p><?= htmlspecialchars(substr($row['description'], 0, 80)) ?>...</p>
             </div>
             <div class="product-actions">
-              <span>Rp <?= number_format($row['price_per_day'], 0, ',', '.') ?></span>
-              
-              <?php if($row['available_stock'] > 0): ?>
+              <span>Rp<?= number_format($row['price_per_day'], 0, ',', '.') ?></span>
+
+              <?php if ($row['available_stock'] > 0): ?>
                 <button class="cart-btn add-to-cart-btn" data-product-id="<?= $row['id'] ?>" title="Tambahkan ke Keranjang">
                   <i class="fa-solid fa-cart-plus"></i>
                 </button>
@@ -391,27 +477,67 @@ $total_pages = ceil($total_data / $limit);
 
   <footer class="site-footer">
     <div class="footer-inner">
+
+      <!-- Brand Section -->
       <div class="footer-brand">
         <div class="footer-logo">
-          <img src="../public/logo.png" alt="ALAMADVENTURE SMD" />
+          <img src="public/logo.png" alt="ALAMADVENTURE SMD" />
           <h3>ALAMADVENTURE<br>SMD</h3>
         </div>
-        <p>Sewa perlengkapan camping dan outdoor terpercaya di Kalimantan Timur.</p>
+        <p>
+          Sewa perlengkapan camping dan outdoor terpercaya di Kalimantan Timur. Melayani rental peralatan camping
+          berkualitas dengan harga terjangkau sejak 2020.
+        </p>
       </div>
+
+      <!-- Navigation Section -->
       <div class="footer-navigation">
         <h4>Navigasi</h4>
         <ul>
-          <li><a href="index.html">Beranda</a></li>
-          <li><a href="katalog.html">Katalog</a></li>
-          <li><a href="kontak.html">Hubungi Kami</a></li>
+          <li><a href="index.php">Beranda</a></li>
+          <li><a href="tentang-kami.php">Tentang Kami</a></li>
+          <li><a href="katalog.php">Katalog Lengkap</a></li>
+          <li><a href="kontak.php">Hubungi Kami</a></li>
         </ul>
       </div>
+
+      <!-- Features Section -->
+      <div class="footer-features-section">
+        <h4>Keunggulan Kami</h4>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+            </svg>
+          </div>
+          <span>Peralatan Berkualitas</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+          </div>
+          <span>Harga Terjangkau</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+            </svg>
+          </div>
+          <span>Pelayanan 24/7</span>
+        </div>
+      </div>
+
     </div>
+
     <div class="footer-bottom">
-      <p>© 2025 ALAMADVENTURE SMD</p>
+      <p>© 2025 ALAMADVENTURE SMD • Semua hak cipta dilindungi</p>
     </div>
   </footer>
-
   <script>
     // ===== STATE MANAGEMENT =====
     let currentFilters = { category: 'semua', search: '', sort: 'terbaru', page: 1 };
@@ -422,11 +548,19 @@ $total_pages = ceil($total_data / $limit);
       const toast = document.createElement('div');
       toast.className = 'toast-notification' + (isError ? ' error' : '');
       toast.innerHTML = `<i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}"></i><span>${message}</span>`;
+
       document.body.appendChild(toast);
+      void toast.offsetWidth;
+      toast.classList.add('active');
       setTimeout(() => {
-        toast.classList.add('hiding');
-        setTimeout(() => { document.body.removeChild(toast); }, 300);
-      }, 3000);
+        toast.classList.remove('active');
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+
+      }, 2000);
     }
 
     function updateCartCount(count) {
@@ -512,26 +646,26 @@ $total_pages = ceil($total_data / $limit);
         const imageUrl = product.image_url || '/public/logo.png';
         const description = product.description.substring(0, 80) + '...';
         const price = new Intl.NumberFormat('id-ID').format(product.price_per_day);
-        
+
         let stockBadge = '';
         let buttonHtml = '';
         let cardClass = 'product-card';
 
         if (product.available_stock > 0) {
-            stockBadge = `<div style="position:absolute; top:10px; left:10px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
+          stockBadge = `<div style="position:absolute; top:10px; left:10px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
                             Stok: ${product.available_stock}
                           </div>`;
-            buttonHtml = `<button class="cart-btn add-to-cart-btn" data-product-id="${product.id}" title="Tambahkan ke Keranjang">
+          buttonHtml = `<button class="cart-btn add-to-cart-btn" data-product-id="${product.id}" title="Tambahkan ke Keranjang">
                             <i class="fa-solid fa-cart-plus"></i>
                           </button>`;
         } else {
-            stockBadge = `<div style="position:absolute; top:10px; left:10px; background:#ffebee; color:#c62828; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
+          stockBadge = `<div style="position:absolute; top:10px; left:10px; background:#ffebee; color:#c62828; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;">
                             Habis / Dipinjam
                           </div>`;
-            buttonHtml = `<button class="cart-btn" style="background:#ccc; cursor:not-allowed;" disabled>
+          buttonHtml = `<button class="cart-btn" style="background:#ccc; cursor:not-allowed;" disabled>
                             <i class="fa-solid fa-ban"></i>
                           </button>`;
-            cardClass += ' out-of-stock';
+          cardClass += ' out-of-stock';
         }
 
         const productCard = document.createElement('div');
@@ -619,10 +753,10 @@ $total_pages = ceil($total_data / $limit);
                 showToast(data.message, true);
               }
             })
-            .catch(error => {
-              console.error('Error:', error);
-              showToast('Terjadi kesalahan, silakan coba lagi', true);
-            })
+            // .catch(error => {
+            //   console.error('Error:', error);
+            //   showToast('Terjadi kesalahan, silakan coba lagi', true);
+            // })
             .finally(() => {
               this.disabled = false;
               buttonIcon.className = 'fa-solid fa-cart-plus';
@@ -682,4 +816,5 @@ $total_pages = ceil($total_data / $limit);
     attachPaginationListeners();
   </script>
 </body>
+
 </html>

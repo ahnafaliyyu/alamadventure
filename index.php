@@ -1,4 +1,22 @@
-<?php session_start(); ?>
+<?php
+require 'config/init.php'; // Koneksi database
+
+// --- QUERY PRODUK UNGGULAN (TOP 10 BEST SELLER) ---
+// Logika: Menggabungkan tabel products dengan order_items
+// Menghitung jumlah qty yang terjual per produk
+// Hanya menghitung pesanan yang TIDAK cancelled/failed
+$sql_best = "SELECT p.*, 
+             COALESCE(SUM(oi.qty), 0) as total_rented
+             FROM products p
+             LEFT JOIN order_items oi ON p.id = oi.product_id
+             LEFT JOIN orders o ON oi.order_id = o.id 
+             AND (o.status != 'cancelled' AND o.status != 'failed')
+             GROUP BY p.id
+             ORDER BY total_rented DESC, p.id DESC
+             LIMIT 10";
+
+$result_best = $conn->query($sql_best);
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -33,7 +51,11 @@
       <div class="btn-kanan">
         <a href="keranjang.php" class="nav-link"><i
             class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
-        <a href="admin/login.php">Login</a>
+        <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+          <a href="/admin/index.php">Admin</a>
+        <?php else: ?>
+          <a href="/admin/login.php">Login</a>
+        <?php endif; ?>
       </div>
     </nav>
 
@@ -41,7 +63,7 @@
       <div class="main-text" data-aos="fade-up" data-aos-duration="800">
         <h1>Sewa Alat Camping<br>Terpercaya di Samarinda</h1>
         <p>
-          Perlengkapan camping lengkap dan terawat untuk petualangan outdoor kamu. 
+          Perlengkapan camping lengkap dan terawat untuk petualangan outdoor kamu.
           Harga bersahabat, booking cepat, layanan ramah.
         </p>
         <div class="button-container">
@@ -63,7 +85,7 @@
         Kenapa Memilih <strong>Alam Adventure?</strong>
       </h2>
       <p class="description">
-        Perlengkapan lengkap, berkualitas, dan layanan siap membantu kapan saja 
+        Perlengkapan lengkap, berkualitas, dan layanan siap membantu kapan saja
         untuk petualangan camping-mu di Kalimantan Timur.
       </p>
 
@@ -121,67 +143,44 @@
 
   <section class="product-unggulan-section" id="product-unggulan" data-aos="fade-up" data-aos-duration="800">
     <div class="header-content">
-      <h2 class="section-title">Produk Unggulan</h2>
-      <p class="section-description">Perlengkapan terbaik dan terawat untuk petualanganmu</p>
+      <h2 class="section-title">Perlengkapan Terlaris</h2>
+      <p class="section-description">Perlengkapan terbaik yang paling sering disewa oleh petualang lainnya.</p>
     </div>
 
     <div class="slider-container">
       <div class="swiper" id="productSwiper">
         <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <div class="product-card">
-              <span class="price-tag">Rp 25k/hari</span>
-              <img src="public/tenda.png" alt="Tenda Dome" class="card-image" />
-              <div class="card-overlay">
-                <h3 class="card-title">Tenda Dome 4P</h3>
-                <p class="card-subtitle"><i class="fas fa-star"></i> 4.9 • Anti Bocor</p>
-              </div>
-            </div>
-          </div>
 
-          <div class="swiper-slide">
-            <div class="product-card">
-              <span class="price-tag">Rp 15k/hari</span>
-              <img src="public/komporportable.png" alt="Kompor Portable" class="card-image" />
-              <div class="card-overlay">
-                <h3 class="card-title">Kompor Portable</h3>
-                <p class="card-subtitle"><i class="fas fa-star"></i> 4.7 • Set Lengkap</p>
-              </div>
-            </div>
-          </div>
+          <?php if ($result_best && $result_best->num_rows > 0): ?>
+            <?php while ($row = $result_best->fetch_assoc()):
+              // Fallback gambar jika kosong
+              $imgUrl = !empty($row['image_url']) ? $row['image_url'] : 'public/logo.png';
+              ?>
+              <div class="swiper-slide">
+                <div class="product-card">
+                  <span class="price-tag">Rp <?= number_format($row['price_per_day'], 0, ',', '.') ?>/hari</span>
 
-          <div class="swiper-slide">
-            <div class="product-card">
-              <span class="price-tag">Rp 10k/hari</span>
-              <img src="public/sleepingBag.png" alt="Sleeping Bag" class="card-image" />
-              <div class="card-overlay">
-                <h3 class="card-title">Sleeping Bag</h3>
-                <p class="card-subtitle"><i class="fas fa-star"></i> 4.8 • Hangat</p>
-              </div>
-            </div>
-          </div>
+                  <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($row['name']) ?>"
+                    class="card-image" />
 
-          <div class="swiper-slide">
-            <div class="product-card">
-              <span class="price-tag">Rp 20k/hari</span>
-              <img src="public/terpal.png" alt="Tas Carrier" class="card-image" />
-              <div class="card-overlay">
-                <h3 class="card-title">Tas Carrier 60L</h3>
-                <p class="card-subtitle"><i class="fas fa-star"></i> 4.5 • Ergonomis</p>
+                  <div class="card-overlay">
+                    <h3 class="card-title"><?= htmlspecialchars($row['name']) ?></h3>
+                    <p class="card-subtitle">
+                      <i class="fas fa-star"></i> 5.0 •
+                      <?php if ($row['total_rented'] > 0): ?>
+                        Disewa <?= $row['total_rented'] ?>x
+                      <?php else: ?>
+                        Produk Baru
+                      <?php endif; ?>
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <p style="text-align:center; width:100%;">Belum ada data produk unggulan.</p>
+          <?php endif; ?>
 
-          <div class="swiper-slide">
-            <div class="product-card">
-              <span class="price-tag">Rp 5k/hari</span>
-              <img src="public/lamputenda.png" alt="Lampu Tenda" class="card-image" />
-              <div class="card-overlay">
-                <h3 class="card-title">Lampu Tenda LED</h3>
-                <p class="card-subtitle"><i class="fas fa-star"></i> 4.6 • Terang</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -147,6 +147,19 @@ unset($_SESSION['login_error']);
             color: #344f1f;
             text-decoration: underline;
         }
+
+        @media (max-width: 580px) {
+            .login-card {
+            max-width: 100%;
+            margin: 0 20px;
+            } 
+        }
+                @media (max-width: 480px) {
+            .login-card {
+            max-width: 100%;
+            margin: 0 10px;
+            } 
+        }
     </style>
 </head>
 <body>
@@ -175,7 +188,7 @@ unset($_SESSION['login_error']);
             </form>
             
             <div class="back-link">
-                <a href="../index.html">← Kembali ke Halaman Utama</a>
+                <a href="../index.php">← Kembali ke Halaman Utama</a>
             </div>
         </div>
     </div>

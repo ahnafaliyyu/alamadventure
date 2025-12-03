@@ -26,13 +26,17 @@
           <a href="tentang-kami.php" class="nav-link">Tentang Kami</a>
         </li>
         <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+        <li><a href="kontak.php" class="nav-link">Kontak</a></li>
       </ul>
     </div>
     <div class="btn-kanan">
       <a href="keranjang.php" class="nav-link"><i
           class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
-      <a href="/admin/login.php">Login</a>
+      <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+        <a href="/admin/index.php">Admin</a>
+      <?php else: ?>
+        <a href="/admin/login.php">Login</a>
+      <?php endif; ?>
     </div>
   </nav>
 

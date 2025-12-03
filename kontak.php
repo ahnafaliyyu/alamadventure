@@ -30,12 +30,22 @@
       </ul>
     </div>
     <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link"><i
-          class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
-      <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-        <a href="/admin/index.php">Admin</a>
+      <a href="keranjang.php" class="nav-link" id="cartLink">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
+      </a>
+
+      <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
+        <a href="admin/index.php" style="background:#d35400; color:white;">Admin Panel</a>
+
+      <?php elseif (isset($_SESSION['user_id'])): ?>
+        <a href="riwayat.php" title="Akun Saya"
+          style="background: #f9f5f0; color: #1a1a1a; width:35px; height:35px; padding:0; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+          <i class="fas fa-user"></i>
+        </a>
+
       <?php else: ?>
-        <a href="/admin/login.php">Login</a>
+        <a href="login.php">Login</a>
       <?php endif; ?>
     </div>
   </nav>

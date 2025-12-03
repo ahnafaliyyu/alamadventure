@@ -368,10 +368,22 @@ $total_pages = ceil($total_data / $limit);
         <i class="fas fa-shopping-cart"></i>
         <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
       </a>
-      <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-        <a href="/admin/index.php">Admin</a>
+
+      <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
+        <a href="admin/index.php" style="background:#d35400; color:white;">
+          <i class="fas fa-user-shield"></i> Panel
+        </a>
+
+      <?php elseif (isset($_SESSION['user_id'])): ?>
+        <a href="riwayat.php" title="Akun Saya"
+          style="background:var(--brand); color:white; width:40px; height:40px; padding:0; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+          <i class="fas fa-user"></i>
+        </a>
+
       <?php else: ?>
-        <a href="/admin/login.php">Login</a>
+        <button onclick="openLoginModal()">
+          Masuk <i class="fas fa-sign-in-alt"></i>
+        </button>
       <?php endif; ?>
     </div>
   </nav>
@@ -537,6 +549,29 @@ $total_pages = ceil($total_data / $limit);
       <p>© 2025 ALAMADVENTURE SMD • Semua hak cipta dilindungi</p>
     </div>
   </footer>
+
+  <div id="loginChoiceModal" class="login-modal-overlay">
+    <div class="login-modal-content">
+      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+
+      <div class="login-modal-header">
+        <h3>Selamat Datang!</h3>
+        <p>Silakan pilih cara masuk Anda</p>
+      </div>
+
+      <a href="login.php" class="option-user">
+        <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
+      </a>
+
+      <div class="modal-divider"><span>ATAU</span></div>
+
+      <a href="admin/login.php" class="option-admin">
+        <i class="fas fa-lock"></i> Masuk sebagai Admin
+      </a>
+    </div>
+  </div>
+
+  <script src="./public/js/nav.js"></script>
   <script>
     // ===== STATE MANAGEMENT =====
     let currentFilters = { category: 'semua', search: '', sort: 'terbaru', page: 1 };

@@ -59,3 +59,31 @@ ADD COLUMN order_type VARCHAR(50) DEFAULT 'Peminjaman Barang',
 ADD COLUMN duration VARCHAR(50),
 ADD COLUMN total_qty INT DEFAULT 0,
 ADD COLUMN signature_customer VARCHAR(100);
+
+-- Sistem baru dengan User
+
+-- 1. Buat tabel user untuk pembeli
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 1. Tambahkan kolom expires_at (Perbaikan: tidak menggunakan AFTER order_date)
+ALTER TABLE orders ADD COLUMN expires_at DATETIME NULL;
+
+-- 2. Pastikan kolom user_id juga sudah ada (jika belum)
+ALTER TABLE orders ADD COLUMN user_id INT NULL;
+
+-- 3. (Opsional) Hubungkan foreign key jika tabel users sudah dibuat
+-- Pastikan tabel 'users' sudah dibuat sebelumnya
+ALTER TABLE orders ADD CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE users 
+ADD COLUMN is_verified TINYINT(1) DEFAULT 0, 
+ADD COLUMN verification_token VARCHAR(255) NULL,
+ADD COLUMN reset_token VARCHAR(255) NULL,
+ADD COLUMN reset_expires DATETIME NULL;

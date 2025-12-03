@@ -36,28 +36,43 @@ $result_best = $conn->query($sql_best);
 
 <body class="no-padding-top">
   <div class="nav-main-wrapper">
-    <nav class="nav">
-      <div class="desktop-nav">
-        <div class="logo">
-          <img src="public/logo.png" width="30px" alt="Logo" />
-        </div>
-        <ul class="nav-menu">
-          <li><a href="index.php" class="nav-link active">Beranda</a></li>
-          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-          <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
-        </ul>
+  <nav class="nav">
+    <div class="desktop-nav">
+      <div class="logo">
+        <img src="/public/logo.png" width="30px" alt="Logo" />
       </div>
-      <div class="btn-kanan">
-        <a href="keranjang.php" class="nav-link"><i
-            class="fas fa-shopping-cart"></i><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></a>
-        <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-          <a href="/admin/index.php">Admin</a>
-        <?php else: ?>
-          <a href="/admin/login.php">Login</a>
-        <?php endif; ?>
-      </div>
-    </nav>
+      <ul class="nav-menu">
+        <li><a href="index.php" class="nav-link active">Beranda</a></li>
+        <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
+        <li><a href="katalog.php" class="nav-link">Katalog</a></li>
+        <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+      </ul>
+    </div>
+    <div class="btn-kanan">
+      <a href="keranjang.php" class="nav-link" id="cartLink">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
+      </a>
+
+      <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
+        <a href="admin/index.php" style="background:#d35400; color:white;">
+          <i class="fas fa-user-shield"></i> Panel
+        </a>
+
+      <?php elseif (isset($_SESSION['user_id'])): ?>
+        <a href="riwayat.php" title="Akun Saya"
+          style="background:var(--brand); color:white; width:40px; height:40px; padding:0; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+          <i class="fas fa-user"></i>
+        </a>
+
+      <?php else: ?>
+        <button onclick="openLoginModal()">
+          Masuk <i class="fas fa-sign-in-alt"></i>
+        </button>
+      <?php endif; ?>
+    </div>
+  </nav>
+
 
     <div class="main-content">
       <div class="main-text" data-aos="fade-up" data-aos-duration="800">
@@ -332,6 +347,28 @@ $result_best = $conn->query($sql_best);
     </div>
   </footer>
 
+        <div id="loginChoiceModal" class="login-modal-overlay">
+      <div class="login-modal-content">
+        <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+
+        <div class="login-modal-header">
+          <h3>Selamat Datang!</h3>
+          <p>Silakan pilih cara masuk Anda</p>
+        </div>
+
+        <a href="login.php" class="option-user">
+          <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
+        </a>
+
+        <div class="modal-divider"><span>ATAU</span></div>
+
+        <a href="admin/login.php" class="option-admin">
+          <i class="fas fa-lock"></i> Masuk sebagai Admin
+        </a>
+      </div>
+    </div>
+
+  <script src="./public/js/nav.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="public/js/main.js"></script>

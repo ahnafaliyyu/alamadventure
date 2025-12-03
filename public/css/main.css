@@ -25,17 +25,157 @@ body.no-padding-top {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  
   background: rgba(30, 30, 30, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  
-  padding: 15px 5%;
+  padding: 15px 20px;
   z-index: 1000;
-  
   transition: all 0.3s ease;
   box-sizing: border-box;
+}
+
+/* 1. Latar Belakang Gelap (Overlay) */
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Hitam transparan */
+  z-index: 99999; /* Paling atas dari segalanya */
+  display: none; /* Sembunyi default */
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px); /* Efek blur di belakang */
+  animation: fadeInBg 0.3s ease;
+}
+
+/* 2. Kotak Konten Modal */
+.login-modal-content {
+  background: white;
+  width: 90%;
+  max-width: 350px; /* Ukuran pas, tidak terlalu lebar */
+  border-radius: 20px;
+  padding: 30px 25px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transform: translateY(20px);
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* Header Modal */
+.login-modal-header {
+  margin-bottom: 25px;
+}
+.login-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #2c4532;
+  font-weight: 800;
+}
+.login-modal-header p {
+  margin: 5px 0 0;
+  color: #666;
+  font-size: 13px;
+}
+
+/* Tombol Close (X) */
+.btn-close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.btn-close-modal:hover {
+  color: #333;
+}
+
+/* Pilihan User (Besar & Menonjol) */
+.option-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #2c4532 0%, #1f3225 100%);
+  color: white;
+  text-decoration: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 20px rgba(44, 69, 50, 0.25);
+  margin-bottom: 20px;
+}
+.option-user:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(44, 69, 50, 0.35);
+}
+.option-user i {
+  font-size: 20px;
+}
+
+/* Garis Pemisah */
+.modal-divider {
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+  position: relative;
+}
+.modal-divider span {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 10px;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Pilihan Admin (Kecil) */
+.option-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 50px;
+  background-color: #f5f5f5;
+  transition: all 0.2s;
+}
+.option-admin:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+/* Animasi */
+@keyframes fadeInBg {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Navbar compact saat scroll - geser ke kanan */
@@ -72,9 +212,21 @@ body.no-padding-top {
   gap: 8px;
 }
 
-.btn-kanan a:hover {
+.btn-kanan a:hover,
+.btn-kanan button:hover {
   background: #f0c33c;
 }
+
+.btn-kanan button {
+  background: #f9f5f0;
+  color: #1a1a1a;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .desktop-nav {
   display: flex;
   align-items: center;
@@ -336,9 +488,13 @@ body.no-padding-top {
 
 @media screen and (max-width: 900px) {
   body {
-    padding-top: 60px;
+    padding-top: 49px;
   }
-  
+
+  .btn-kanan button {
+  padding: 10.5px 18px;
+}
+
   .nav {
     padding: 10px 16px 10px 20px;
     gap: 16px;
@@ -360,10 +516,6 @@ body.no-padding-top {
 }
 
 @media screen and (max-width: 768px) {
-  body {
-    padding-top: 55px;
-  }
-  
   body.no-padding-top {
     padding-top: 0;
   }
@@ -410,7 +562,10 @@ body.no-padding-top {
   body {
     padding-top: 49px;
   }
-  
+  .btn-kanan button {
+  padding: 8px 16px;
+}
+
   body.no-padding-top {
     padding-top: 0;
   }

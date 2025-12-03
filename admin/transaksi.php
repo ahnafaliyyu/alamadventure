@@ -9,28 +9,54 @@
     <link rel="stylesheet" href="css/admin-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- STYLE TAMBAHAN UNTUK HALAMAN INI --- */
+        /* --- PERBAIKAN LAYOUT (PENTING) --- */
 
+        /* 1. Paksa Main Content agar tidak melebihi sisa layar */
+        .main-content {
+            width: calc(100% - 260px) !important;
+            /* Kurangi lebar sidebar */
+            max-width: 100vw;
+            overflow-x: hidden;
+            /* Sembunyikan scroll halaman utama */
+        }
+
+        /* Pada Mobile, sidebar hilang, jadi lebar 100% */
+        @media (max-width: 768px) {
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+                padding: 15px !important;
+            }
+        }
+
+        /* 2. Styling Card Putih */
         .content-section {
             background: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
         }
 
-        /* Tabel Responsif */
+        /* 3. WRAPPER TABEL AGAR SCROLL (PENTING) */
         .table-responsive {
+            display: block;
             width: 100%;
             overflow-x: auto;
+            /* Munculkan scrollbar jika tabel lebar */
             -webkit-overflow-scrolling: touch;
-            /* Smooth scroll di iOS */
+            padding-bottom: 10px;
+            /* Ruang untuk scrollbar */
         }
 
+        /* Styling Tabel */
         .content-table {
             width: 100%;
             border-collapse: collapse;
             white-space: nowrap;
-            /* Agar kolom tidak menyempit aneh di HP */
+            /* Paksa satu baris agar trigger scroll */
         }
 
         .content-table th,
@@ -38,15 +64,20 @@
             padding: 12px 15px;
             border-bottom: 1px solid #eee;
             text-align: left;
+            font-size: 14px;
         }
 
         .content-table th {
             background-color: #f8f9fa;
             font-weight: 600;
             color: #2c4532;
+            position: sticky;
+            /* Header diam saat scroll bawah */
+            top: 0;
+            z-index: 10;
         }
 
-        /* Pagination */
+        /* Style Lainnya (Badge & Pagination) */
         .pagination-container {
             margin-top: 20px;
             display: flex;
@@ -78,7 +109,6 @@
             cursor: not-allowed;
         }
 
-        /* Badges */
         .badge {
             padding: 4px 8px;
             border-radius: 4px;
@@ -118,7 +148,7 @@
             color: #616161;
         }
 
-        /* Media Queries untuk Responsivitas Mobile */
+        /* Media Query Header Mobile */
         @media (max-width: 768px) {
             .main-header {
                 flex-direction: column;
@@ -135,7 +165,6 @@
                 width: 100%;
             }
 
-            /* Sidebar Toggle Button (Pastikan terlihat di mobile) */
             .btn-toggle-sidebar {
                 display: block;
                 font-size: 24px;
@@ -143,6 +172,10 @@
                 border: none;
                 color: #2c4532;
                 cursor: pointer;
+            }
+
+            .pagination-container {
+                justify-content: center;
             }
         }
     </style>
@@ -156,41 +189,14 @@
                 <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li>
-                    <a href="index.php">
-                        <i class="fa-solid fa-gauge-high"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="produk.php">
-                        <i class="fa-solid fa-box-open"></i>
-                        <span>Produk</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="transaksi.php" class="active">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span>Transaksi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>Pengaturan</span>
-                    </a>
-                </li>
-                <li class="logout">
-                    <a href="logout.php">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-                <li class="beranda">
-                    <a href="../index.php">
-                        <i class="fa-solid fa-house"></i>
-                        <span>Beranda</span>
-                    </a>
+                <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
+                <li><a href="produk.php"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a></li>
+                <li><a href="transaksi.php" class="active"><i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Transaksi</span></a></li>
+                <li><a href="#"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a></li>
+                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Keluar</span></a></li>
+                <li class="beranda"><a href="../index.php"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
                 </li>
             </ul>
         </aside>
@@ -235,7 +241,7 @@
     </div>
 
     <script>
-        // --- Sidebar Logic (Responsif) ---
+        // --- Sidebar Logic ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.getElementById('sidebarToggle');
@@ -283,51 +289,40 @@
                             const total = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(trx.total_amount);
 
                             // 1. Metode Pembayaran
-                            let metodeHtml = '';
-                            if (trx.payment_method === 'cod') {
-                                metodeHtml = '<span class="badge badge-cod">COD</span>';
-                            } else {
-                                metodeHtml = '<span class="badge badge-info">Online</span>';
-                            }
+                            let metodeHtml = (trx.payment_method === 'cod')
+                                ? '<span class="badge badge-cod">COD</span>'
+                                : '<span class="badge badge-info">Online</span>';
 
                             // 2. Status Bayar
                             let statusBayarHtml = '';
                             if (trx.status === 'paid') {
                                 statusBayarHtml = '<span class="badge badge-success">Lunas</span>';
                             } else if (trx.status === 'pending') {
-                                // Jika COD dan Pending = Belum Bayar (Bukan sekadar pending sistem)
-                                if (trx.payment_method === 'cod') {
-                                    statusBayarHtml = '<span class="badge badge-warning" style="color:#d35400;">Belum Bayar</span>';
-                                } else {
-                                    statusBayarHtml = '<span class="badge badge-warning">Pending</span>';
-                                }
+                                statusBayarHtml = (trx.payment_method === 'cod')
+                                    ? '<span class="badge badge-warning" style="color:#d35400;">Belum Bayar</span>'
+                                    : '<span class="badge badge-warning">Pending</span>';
                             } else {
                                 statusBayarHtml = '<span class="badge badge-danger">Batal</span>';
                             }
 
-                            // 3. Status Sewa & Tombol Aksi
+                            // 3. Status Sewa
                             let statusSewa = '';
                             let actionBtn = '';
 
-                            // Hitung tanggal kembali
                             const orderDate = new Date(trx.created_at);
                             const returnDate = new Date(orderDate);
                             returnDate.setDate(orderDate.getDate() + parseInt(trx.duration_days));
                             const today = new Date();
 
-                            // ---- LOGIKA STATUS SEWA ----
+                            // Logic Sewa & Tombol
                             if (trx.rental_status === 'pending_pickup') {
                                 statusSewa = '<span class="badge badge-secondary">Menunggu Diambil</span>';
-
-                                // Tombol Ambil
-                                // Cek tipe bayar untuk pesan konfirmasi yang sesuai
                                 const confirmType = (trx.payment_method === 'cod') ? 'cod' : 'online';
-                                actionBtn = `<button class="btn btn-primary" style="padding:5px 10px; font-size:12px; margin-right:5px; white-space:nowrap;" onclick="startRent('${trx.id}', '${confirmType}')" title="Serahkan Barang"><i class="fa-solid fa-box-open"></i> Ambil</button>`;
-
+                                if (trx.status !== 'cancelled') {
+                                    actionBtn += `<button class="btn btn-primary" style="padding:5px 10px; font-size:12px; margin-right:5px;" onclick="startRent('${trx.id}', '${confirmType}')" title="Serahkan Barang"><i class="fa-solid fa-box-open"></i> Ambil</button>`;
+                                }
                             } else if (trx.rental_status === 'ongoing') {
                                 statusSewa = '<span class="badge badge-info">Sedang Disewa</span>';
-
-                                // Cek Telat
                                 const diffTime = today - returnDate;
                                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                                 const isLate = diffDays > 0;
@@ -335,15 +330,18 @@
                                 if (isLate) statusSewa += `<br><small style="color:red; font-weight:bold;">Telat ${diffDays} Hari</small>`;
                                 else statusSewa += `<br><small style="color:green;">Dalam masa sewa</small>`;
 
-                                // Tombol Kembali
-                                actionBtn = `<button class="btn btn-edit" style="background:#f9d84a; color:#2c4532; padding:5px 10px; font-size:12px; margin-right:5px; white-space:nowrap;" onclick="returnRent('${trx.id}', ${isLate ? diffDays : 0})"><i class="fa-solid fa-rotate-left"></i> Kembali</button>`;
-
+                                actionBtn += `<button class="btn btn-edit" style="background:#f9d84a; color:#2c4532; padding:5px 10px; font-size:12px; margin-right:5px;" onclick="returnRent('${trx.id}', ${isLate ? diffDays : 0})"><i class="fa-solid fa-rotate-left"></i> Kembali</button>`;
                             } else if (trx.rental_status === 'returned') {
                                 statusSewa = '<span class="badge badge-success">Selesai</span>';
                                 if (trx.fine_amount > 0) statusSewa += `<br><small style="color:#c62828;">Denda: ${new Intl.NumberFormat('id-ID').format(trx.fine_amount)}</small>`;
                             }
 
-                            // Tombol Cetak Faktur (Invoice)
+                            // Tombol Batal
+                            if (trx.status === 'pending') {
+                                actionBtn += `<button class="btn btn-delete" style="background:#c62828; color:white; padding:5px 10px; font-size:12px; margin-right:5px;" onclick="cancelOrder(${trx.id})" title="Batalkan Pesanan"><i class="fa-solid fa-ban"></i> Batal</button>`;
+                            }
+
+                            // Tombol Invoice
                             if (trx.status !== 'cancelled') {
                                 actionBtn += ` <a href="../invoice.php?order=${trx.order_code}" target="_blank" class="btn btn-secondary" style="padding:5px 10px; font-size:12px; background:#eee; color:#333;" title="Cetak Faktur"><i class="fa-solid fa-print"></i></a>`;
                             }
@@ -362,7 +360,7 @@
                                     <td>${metodeHtml}</td>
                                     <td>${statusBayarHtml}</td>
                                     <td>${statusSewa}</td>
-                                    <td align="center">${actionBtn}</td>
+                                    <td align="center" style="white-space:nowrap;">${actionBtn}</td>
                                 </tr>
                             `;
                         });
@@ -389,50 +387,52 @@
 
         function changePage(page) { currentPage = page; fetchTransactions(); }
 
-        // --- ACTION HANDLERS ---
+        // --- ACTIONS ---
+        function cancelOrder(id) {
+            if (confirm('Yakin ingin membatalkan pesanan ini? Stok akan dikembalikan.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'cancel_order.php';
+                const input = document.createElement('input');
+                input.type = 'hidden'; input.name = 'order_id'; input.value = id;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
 
         function startRent(id, type) {
             let msg = "Konfirmasi barang diserahkan ke penyewa?";
             if (type === 'cod') msg = "💰 Konfirmasi pembayaran tunai diterima LUNAS dan barang diserahkan?";
-
             if (confirm(msg)) {
                 fetch('../api/process_rental.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'start_rent', order_id: id })
-                })
-                    .then(r => r.json())
-                    .then(d => {
-                        if (d.success) { alert(d.message); fetchTransactions(); }
-                        else { alert(d.message); }
-                    })
-                    .catch(e => alert("Error: " + e));
+                }).then(r => r.json()).then(d => {
+                    if (d.success) { alert(d.message); fetchTransactions(); }
+                    else { alert(d.message); }
+                }).catch(e => alert("Error: " + e));
             }
         }
 
         function returnRent(id, lateDays) {
             let fine = 0;
             let msg = "Konfirmasi barang dikembalikan?";
-
             if (lateDays > 0) {
-                // Contoh: Denda 50.000 per hari
                 const denda = lateDays * 50000;
                 msg = `⚠️ Terlambat ${lateDays} hari.\nSistem menyarankan Denda: Rp ${new Intl.NumberFormat('id-ID').format(denda)}\n\nApakah denda sudah dibayar dan barang dikembalikan?`;
                 fine = denda;
             }
-
             if (confirm(msg)) {
                 fetch('../api/process_rental.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'finish_rent', order_id: id, fine: fine })
-                })
-                    .then(r => r.json())
-                    .then(d => {
-                        if (d.success) { alert(d.message); fetchTransactions(); }
-                        else { alert(d.message); }
-                    })
-                    .catch(e => alert("Error: " + e));
+                }).then(r => r.json()).then(d => {
+                    if (d.success) { alert(d.message); fetchTransactions(); }
+                    else { alert(d.message); }
+                }).catch(e => alert("Error: " + e));
             }
         }
     </script>

@@ -1,9 +1,10 @@
 <?php
-// middleware/auth.php
 require_once __DIR__ . '/../config/config.php';
 
-if (!auth_is_logged_in()) {
-    // Simpan URL yang diminta untuk redirect setelah login
-    $_SESSION['intended_url'] = $_SERVER['REQUEST_URI'] ?? '/admin/index.php';
+// Pastikan hanya ADMIN yang bisa lewat
+// User biasa tidak punya session 'admin_logged_in'
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    // Jika user biasa mencoba masuk, lempar ke login admin, bukan index user
     redirect('/admin/login.php');
 }
+?>

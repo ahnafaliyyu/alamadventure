@@ -80,12 +80,12 @@ if ($payment_method === 'cod') {
     $batas_pesan = "24 Jam";
 } else {
     // ONLINE: Batas 2 Jam (Untuk segera transfer)
-    // $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
-    // $batas_pesan = "2 Jam";
+    $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
+    $batas_pesan = "2 Jam";
 
-    // --- MODE TESTING (1 MENIT) ---
-    $expires_at = date('Y-m-d H:i:s', strtotime('+1 minute'));
-    $batas_pesan = "1 Menit";
+    // // --- MODE TESTING (1 MENIT) ---
+    // $expires_at = date('Y-m-d H:i:s', strtotime('+1 minute'));
+    // $batas_pesan = "1 Menit";
 }
 
 $conn->begin_transaction();
@@ -186,12 +186,12 @@ try {
                 'start_time' => date("Y-m-d H:i:s T"),
 
                 // --- CODE ASLI (Disimpan sementara) ---
-                // 'unit' => 'hours',
-                // 'duration' => 2
+                'unit' => 'hours',
+                'duration' => 2
 
-                // --- MODE TESTING (1 MENIT) ---
-                'unit' => 'minutes',
-                'duration' => 1
+                // // --- MODE TESTING (1 MENIT) ---
+                // 'unit' => 'minutes',
+                // 'duration' => 1
             ]
         ];
 

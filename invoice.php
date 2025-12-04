@@ -41,14 +41,21 @@ if ($inv && !empty($inv['invoice_date'])) {
 // --- LOGIKA BARU (Pengecualian untuk COD) ---
 $is_cod = ($inv && $inv['payment_method'] === 'cod');
 
-// 3. Logika Auto-Refresh
+// Logika Auto-Refresh (Hanya jika Pending & Bukan COD)
 if (!$inv || ($inv['status'] == 'pending' && !$is_cod)) {
     echo "<div style='text-align:center; padding:50px; font-family:sans-serif;'>";
-    echo "<h2>⏳ Sedang Memverifikasi Pembayaran...</h2>";
-    echo "<p>Sistem sedang menunggu konfirmasi otomatis dari Midtrans/Bank.</p>";
-    echo "<p>Halaman ini akan refresh otomatis dalam 3 detik.</p>";
+    echo "<h2>⏳ Menunggu Konfirmasi Pembayaran...</h2>";
+    echo "<p>Sistem sedang menunggu respon dari Payment Gateway.</p>";
+
+    // Refresh otomatis
     echo "<meta http-equiv='refresh' content='3'>";
-    echo "<a href='invoice.php?order=$order_code'>Klik di sini jika tidak refresh otomatis</a>";
+
+    // TOMBOL DARURAT: Jika webhook gagal, user bisa klik ini untuk cek manual (Opsional)
+    // Anda bisa membuat script 'check_status.php' yang memanggil API Status Midtrans secara manual
+    echo "<br><br>";
+    echo "<p style='font-size:12px; color:#888;'>Jika halaman ini tidak berubah dalam 1 menit,<br>pastikan pembayaran berhasil atau hubungi Admin.</p>";
+
+    echo "<a href='index.php' style='color:red; text-decoration:none;'>Kembali ke Beranda</a>";
     echo "</div>";
     exit;
 }
@@ -470,7 +477,8 @@ if ($inv['delivery_method'] == 'delivery') {
 
                     <li>Keterlambatan pengembalian dikenakan denda
                         <strong><?= htmlspecialchars(getSetting('rental_fine_percent')) ?>% dari total sewa /
-                            Hari</strong>.</li>
+                            Hari</strong>.
+                    </li>
 
                     <li>Barang yang sudah diboking/dibayar tidak dapat dibatalkan (No Refund).</li>
                 </ol>

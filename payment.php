@@ -291,14 +291,28 @@ if ($order['status'] == 'pending' && !empty($order['expires_at'])) {
       payButton.addEventListener('click', function () {
         window.snap.pay('<?= $order['snap_token'] ?>', {
           onSuccess: function (result) {
-            // Ubah tombol jadi loading agar user tahu sistem sedang bekerja
-            payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses Pembayaran...';
+            // Ubah tombol jadi loading
+            payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi Pembayaran...';
             payButton.disabled = true;
 
-            // Beri jeda 3 detik agar Webhook sempat masuk dan update database
-            setTimeout(function () {
+            /* Kirim data ke Webhook secara manual via Fetch API 
+               untuk mempercepat update status tanpa menunggu notifikasi server-to-server 
+            */
+            fetch('api/midtrans_webhook.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(result)
+            }).then(() => {
+              // Redirect setelah request selesai
               window.location.href = "invoice.php?order=<?= $order_code ?>";
-            }, 3000);
+            }).catch(() => {
+              // Jika fetch gagal (misal masalah jaringan), tetap redirect setelah 3 detik
+              setTimeout(function () {
+                window.location.href = "invoice.php?order=<?= $order_code ?>";
+              }, 3000);
+            });
           },
           onPending: function (result) {
             alert("Menunggu pembayaran! Silakan selesaikan pembayaran Anda.");

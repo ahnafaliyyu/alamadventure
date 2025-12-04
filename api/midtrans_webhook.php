@@ -153,7 +153,9 @@ if ($new_status == 'paid') {
             }
             $pesan_admin .= "Cek Dashboard untuk memproses.";
 
-            $nomor_admin = "082241559607"; // Ganti nomor admin
+            $nomor_admin = getSetting('shop_phone');
+            if (empty($nomor_admin))
+                $nomor_admin = "082241559607"; // Fallback            
             sendWhatsApp($nomor_admin, $pesan_admin);
 
 

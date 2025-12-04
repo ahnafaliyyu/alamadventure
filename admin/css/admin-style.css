@@ -356,8 +356,8 @@ h4 {
 .btn-edit {
   background-color: var(--accent);
   color: var(--brand);
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
 }
 .btn-delete {
   background-color: #ffe5e5;

@@ -4,7 +4,7 @@ require 'config/init.php';
 // --- 1. CEK LOGIN (WAJIB) ---
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['redirect_after_login'] = 'keranjang.php';
-    echo "<script>alert('Silakan login terlebih dahulu untuk melanjutkan pemesanan.'); window.location='login_user.php';</script>";
+    echo "<script>alert('Silakan login terlebih dahulu untuk melanjutkan pemesanan.'); window.location='login.php';</script>";
     exit;
 }
 

@@ -53,7 +53,6 @@ if (isset($_POST['login'])) {
             } else {
                 // Login Sukses
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_phone'] = $user['phone'];
 
@@ -81,64 +80,95 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Pelanggan - Alam Adventure</title>
+    <title>Login - Alam Adventure</title>
     <link rel="icon" href="public/logo.png" type="image/png" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap"
-        rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <style>
-        /* Styling Konsisten dengan Register */
         :root {
-            --brand: #2c4532;
+            /* Palette Warna Alam Adventure */
+            --primary: #2c4532;
+            /* Hijau Gelap */
+            --primary-hover: #1f3225;
             --accent: #f9d84a;
-            --bg-color: #f9f5f0;
+            /* Kuning Emas */
+            --bg-color: #f8fafc;
+            /* Background Halaman */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
+            background-color: var(--primary);
+            min-height: 100vh;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Background yang sama */
-            background-image: linear-gradient(rgba(44, 69, 50, 0.8), rgba(44, 69, 50, 0.8)), url('public/main-background.jpg');
-            background-size: cover;
-            background-position: center;
+            color: var(--text-main);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
         }
 
         .auth-card {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.98);
+            /* Sedikit transparan */
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px 32px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .brand-logo {
-            width: 70px;
-            margin-bottom: 15px;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            object-fit: contain;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
         }
 
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--brand);
-            margin: 0 0 5px 0;
+        .auth-header {
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 24px;
             font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
         }
 
-        p.subtitle {
-            color: #666;
+        .auth-header p {
             font-size: 14px;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            margin: 0;
         }
 
         .form-group {
@@ -146,146 +176,250 @@ if (isset($_POST['login'])) {
             text-align: left;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
             margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--brand);
+        }
+
+        .input-group {
+            position: relative;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 12px 16px;
+            padding-right: 40px;
+            /* Space untuk icon */
             font-size: 14px;
-            box-sizing: border-box;
-            transition: 0.3s;
+            line-height: 1.5;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
-            border-color: var(--brand);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(44, 69, 50, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 69, 50, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+            /* Icon tidak bisa diklik kecuali toggle password */
+            font-size: 14px;
+        }
+
+        .toggle-password {
+            pointer-events: auto;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-main);
+        }
+
+        .forgot-password {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .forgot-password a {
+            font-size: 13px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .cf-container {
+            margin: 24px 0;
+            display: flex;
+            justify-content: center;
         }
 
         .btn-auth {
             width: 100%;
-            padding: 14px;
-            background: var(--brand);
+            padding: 12px 24px;
+            background-color: var(--primary);
             color: white;
-            border: none;
-            border-radius: 50px;
+            font-size: 15px;
             font-weight: 600;
-            font-size: 16px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-auth:hover {
-            background: #1f3225;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 69, 50, 0.3);
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        .auth-footer {
+            margin-top: 32px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alert Styles */
         .alert {
-            padding: 12px;
+            padding: 12px 16px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 13px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-align: left;
         }
 
         .alert-danger {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
 
-        .footer-link {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #666;
+        .alert-icon {
+            flex-shrink: 0;
         }
 
-        .footer-link a {
-            color: var(--brand);
-            text-decoration: none;
-            font-weight: 600;
-        }
+        /* Responsiveness */
+        @media (max-width: 510px) {
+            body {
+                background: rgba(255, 255, 255, 0.98);
+            }
 
-        .footer-link a:hover {
-            text-decoration: underline;
-        }
+            .auth-card {
+                padding: 30px 20px;
+                border-radius: 12px;
+                box-shadow: none;
+            }
 
-        /* Style khusus Cloudflare Container */
-        .cf-container {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
+            .login-container {
+                padding: 16px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="auth-card">
-        <img src="public/logo.png" alt="Logo" class="brand-logo">
-        <h2>Selamat Datang Kembali</h2>
-        <p class="subtitle">Masuk untuk melanjutkan petualanganmu</p>
+    <div class="login-container">
+        <div class="auth-card">
+            <img src="public/logo.png" alt="Alam Adventure Logo" class="brand-logo">
 
-        <?php if ($error): ?>
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i> <?= $error ?>
+            <div class="auth-header">
+                <h2>Selamat Datang</h2>
+                <p>Masuk ke akun Anda untuk melanjutkan petualangan.</p>
             </div>
-        <?php endif; ?>
 
-        <form method="POST">
-            <div class="form-group">
-                <label>Email</label>
-                <div style="position:relative;">
-                    <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
-                    <i class="fas fa-envelope" style="position:absolute; right:15px; top:14px; color:#aaa;"></i>
+            <?php if ($error): ?>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <span><?= htmlspecialchars($error) ?></span>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label>Password</label>
-                <div style="position:relative;">
-                    <input type="password" name="password" id="passInput" class="form-control"
-                        placeholder="Masukkan password" required>
-                    <i class="fas fa-eye" id="togglePass"
-                        style="position:absolute; right:15px; top:14px; color:#aaa; cursor:pointer;"></i>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="email" class="form-label">Alamat Email</label>
+                    <div class="input-group">
+                        <input type="email" id="email" name="email" class="form-control" placeholder="nama@email.com"
+                            required autocomplete="email">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label for="password" class="form-label" style="margin-bottom:0;">Password</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••"
+                            required>
+                        <i class="fas fa-eye input-icon toggle-password" id="togglePass" title="Tampilkan Password"></i>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="forgot_password.php">Lupa Password?</a>
+                    </div>
+                </div>
+
+                <div class="cf-container">
+                    <div class="cf-turnstile" data-sitekey="<?= $cf_site_key ?>" data-theme="light"></div>
+                </div>
+
+                <button type="submit" name="login" class="btn-auth">
+                    Masuk Sekarang
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Belum memiliki akun? <a href="register_user.php">Daftar disini</a></p>
+                <p style="margin-top: 12px;">
+                    <a href="index.php" style="color: var(--text-muted); font-weight: normal; font-size: 13px;">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                    </a>
+                </p>
             </div>
-
-            <div class="cf-container">
-                <div class="cf-turnstile" data-sitekey="<?= $cf_site_key ?>" data-theme="light"></div>
-            </div>
-
-            <button type="submit" name="login" class="btn-auth">Masuk Sekarang</button>
-        </form>
-
-        <div class="footer-link">
-            Belum punya akun? <a href="register_user.php">Daftar disini</a>
-            <br>
-            <a href="index.php" style="font-size:12px; display:block; margin-top:10px; color:#888;">&larr; Kembali ke
-                Beranda</a>
         </div>
     </div>
 
     <script>
         // Script Toggle Password Visibility
         const togglePass = document.getElementById('togglePass');
-        const passInput = document.getElementById('passInput');
+        const passInput = document.getElementById('password');
 
-        togglePass.addEventListener('click', function () {
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
+        if (togglePass && passInput) {
+            togglePass.addEventListener('click', function () {
+                // Toggle tipe input
+                const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passInput.setAttribute('type', type);
+
+                // Toggle icon
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
     </script>
 
 </body>

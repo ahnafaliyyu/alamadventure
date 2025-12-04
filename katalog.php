@@ -353,10 +353,17 @@ $total_pages = ceil($total_data / $limit);
 <body>
   <nav class="nav">
     <div class="desktop-nav">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
       <div class="logo">
-        <img src="/public/logo.png" width="30px" alt="Logo" />
+        <img src="public/logo.png" width="30px" alt="Logo" />
       </div>
-      <ul class="nav-menu">
+
+      <ul class="nav-menu" id="navMenu">
         <li><a href="index.php" class="nav-link">Beranda</a></li>
         <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
         <li><a href="katalog.php" class="nav-link active">Katalog</a></li>
@@ -381,11 +388,12 @@ $total_pages = ceil($total_data / $limit);
 
       <?php else: ?>
         <button onclick="openLoginModal()">
-          Masuk <i class="fas fa-sign-in-alt"></i>
+          <i class="fas fa-sign-in-alt"></i>
         </button>
       <?php endif; ?>
     </div>
   </nav>
+
 
   <div class="product-detail-section" id="productSection">
     <div class="mobile-action-bar">
@@ -570,7 +578,6 @@ $total_pages = ceil($total_data / $limit);
     </div>
   </div>
 
-  <script src="./public/js/nav.js"></script>
   <script>
     // ===== STATE MANAGEMENT =====
     let currentFilters = { category: 'semua', search: '', sort: 'terbaru', page: 1 };
@@ -850,6 +857,9 @@ $total_pages = ceil($total_data / $limit);
     attachCartButtonListeners();
     attachPaginationListeners();
   </script>
+
+  <script src="public/js/nav.js"></script>
+
 </body>
 
 </html>

@@ -299,14 +299,27 @@ $userData = $stmtUser->get_result()->fetch_assoc();
 
     <nav class="nav">
         <div class="desktop-nav">
-            <div class="logo"><img src="public/logo.png" width="30px" alt="Logo"></div>
-            <ul class="nav-menu">
-                <li><a href="index.php" class="nav-link">Beranda</a></li>
-                <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-            </ul>
+      <div class="desktop-nav">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="logo">
+          <img src="public/logo.png" width="30px" alt="Logo" />
+        </div>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.php" class="nav-link">Beranda</a></li>
+          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
+          <li><a href="katalog.php" class="nav-link">Katalog</a></li>
+          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+        </ul>
+      </div>
         </div>
         <div class="btn-kanan">
-            <span style="font-weight:600; color:#fff;">Hi,
+            <span style="font-weight:600; color:#fff;">Hi
                 <?= htmlspecialchars(explode(' ', $userData['name'])[0]) ?></span>
         </div>
     </nav>
@@ -319,7 +332,8 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             <div class="info-list">
                 <div class="info-item"><i class="fas fa-phone"></i> <?= htmlspecialchars($userData['phone']) ?></div>
                 <div class="info-item"><i class="fas fa-calendar"></i> Member sejak
-                    <?= date('Y', strtotime($userData['created_at'])) ?></div>
+                    <?= date('Y', strtotime($userData['created_at'])) ?>
+                </div>
                 <div class="info-item"><i class="fas fa-check-circle"></i>
                     <?= $userData['is_verified'] ? '<span style="color:green">Terverifikasi</span>' : '<span style="color:red">Belum Verifikasi</span>' ?>
                 </div>
@@ -394,6 +408,8 @@ $userData = $stmtUser->get_result()->fetch_assoc();
 
         });
     </script>
+
+<script src="public/js/nav.js"></script>
 
 </body>
 

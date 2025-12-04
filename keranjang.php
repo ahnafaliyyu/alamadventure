@@ -61,12 +61,21 @@ if (isset($_GET['remove'])) {
 <body>
     <nav class="nav">
       <div class="desktop-nav">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
         <div class="logo">
-          <img src="/public/logo.png" width="30px" alt="Logo" />
+          <img src="public/logo.png" width="30px" alt="Logo" />
         </div>
-        <ul class="nav-menu">
-          <li><a href="index.php" class="nav-link active">Beranda</a></li>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.php" class="nav-link">Beranda</a></li>
+          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
           <li><a href="katalog.php" class="nav-link">Katalog</a></li>
+          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
         </ul>
       </div>
       <div class="btn-kanan">
@@ -87,11 +96,12 @@ if (isset($_GET['remove'])) {
 
         <?php else: ?>
           <button onclick="openLoginModal()">
-            Masuk <i class="fas fa-sign-in-alt"></i>
+            <i class="fas fa-sign-in-alt"></i>
           </button>
         <?php endif; ?>
       </div>
     </nav>
+
     
     <div class="cart-wrapper">
         <div class="page-header">
@@ -415,5 +425,8 @@ if (isset($_GET['remove'])) {
         });
     }
     </script>
+
+  <script src="public/js/nav.js"></script>
+  
 </body>
 </html>

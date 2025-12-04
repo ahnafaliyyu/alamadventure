@@ -360,8 +360,8 @@ if ($inv['delivery_method'] == 'delivery') {
                 <h1>Alam<span>Adventure</span></h1>
                 <div class="company-info">
                     Sewa Alat Camping Terpercaya<br>
-                    Jl. Contoh No. 123, Samarinda<br>
-                    WA: 0822-4155-9607
+                    <?= htmlspecialchars(getSetting('shop_address')) ?><br>
+                    WA: <?= htmlspecialchars(getSetting('shop_phone')) ?>
                 </div>
             </div>
             <div>
@@ -467,7 +467,11 @@ if ($inv['delivery_method'] == 'delivery') {
                 <ol style="margin-top:5px; padding-left:15px;">
                     <li>Wajib meninggalkan kartu identitas (KTP/SIM) asli sebagai jaminan.</li>
                     <li>Kerusakan atau kehilangan barang menjadi tanggung jawab penyewa sepenuhnya.</li>
-                    <li>Keterlambatan pengembalian dikenakan denda <strong>Rp 50.000 / Hari</strong>.</li>
+
+                    <li>Keterlambatan pengembalian dikenakan denda
+                        <strong><?= htmlspecialchars(getSetting('rental_fine_percent')) ?>% dari total sewa /
+                            Hari</strong>.</li>
+
                     <li>Barang yang sudah diboking/dibayar tidak dapat dibatalkan (No Refund).</li>
                 </ol>
 

@@ -38,10 +38,17 @@ $result_best = $conn->query($sql_best);
   <div class="nav-main-wrapper">
     <nav class="nav">
       <div class="desktop-nav">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
         <div class="logo">
-          <img src="/public/logo.png" width="30px" alt="Logo" />
+          <img src="public/logo.png" width="30px" alt="Logo" />
         </div>
-        <ul class="nav-menu">
+
+        <ul class="nav-menu" id="navMenu">
           <li><a href="index.php" class="nav-link active">Beranda</a></li>
           <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
           <li><a href="katalog.php" class="nav-link">Katalog</a></li>
@@ -66,12 +73,11 @@ $result_best = $conn->query($sql_best);
 
         <?php else: ?>
           <button onclick="openLoginModal()">
-            Masuk <i class="fas fa-sign-in-alt"></i>
+            <i class="fas fa-sign-in-alt"></i>
           </button>
         <?php endif; ?>
       </div>
     </nav>
-
 
     <div class="main-content">
       <div class="main-text" data-aos="fade-up" data-aos-duration="800">
@@ -367,7 +373,7 @@ $result_best = $conn->query($sql_best);
     </div>
   </div>
 
-  <script src="./public/js/nav.js"></script>
+  <script src="public/js/nav.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="public/js/main.js"></script>

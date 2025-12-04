@@ -16,12 +16,12 @@ if (isset($_GET['token'])) {
         $update->bind_param("s", $token);
 
         if ($update->execute()) {
-            echo "<script>alert('Akun berhasil diverifikasi! Silakan Login.'); window.location='login_user.php';</script>";
+            echo "<script>alert('Akun berhasil diverifikasi! Silakan Login.'); window.location='login.php';</script>";
         } else {
             echo "Gagal mengupdate database.";
         }
     } else {
-        echo "<h3>Link tidak valid atau akun sudah diverifikasi.</h3><a href='login_user.php'>Login disini</a>";
+        echo "<h3>Link tidak valid atau akun sudah diverifikasi.</h3><a href='login.php'>Login disini</a>";
     }
 } else {
     header("Location: index.php");

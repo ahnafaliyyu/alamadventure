@@ -87,3 +87,40 @@ ADD COLUMN is_verified TINYINT(1) DEFAULT 0,
 ADD COLUMN verification_token VARCHAR(255) NULL,
 ADD COLUMN reset_token VARCHAR(255) NULL,
 ADD COLUMN reset_expires DATETIME NULL;
+
+-- 1. Tabel untuk menyimpan konfigurasi dinamis
+CREATE TABLE IF NOT EXISTS settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(50) NOT NULL UNIQUE,
+    setting_value TEXT,
+    description VARCHAR(255)
+);
+
+-- Masukkan data default
+INSERT INTO settings (setting_key, setting_value, description) VALUES
+('shop_name', 'Alam Adventure', 'Nama Toko'),
+('shop_phone', '6282241559607', 'Nomor WA Admin (Format 62...)'),
+('shop_address', 'Jl. Contoh No. 123, Samarinda, Kalimantan Timur', 'Alamat Lengkap Toko'),
+('shop_maps', 'https://www.google.com/maps?q=-0.502183,117.153801', 'Link Google Maps Toko'),
+('rental_fine', '50000', 'Denda Keterlambatan per Hari'),
+('shipping_rate', '20000', 'Biaya Ongkir Dasar');
+
+-- 2. Tabel untuk Login Admin (Menggantikan Hardcoded)
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Masukkan admin default (Password: admin123)
+INSERT INTO admins (username, password) VALUES 
+('admin', '$2y$10$8.K/..password_hash_generated_here..'); 
+-- Catatan: Password hash di atas perlu diganti. Untuk sekarang kita akan handle di script login.
+
+-- Hapus setting denda lama jika ada (agar tidak bingung)
+DELETE FROM settings WHERE setting_key = 'rental_fine';
+
+-- Tambahkan setting baru untuk persentase
+INSERT INTO settings (setting_key, setting_value, description) VALUES 
+('rental_fine_percent', '50', 'Persentase Denda (%) dari Total Sewa Harian');

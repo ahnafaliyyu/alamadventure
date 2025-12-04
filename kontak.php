@@ -15,41 +15,48 @@
 </head>
 
 <body>
-  <nav class="nav">
-    <div class="desktop-nav">
-      <div class="logo">
-        <img src="/public/logo.png" width="30px" alt="Logo" />
-      </div>
-      <ul class="nav-menu">
-        <li><a href="index.php" class="nav-link">Beranda</a></li>
-        <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-        <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-        <li><a href="kontak.php" class="nav-link active">Kontak</a></li>
-      </ul>
-    </div>
-    <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link" id="cartLink">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
-      </a>
-
-      <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
-        <a href="admin/index.php" style="background:#d35400; color:white;">
-          <i class="fas fa-user-shield"></i> Panel
-        </a>
-
-      <?php elseif (isset($_SESSION['user_id'])): ?>
-        <a href="riwayat.php" title="Akun Saya">
-          <i class="fas fa-user"></i>
-        </a>
-
-      <?php else: ?>
-        <button onclick="openLoginModal()">
-          Masuk <i class="fas fa-sign-in-alt"></i>
+    <nav class="nav">
+      <div class="desktop-nav">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
-      <?php endif; ?>
-    </div>
-  </nav>
+
+        <div class="logo">
+          <img src="public/logo.png" width="30px" alt="Logo" />
+        </div>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.php" class="nav-link">Beranda</a></li>
+          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
+          <li><a href="katalog.php" class="nav-link">Katalog</a></li>
+          <li><a href="kontak.php" class="nav-link active">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="btn-kanan">
+        <a href="keranjang.php" class="nav-link" id="cartLink">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
+        </a>
+
+        <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
+          <a href="admin/index.php" style="background:#d35400; color:white;">
+            <i class="fas fa-user-shield"></i> Panel
+          </a>
+
+        <?php elseif (isset($_SESSION['user_id'])): ?>
+          <a href="riwayat.php" title="Akun Saya">
+            <i class="fas fa-user"></i>
+          </a>
+
+        <?php else: ?>
+          <button onclick="openLoginModal()">
+            <i class="fas fa-sign-in-alt"></i>
+          </button>
+        <?php endif; ?>
+      </div>
+    </nav>
 
   <!-- Contact Content -->
   <div class="contact-container">
@@ -170,8 +177,9 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script src="./public/js/kontak.js"></script>
-  <script src="./public/js/script.js"></script>
+  <script src="public/js/kontak.js"></script>
+  <script src="public/js/script.js"></script>
+  <script src="public/js/nav.js"></script>
 </body>
 
 </html>

@@ -2,12 +2,11 @@
 // --- BAGIAN 1: KONFIGURASI & INISIALISASI ---
 // Sesuaikan path jika letak folder config berbeda
 require_once __DIR__ . '/config/init.php';
-require_once __DIR__ . '/../vendor/autoload.php'; // Pastikan path ke vendor benar (biasanya di root project)
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// [PENTING] Inisialisasi variabel agar tidak error "Undefined variable"
 $error = '';
 $success = '';
 
@@ -40,8 +39,6 @@ function sendEmail($to, $subject, $body)
         $mail->send();
         return true;
     } catch (Exception $e) {
-        // Uncomment baris bawah untuk debugging jika email gagal
-        // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         return false;
     }
 }
@@ -69,29 +66,31 @@ if (isset($_POST['register'])) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             $token = bin2hex(random_bytes(32));
 
-            // Simpan ke Database (Status is_verified = 0)
-            // Pastikan tabel 'users' sudah punya kolom 'verification_token' dan 'is_verified'
+            // Simpan ke Database
             $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, verification_token, is_verified) VALUES (?, ?, ?, ?, ?, 0)");
             $stmt->bind_param("sssss", $name, $email, $phone, $passwordHash, $token);
 
             if ($stmt->execute()) {
                 // Kirim Email Verifikasi
-                // Ganti 'localhost/public' sesuai alamat website Anda
+                // Pastikan domain sesuai dengan setup lokal/live Anda
                 $link = "http://d23f9303ec2b.ngrok-free.app/verify.php?token=" . $token;
 
                 $emailBody = "
-                    <h3>Halo, $name!</h3>
-                    <p>Terima kasih telah mendaftar di Alam Adventure.</p>
-                    <p>Silakan klik tombol di bawah untuk mengaktifkan akun Anda:</p>
-                    <a href='$link' style='background:#2c4532; color:white; padding:10px 20px; text-decoration:none; border-radius:5px;'>Verifikasi Akun</a>
-                    <br><br>
-                    <p>Atau klik link ini: <a href='$link'>$link</a></p>
+                    <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                        <h2 style='color: #2c4532;'>Halo, $name!</h2>
+                        <p>Terima kasih telah bergabung di <strong>Alam Adventure</strong>.</p>
+                        <p>Tinggal satu langkah lagi untuk memulai petualangan Anda. Silakan klik tombol di bawah untuk mengaktifkan akun:</p>
+                        <p style='text-align: center;'>
+                            <a href='$link' style='background-color: #2c4532; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>Verifikasi Akun Saya</a>
+                        </p>
+                        <p style='margin-top: 20px; font-size: 12px; color: #777;'>Jika tombol tidak berfungsi, salin link ini: <br> $link</p>
+                    </div>
                 ";
 
                 if (sendEmail($email, "Verifikasi Akun Alam Adventure", $emailBody)) {
                     $success = "Pendaftaran berhasil! Cek email Anda untuk verifikasi.";
                 } else {
-                    $error = "Pendaftaran berhasil, namun gagal mengirim email verifikasi. Hubungi Admin.";
+                    $error = "Pendaftaran berhasil, namun gagal mengirim email verifikasi.";
                 }
             } else {
                 $error = "Gagal mendaftar ke database. Coba lagi.";
@@ -109,59 +108,89 @@ if (isset($_POST['register'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Akun - Alam Adventure</title>
     <link rel="icon" href="public/logo.png" type="image/png" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap"
-        rel="stylesheet">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --brand: #2c4532;
+            /* Palette Warna Alam Adventure */
+            --primary: #2c4532;
+            --primary-hover: #1f3225;
             --accent: #f9d84a;
-            --bg-color: #f9f5f0;
+            --bg-color: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            margin: 20px 0;
+            margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
             min-height: 100vh;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(rgba(44, 69, 50, 0.8), rgba(44, 69, 50, 0.8)), url('public/main-background.jpg');
-            background-size: cover;
-            background-position: center;
+            color: var(--text-main);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 460px;
         }
 
         .auth-card {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px 32px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 25px 0;
         }
 
         .brand-logo {
             width: 70px;
-            margin-bottom: 15px;
+            height: 70px;
+            margin-bottom: 24px;
+            object-fit: contain;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
         }
 
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--brand);
-            margin: 0 0 5px 0;
+        .auth-header {
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 26px;
             font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
         }
 
-        p.subtitle {
-            color: #666;
+        .auth-header p {
             font-size: 14px;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            margin: 0;
         }
 
         .form-group {
@@ -169,135 +198,223 @@ if (isset($_POST['register'])) {
             text-align: left;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
             margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--brand);
+        }
+
+        .input-group {
+            position: relative;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 12px 16px;
+            padding-right: 40px;
             font-size: 14px;
-            box-sizing: border-box;
-            transition: 0.3s;
+            line-height: 1.5;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
-            border-color: var(--brand);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(44, 69, 50, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 69, 50, 0.15);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        .toggle-password {
+            pointer-events: auto;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-main);
         }
 
         .btn-auth {
             width: 100%;
-            padding: 14px;
-            background: var(--brand);
+            padding: 14px 24px;
+            background-color: var(--primary);
             color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
             font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
             margin-top: 10px;
         }
 
         .btn-auth:hover {
-            background: #1f3225;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 69, 50, 0.3);
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
+        .auth-footer {
+            margin-top: 32px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alerts */
         .alert {
-            padding: 12px;
+            padding: 12px 16px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 13px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-align: left;
         }
 
         .alert-danger {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
 
         .alert-success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
         }
 
-        .footer-link {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
+        @media (max-width: 510px) {
+            body {
+                background: rgba(255, 255, 255, 0.98);
+            }
 
-        .footer-link a {
-            color: var(--brand);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .footer-link a:hover {
-            text-decoration: underline;
+            .auth-card {
+                padding: 30px 20px;
+                border-radius: 12px;
+                box-shadow: none;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="auth-card">
-        <img src="public/logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h2>Bergabung Bersama Kami</h2>
-        <p class="subtitle">Buat akun untuk mulai menyewa perlengkapan</p>
+    <div class="login-container">
+        <div class="auth-card">
+            <img src="public/logo.png" alt="Alam Adventure Logo" class="brand-logo" onerror="this.style.display='none'">
 
-        <?php if (!empty($error)): ?>
-            <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?= $error ?></div>
-        <?php endif; ?>
-
-        <?php if (!empty($success)): ?>
-            <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?= $success ?> <a
-                    href="login.php">Login sekarang</a></div>
-        <?php endif; ?>
-
-        <form method="POST">
-            <div class="form-group">
-                <label>Nama Lengkap</label>
-                <input type="text" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+            <div class="auth-header">
+                <h2>Bergabung Bersama Kami</h2>
+                <p>Buat akun baru untuk mulai menyewa perlengkapan.</p>
             </div>
 
-            <div class="form-group">
-                <label>Alamat Email</label>
-                <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <span><?= $error ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($success)): ?>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span><?= $success ?> <br><a href="login.php" style="color:inherit; text-decoration:underline;">Masuk
+                            sekarang</a></span>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <div class="input-group">
+                        <input type="text" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Alamat Email</label>
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nomor WhatsApp</label>
+                    <div class="input-group">
+                        <input type="tel" name="phone" class="form-control" placeholder="0812..." required>
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" name="password" id="password" class="form-control"
+                            placeholder="Buat password aman" required>
+                        <i class="fas fa-eye input-icon toggle-password" id="togglePass" title="Tampilkan Password"></i>
+                    </div>
+                </div>
+
+                <button type="submit" name="register" class="btn-auth">Daftar Akun</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Sudah memiliki akun? <a href="login.php">Masuk disini</a></p>
+                <p style="margin-top: 12px;">
+                    <a href="index.php" style="color: var(--text-muted); font-weight: normal; font-size: 13px;">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                    </a>
+                </p>
             </div>
-
-            <div class="form-group">
-                <label>Nomor WhatsApp</label>
-                <input type="text" name="phone" class="form-control" placeholder="0812..." required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Buat password aman" required>
-            </div>
-
-            <button type="submit" name="register" class="btn-auth">Daftar Akun</button>
-        </form>
-
-        <div class="footer-link">
-            Sudah punya akun? <a href="login.php">Masuk disini</a>
-            <br>
-            <a href="index.php" style="font-size:12px; display:block; margin-top:10px; color:#888;">&larr; Kembali ke
-                Beranda</a>
         </div>
     </div>
+
+    <script>
+        // Script Toggle Password Visibility
+        const togglePass = document.getElementById('togglePass');
+        const passInput = document.getElementById('password');
+
+        if (togglePass && passInput) {
+            togglePass.addEventListener('click', function () {
+                const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passInput.setAttribute('type', type);
+
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+    </script>
 
 </body>
 

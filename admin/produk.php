@@ -96,7 +96,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="pengaturan.php">
                         <i class="fa-solid fa-gear"></i>
                         <span>Pengaturan</span>
                     </a>

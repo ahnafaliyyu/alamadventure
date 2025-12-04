@@ -131,7 +131,7 @@ if ($new_status == 'paid') {
             }
 
             // Link Faktur (Sesuaikan URL Ngrok/Domain)
-            $ngrok_url = "hhttps://d23f9303ec2b.ngrok-free.app";
+            $ngrok_url = "https://015e3956031b.ngrok-free.app";https://015e3956031b.ngrok-free.app
             $link_faktur = $ngrok_url . "/invoice.php?order=" . $order_id;
 
 

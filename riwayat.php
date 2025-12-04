@@ -306,7 +306,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             </ul>
         </div>
         <div class="btn-kanan">
-            <span style="font-weight:600; color:#2c4532;">Hi,
+            <span style="font-weight:600; color:#fff;">Hi,
                 <?= htmlspecialchars(explode(' ', $userData['name'])[0]) ?></span>
         </div>
     </nav>

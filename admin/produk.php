@@ -79,7 +79,7 @@
             <ul class="sidebar-nav">
                 <li>
                     <a href="index.php">
-                        <i class="fa-solid fa-gauge-high"></i> 
+                        <i class="fa-solid fa-gauge-high"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
@@ -237,12 +237,49 @@
         }
 
         function renderPagination(meta, container) {
-            if (meta.total_pages <= 1) return;
-            let html = `<button class="page-btn" ${meta.current_page === 1 ? 'disabled' : ''} onclick="changePage(${meta.current_page - 1})">&laquo;</button>`;
-            for (let i = 1; i <= meta.total_pages; i++) {
-                html += `<button class="page-btn ${i === meta.current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            const totalPages = meta.total_pages;
+            const current = meta.current_page;
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
             }
-            html += `<button class="page-btn" ${meta.current_page === meta.total_pages ? 'disabled' : ''} onclick="changePage(${meta.current_page + 1})">&raquo;</button>`;
+
+            let html = '';
+
+            // Tombol Previous
+            if (current > 1) {
+                html += `<button class="page-btn" onclick="changePage(${current - 1})">&laquo;</button>`;
+            } else {
+                html += `<button class="page-btn" disabled>&laquo;</button>`;
+            }
+
+            // Logic Smart Pagination (biar gak kepanjangan tombolnya)
+            let startPage = Math.max(1, current - 2);
+            let endPage = Math.min(totalPages, current + 2);
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changePage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding:4px 8px;">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = (i === current) ? 'active' : '';
+                html += `<button class="page-btn ${activeClass}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding:4px 8px;">...</span>`;
+                html += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+
+            // Tombol Next
+            if (current < totalPages) {
+                html += `<button class="page-btn" onclick="changePage(${current + 1})">&raquo;</button>`;
+            } else {
+                html += `<button class="page-btn" disabled>&raquo;</button>`;
+            }
+
             container.innerHTML = html;
         }
 

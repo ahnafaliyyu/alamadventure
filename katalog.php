@@ -375,8 +375,7 @@ $total_pages = ceil($total_data / $limit);
         </a>
 
       <?php elseif (isset($_SESSION['user_id'])): ?>
-        <a href="riwayat.php" title="Akun Saya"
-          style="background:var(--brand); color:white; width:40px; height:40px; padding:0; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+        <a href="riwayat.php" title="Akun Saya">
           <i class="fas fa-user"></i>
         </a>
 

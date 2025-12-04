@@ -1,10 +1,3 @@
-body {
-  font-family: "Inter", sans-serif;
-  background-color: #f9f5f0;
-  color: #2c2c2c;
-  line-height: 1.6;
-}
-
 /* Hero Section - 100vh */
 .hero-section {
   position: relative;

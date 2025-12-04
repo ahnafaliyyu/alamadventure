@@ -22,11 +22,9 @@
       </div>
       <ul class="nav-menu">
         <li><a href="index.php" class="nav-link">Beranda</a></li>
-        <li>
-          <a href="tentang-kami.php" class="nav-link">Tentang Kami</a>
-        </li>
+        <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
         <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-        <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+        <li><a href="kontak.php" class="nav-link active">Kontak</a></li>
       </ul>
     </div>
     <div class="btn-kanan">
@@ -36,16 +34,19 @@
       </a>
 
       <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
-        <a href="admin/index.php" style="background:#d35400; color:white;">Admin Panel</a>
+        <a href="admin/index.php" style="background:#d35400; color:white;">
+          <i class="fas fa-user-shield"></i> Panel
+        </a>
 
       <?php elseif (isset($_SESSION['user_id'])): ?>
-        <a href="riwayat.php" title="Akun Saya"
-          style="background: #f9f5f0; color: #1a1a1a; width:35px; height:35px; padding:0; display:flex; justify-content:center; align-items:center; border-radius:50%;">
+        <a href="riwayat.php" title="Akun Saya">
           <i class="fas fa-user"></i>
         </a>
 
       <?php else: ?>
-        <a href="login.php">Login</a>
+        <button onclick="openLoginModal()">
+          Masuk <i class="fas fa-sign-in-alt"></i>
+        </button>
       <?php endif; ?>
     </div>
   </nav>

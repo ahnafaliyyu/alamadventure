@@ -213,6 +213,19 @@ body.no-padding-top {
   gap: 8px;
 }
 
+.btn-kanan a[href="riwayat.php"] {
+  width: 43px !important; /* Paksa lebar tetap */
+  height: 43px !important; /* Paksa tinggi SAMA dengan lebar */
+  padding: 0 !important; /* Hapus padding agar tidak melar */
+
+  display: inline-flex !important; /* Gunakan Flexbox */
+  justify-content: center !important; /* Tengahkan icon secara horizontal */
+  align-items: center !important; /* Tengahkan icon secara vertikal */
+
+  border-radius: 50% !important; /* Membuat lingkaran penuh */
+  aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
+}
+
 .btn-kanan a:hover,
 .btn-kanan button:hover {
   background: #f0c33c;
@@ -509,10 +522,21 @@ body.no-padding-top {
     font-size: 14px;
     padding: 10px 16px;
   }
-
   .btn-kanan a {
     padding: 10px 18px;
     font-size: 14px;
+  }
+  .btn-kanan a[href="riwayat.php"] {
+    width: 38px !important; /* Paksa lebar tetap */
+    height: 38px !important; /* Paksa tinggi SAMA dengan lebar */
+    padding: 0 !important; /* Hapus padding agar tidak melar */
+
+    display: inline-flex !important; /* Gunakan Flexbox */
+    justify-content: center !important; /* Tengahkan icon secara horizontal */
+    align-items: center !important; /* Tengahkan icon secara vertikal */
+
+    border-radius: 50% !important; /* Membuat lingkaran penuh */
+    aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
   }
 }
 
@@ -601,6 +625,18 @@ body.no-padding-top {
   .btn-kanan a {
     padding: 8px 14px;
     font-size: 13px;
+  }
+  .btn-kanan a[href="riwayat.php"] {
+    width: 34px !important; /* Paksa lebar tetap */
+    height: 34px !important; /* Paksa tinggi SAMA dengan lebar */
+    padding: 0 !important; /* Hapus padding agar tidak melar */
+
+    display: inline-flex !important; /* Gunakan Flexbox */
+    justify-content: center !important; /* Tengahkan icon secara horizontal */
+    align-items: center !important; /* Tengahkan icon secara vertikal */
+
+    border-radius: 50% !important; /* Membuat lingkaran penuh */
+    aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
   }
 }
 

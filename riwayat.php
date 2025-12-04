@@ -1,45 +1,19 @@
 <?php
 require 'config/init.php';
-
-// 1. SET TIMEZONE (PENTING AGAR SESUAI WITA/SAMARINDA)
 date_default_timezone_set('Asia/Makassar');
 
-// Cek Login User
+// Cek Login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
-
 $user_id = $_SESSION['user_id'];
 
-// --- [LOGIKA BARU] AUTO CANCEL TRANSACTION ---
-// Ambil waktu sekarang dalam format database
-$current_time = date('Y-m-d H:i:s');
-
-// Update otomatis: Batalkan jika status 'pending' DAN waktu sekarang > expires_at
-// Kita gunakan variabel PHP $current_time agar sinkron dengan zona waktu aplikasi
-$stmtCancel = $conn->prepare("UPDATE orders 
-                              SET status = 'cancelled' 
-                              WHERE user_id = ? 
-                              AND status = 'pending' 
-                              AND expires_at IS NOT NULL 
-                              AND expires_at < ?");
-$stmtCancel->bind_param("is", $user_id, $current_time);
-$stmtCancel->execute();
-$stmtCancel->close();
-// ---------------------------------------------
-
-// 2. Ambil Data User (Untuk Profil)
+// Ambil Data User (Hanya untuk Sidebar Profil)
 $stmtUser = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmtUser->bind_param("i", $user_id);
 $stmtUser->execute();
 $userData = $stmtUser->get_result()->fetch_assoc();
-
-// 3. Ambil Data Transaksi (Data yang diambil sudah status terbaru)
-$stmtTrx = $conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
-$stmtTrx->bind_param("i", $user_id);
-$stmtTrx->execute();
-$resultTrx = $stmtTrx->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -52,10 +26,14 @@ $resultTrx = $stmtTrx->get_result();
     <link rel="icon" href="public/logo.png" type="image/png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="public/css/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <style>
+        /* === STYLING ASLI (TIDAK DIUBAH) === */
         body {
             background-color: #f4f7f5;
             padding-top: 100px;
+            font-family: sans-serif;
         }
 
         .profile-container {
@@ -68,7 +46,7 @@ $resultTrx = $stmtTrx->get_result();
             margin-bottom: 50px;
         }
 
-        /* Sidebar Profil */
+        /* Sidebar Styles */
         .profile-card {
             background: white;
             border-radius: 15px;
@@ -138,7 +116,7 @@ $resultTrx = $stmtTrx->get_result();
             background: #ffcdd2;
         }
 
-        /* Area Transaksi */
+        /* History & Search Styles */
         .history-section h2 {
             font-size: 24px;
             color: #2c4532;
@@ -147,6 +125,26 @@ $resultTrx = $stmtTrx->get_result();
             padding-bottom: 10px;
         }
 
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #2c4532;
+        }
+
+        /* Order Card Styles (Ini yang dipakai AJAX nanti) */
         .order-card {
             background: white;
             border-radius: 12px;
@@ -161,7 +159,6 @@ $resultTrx = $stmtTrx->get_result();
             transform: translateY(-3px);
         }
 
-        /* Status Border Colors */
         .order-card.pending {
             border-left-color: #f9d84a;
         }
@@ -250,8 +247,48 @@ $resultTrx = $stmtTrx->get_result();
             border: 1px solid #ddd;
         }
 
+        /* Pagination Styles (Compatible with AJAX) */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 8px 14px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #2c4532;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .pagination .active {
+            background-color: #2c4532;
+            color: white;
+            border-color: #2c4532;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #eee;
+        }
+
+        /* Loader */
+        #loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
         @media (max-width: 768px) {
             .profile-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-details {
                 grid-template-columns: 1fr;
             }
         }
@@ -262,9 +299,7 @@ $resultTrx = $stmtTrx->get_result();
 
     <nav class="nav">
         <div class="desktop-nav">
-            <div class="logo">
-                <img src="public/logo.png" width="30px" alt="Logo">
-            </div>
+            <div class="logo"><img src="public/logo.png" width="30px" alt="Logo"></div>
             <ul class="nav-menu">
                 <li><a href="index.php" class="nav-link">Beranda</a></li>
                 <li><a href="katalog.php" class="nav-link">Katalog</a></li>
@@ -278,131 +313,87 @@ $resultTrx = $stmtTrx->get_result();
 
     <div class="profile-container">
         <div class="profile-card">
-            <div class="avatar-circle">
-                <?= strtoupper(substr($userData['name'], 0, 1)) ?>
-            </div>
+            <div class="avatar-circle"><?= strtoupper(substr($userData['name'], 0, 1)) ?></div>
             <div class="user-name"><?= htmlspecialchars($userData['name']) ?></div>
             <div class="user-email"><?= htmlspecialchars($userData['email']) ?></div>
-
             <div class="info-list">
-                <div class="info-item">
-                    <i class="fas fa-phone"></i> <?= htmlspecialchars($userData['phone']) ?>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-calendar"></i> Member sejak <?= date('Y', strtotime($userData['created_at'])) ?>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-check-circle"></i>
+                <div class="info-item"><i class="fas fa-phone"></i> <?= htmlspecialchars($userData['phone']) ?></div>
+                <div class="info-item"><i class="fas fa-calendar"></i> Member sejak
+                    <?= date('Y', strtotime($userData['created_at'])) ?></div>
+                <div class="info-item"><i class="fas fa-check-circle"></i>
                     <?= $userData['is_verified'] ? '<span style="color:green">Terverifikasi</span>' : '<span style="color:red">Belum Verifikasi</span>' ?>
                 </div>
             </div>
-
             <a href="logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
 
         <div class="history-section">
             <h2>Riwayat Pesanan</h2>
 
-            <?php if ($resultTrx->num_rows == 0): ?>
-                <div style="text-align:center; padding:40px; color:#888;">
-                    <i class="fas fa-shopping-basket" style="font-size:48px; margin-bottom:15px; color:#ddd;"></i>
-                    <p>Belum ada pesanan.</p>
-                    <a href="katalog.php" class="btn-action btn-pay">Mulai Sewa</a>
-                </div>
-            <?php else: ?>
-                <?php while ($order = $resultTrx->fetch_assoc()): ?>
-                    <?php
-                    // Tentukan Class & Label Status
-                    $status = $order['status'];
-                    $statusClass = 'pending';
-                    $statusLabel = 'Menunggu Pembayaran';
-                    $badgeClass = 'bg-pending';
+            <div class="search-box">
+                <input type="text" id="inputCari" placeholder="Cari Kode Transaksi..." autocomplete="off">
+            </div>
 
-                    if ($status == 'paid') {
-                        $statusClass = 'paid';
-                        $statusLabel = 'Lunas / Sedang Disewa';
-                        $badgeClass = 'bg-paid';
-                        if ($order['rental_status'] == 'returned')
-                            $statusLabel = 'Selesai (Dikembalikan)';
-                    } elseif ($status == 'cancelled' || $status == 'failed') {
-                        $statusClass = 'cancelled';
-                        $statusLabel = 'Dibatalkan';
-                        $badgeClass = 'bg-cancelled';
-                    }
-                    ?>
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>
 
-                    <div class="order-card <?= $statusClass ?>">
-                        <div class="order-header">
-                            <div>
-                                <div class="order-code">#<?= $order['order_code'] ?></div>
-                                <div class="order-date"><i class="far fa-clock"></i>
-                                    <?= date('d M Y, H:i', strtotime($order['created_at'])) ?></div>
-                            </div>
-                            <div>
-                                <span class="status-badge <?= $badgeClass ?>"><?= $statusLabel ?></span>
-                            </div>
-                        </div>
-
-                        <div class="order-details">
-                            <div>
-                                <strong>Metode Bayar:</strong> <?= strtoupper($order['payment_method']) ?><br>
-                                <strong>Metode Ambil:</strong>
-                                <?= $order['delivery_method'] == 'delivery' ? 'Diantar Kurir' : 'Ambil Sendiri' ?><br>
-                                <strong>Durasi:</strong> <?= $order['duration_days'] ?> Hari
-                            </div>
-                            <div class="order-total">
-                                Total: Rp <?= number_format($order['total_amount'], 0, ',', '.') ?>
-                            </div>
-                        </div>
-
-                        <div style="margin-top:15px; text-align:right;">
-                            <?php if ($order['status'] == 'pending'): ?>
-
-                                <?php if ($order['payment_method'] == 'online'): ?>
-                                    <a href="payment.php?order=<?= $order['order_code'] ?>" class="btn-action btn-pay">Bayar
-                                        Sekarang</a>
-                                    <small style="color:#c62828; display:block; margin-top:5px; font-weight:600;">
-                                        <i class="fas fa-stopwatch"></i> Bayar sebelum:
-                                        <?= $order['expires_at'] ? date('d M, H:i', strtotime($order['expires_at'])) : '-' ?>
-                                    </small>
-
-                                <?php else: ?>
-
-                                    <a href="invoice.php?order=<?= $order['order_code'] ?>" class="btn-action btn-pay"
-                                        style="background:#2980b9; color:white;">
-                                        Lihat Invoice COD
-                                    </a>
-
-                                    <?php if ($order['delivery_method'] == 'pickup'): ?>
-                                        <small style="color:#e67e22; display:block; margin-top:5px; font-weight:600;">
-                                            <i class="fas fa-store"></i> Silakan ambil sebelum: <br>
-                                            <?= date('d M, H:i', strtotime($order['expires_at'])) ?>
-                                        </small>
-                                    <?php else: ?>
-                                        <small style="color:#27ae60; display:block; margin-top:5px; font-weight:600;">
-                                            <i class="fas fa-motorcycle"></i> Sedang Proses Pengantaran
-                                        </small>
-                                    <?php endif; ?>
-
-                                <?php endif; ?>
-
-                            <?php elseif ($order['status'] == 'cancelled'): ?>
-                                <div style="margin-top:10px; color:#999; font-size:13px; font-style:italic;">
-                                    <i class="fas fa-times-circle"></i> Transaksi dibatalkan otomatis (Expired).
-                                </div>
-
-                            <?php elseif ($order['status'] == 'paid'): ?>
-                                <a href="invoice.php?order=<?= $order['order_code'] ?>" target="_blank"
-                                    class="btn-action btn-invoice">
-                                    <i class="fas fa-print"></i> Cetak Invoice
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            <?php endif; ?>
+            <div id="dataContainer">
+            </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+
+            // Fungsi panggil data
+            function loadRiwayat(page, keyword) {
+                $('#loader').show();
+                $('#dataContainer').css('opacity', '0.3');
+
+                $.ajax({
+                    url: 'load_riwayat.php',
+                    type: 'POST',
+                    data: {
+                        page: page,
+                        keyword: keyword
+                    },
+                    success: function (response) {
+                        $('#dataContainer').html(response);
+                        $('#loader').hide();
+                        $('#dataContainer').css('opacity', '1');
+                    },
+                    error: function () {
+                        alert('Gagal memuat data');
+                        $('#loader').hide();
+                    }
+                });
+            }
+
+            // 1. Load Pertama kali (Halaman 1, keyword kosong)
+            loadRiwayat(1, '');
+
+            // 2. Event Ketik (Live Search)
+            $('#inputCari').on('keyup', function () {
+                var keyword = $(this).val();
+                loadRiwayat(1, keyword); // Reset ke hal 1 setiap mencari
+            });
+
+            // 3. Event Klik Pagination (Delegation)
+            // Kita pakai $(document).on karena tombol pagination dibuat dinamis oleh AJAX
+            $(document).on('click', '.ajax-page', function (e) {
+                e.preventDefault();
+                var page = $(this).data('page');
+                var keyword = $('#inputCari').val();
+
+                loadRiwayat(page, keyword);
+
+                // Scroll halus ke atas list
+                $('html, body').animate({
+                    scrollTop: $(".history-section").offset().top - 120
+                }, 500);
+            });
+
+        });
+    </script>
 
 </body>
 

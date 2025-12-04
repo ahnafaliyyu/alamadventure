@@ -13,7 +13,7 @@ try {
         throw new Exception("Connection failed");
 
     // --- [LOGIKA BARU] GLOBAL AUTO CANCEL ---
-    date_default_timezone_set('Asia/Makassar'); // Set Timezone WITA
+    date_default_timezone_set('Asia/Makassar'); // Set Timezone WITA untuk operasi PHP
     $current_time = date('Y-m-d H:i:s');
 
     // Update SEMUA pesanan kadaluarsa (tanpa filter user_id)
@@ -32,7 +32,7 @@ try {
     $offset = ($page - 1) * $limit;
     $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-    // Query Pencarian & Pagination (Sama seperti sebelumnya)
+    // Query Pencarian & Pagination
     $whereSQL = "WHERE 1=1";
     $params = [];
     $types = "";
@@ -52,6 +52,7 @@ try {
     $totalData = $stmtCount->get_result()->fetch_assoc()['total'];
     $totalPages = ceil($totalData / $limit);
 
+    // Ambil Data Transaksi
     $sql = "SELECT o.*, i.invoice_no, o.payment_method, o.rental_status, o.created_at
             FROM orders o 
             LEFT JOIN invoices i ON o.order_code = i.order_code 
@@ -71,6 +72,20 @@ try {
     $data = [];
     while ($row = $result->fetch_assoc()) {
         $row['total_amount'] = (int) $row['total_amount'];
+
+        // --- [PERBAIKAN WAKTU] KONVERSI UTC KE WITA ---
+        // Server database biasanya menyimpan waktu dalam UTC.
+        // Kode ini mengonversi waktu UTC dari database ke Asia/Makassar (WITA).
+        try {
+            $dt = new DateTime($row['created_at'], new DateTimeZone('UTC')); 
+            $dt->setTimezone(new DateTimeZone('Asia/Makassar')); 
+            $row['created_at'] = $dt->format('d M Y, H:i'); 
+        } catch (Exception $e) {
+            // Fallback manual tambah 8 jam jika gagal parsing
+            $row['created_at'] = date('d M Y, H:i', strtotime($row['created_at']) + (8 * 3600));
+        }
+        // ----------------------------------------------
+
         $data[] = $row;
     }
 
@@ -85,5 +100,9 @@ try {
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+} finally {
+    if (isset($conn) && $conn instanceof mysqli) {
+        $conn->close();
+    }
 }
 ?>

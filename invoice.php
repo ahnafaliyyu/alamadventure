@@ -2,6 +2,10 @@
 // alamadventure/invoice.php
 require 'config/init.php';
 
+// --- [1] SET TIMEZONE DEFAULT ---
+// Pastikan PHP berjalan di zona waktu WITA
+date_default_timezone_set('Asia/Makassar');
+
 // 1. Ambil Order Code dari URL
 $order_code = $_GET['order'] ?? '';
 if (empty($order_code)) {
@@ -19,6 +23,20 @@ $stmt->bind_param("s", $order_code);
 $stmt->execute();
 $result = $stmt->get_result();
 $inv = $result->fetch_assoc();
+
+// --- [2] PERBAIKAN WAKTU FAKTUR (UTC -> WITA) ---
+// Bagian ini mengonversi waktu server (UTC) ke waktu lokal (WITA)
+if ($inv && !empty($inv['invoice_date'])) {
+    try {
+        $dt = new DateTime($inv['invoice_date'], new DateTimeZone('UTC'));
+        $dt->setTimezone(new DateTimeZone('Asia/Makassar'));
+        $inv['invoice_date'] = $dt->format('Y-m-d H:i:s');
+    } catch (Exception $e) {
+        // Fallback manual jika gagal (tambah 8 jam = 28800 detik)
+        $inv['invoice_date'] = date('Y-m-d H:i:s', strtotime($inv['invoice_date']) + 28800);
+    }
+}
+// ------------------------------------------------
 
 // --- LOGIKA BARU (Pengecualian untuk COD) ---
 $is_cod = ($inv && $inv['payment_method'] === 'cod');
@@ -49,7 +67,7 @@ while ($row = $resItems->fetch_assoc()) {
     $items[] = $row;
 }
 
-// Hitung baris kosong
+// Hitung baris kosong untuk layout
 $min_rows = 6;
 $current_rows = count($items);
 $empty_rows = max(0, $min_rows - $current_rows);
@@ -426,9 +444,9 @@ if ($inv['delivery_method'] == 'delivery') {
                             <b><?= htmlspecialchars($item['name']) ?></b>
                             <br><span style="font-size:11px; color:#666;">Sewa selama <?= $durasi ?> Hari</span>
                         </td>
-                        <td style="text-align:right"><?= formatRupiah($item['price']) ?></td>
+                        <td style="text-align:right">Rp <?= number_format($item['price'], 0, ',', '.') ?></td>
                         <td style="text-align:center"><?= $item['qty'] ?></td>
-                        <td style="text-align:right"><?= formatRupiah($subtotal) ?></td>
+                        <td style="text-align:right">Rp <?= number_format($subtotal, 0, ',', '.') ?></td>
                     </tr>
                 <?php endforeach; ?>
 
@@ -478,7 +496,8 @@ if ($inv['delivery_method'] == 'delivery') {
                     <tr class="grand-total">
                         <td>TOTAL BAYAR</td>
                         <td class="amount" style="font-size:18px;">Rp
-                            <?= number_format($inv['total_amount'], 0, ',', '.') ?></td>
+                            <?= number_format($inv['total_amount'], 0, ',', '.') ?>
+                        </td>
                     </tr>
                 </table>
             </div>

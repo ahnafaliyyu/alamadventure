@@ -299,24 +299,24 @@ $userData = $stmtUser->get_result()->fetch_assoc();
 
     <nav class="nav">
         <div class="desktop-nav">
-      <div class="desktop-nav">
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+            <div class="desktop-nav">
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-        <div class="logo">
-          <img src="public/logo.png" width="30px" alt="Logo" />
-        </div>
+                <div class="logo">
+                    <img src="public/logo.png" width="30px" alt="Logo" />
+                </div>
 
-        <ul class="nav-menu" id="navMenu">
-          <li><a href="index.php" class="nav-link">Beranda</a></li>
-          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-          <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
-        </ul>
-      </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.php" class="nav-link">Beranda</a></li>
+                    <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
+                    <li><a href="katalog.php" class="nav-link">Katalog</a></li>
+                    <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+                </ul>
+            </div>
         </div>
         <div class="btn-kanan">
             <span style="font-weight:600; color:#fff;">Hi
@@ -352,6 +352,27 @@ $userData = $stmtUser->get_result()->fetch_assoc();
 
             <div id="dataContainer">
             </div>
+        </div>
+    </div>
+
+    <div id="loginChoiceModal" class="login-modal-overlay">
+        <div class="login-modal-content">
+            <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+
+            <div class="login-modal-header">
+                <h3>Selamat Datang!</h3>
+                <p>Silakan pilih cara masuk Anda</p>
+            </div>
+
+            <a href="login.php" class="option-user">
+                <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
+            </a>
+
+            <div class="modal-divider"><span>ATAU</span></div>
+
+            <a href="admin/login.php" class="option-admin">
+                <i class="fas fa-lock"></i> Masuk sebagai Admin
+            </a>
         </div>
     </div>
 
@@ -409,7 +430,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
         });
     </script>
 
-<script src="public/js/nav.js"></script>
+    <script src="public/js/nav.js"></script>
 
 </body>
 

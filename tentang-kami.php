@@ -173,6 +173,28 @@
       <p>© 2025 ALAMADVENTURE SMD • Semua hak cipta dilindungi</p>
     </div>
   </footer>
+
+  <div id="loginChoiceModal" class="login-modal-overlay">
+    <div class="login-modal-content">
+      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+
+      <div class="login-modal-header">
+        <h3>Selamat Datang!</h3>
+        <p>Silakan pilih cara masuk Anda</p>
+      </div>
+
+      <a href="login.php" class="option-user">
+        <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
+      </a>
+
+      <div class="modal-divider"><span>ATAU</span></div>
+
+      <a href="admin/login.php" class="option-admin">
+        <i class="fas fa-lock"></i> Masuk sebagai Admin
+      </a>
+    </div>
+  </div>
+
   <script src="public/js/script.js"></script>
   <script src="public/js/nav.js"></script>
 </body>

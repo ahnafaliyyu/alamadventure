@@ -1,6 +1,9 @@
 <?php
 require 'config/init.php';
 
+// 1. SET TIMEZONE (PENTING AGAR SESUAI WITA/SAMARINDA)
+date_default_timezone_set('Asia/Makassar');
+
 // Cek Login User
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -9,13 +12,30 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. Ambil Data User
+// --- [LOGIKA BARU] AUTO CANCEL TRANSACTION ---
+// Ambil waktu sekarang dalam format database
+$current_time = date('Y-m-d H:i:s');
+
+// Update otomatis: Batalkan jika status 'pending' DAN waktu sekarang > expires_at
+// Kita gunakan variabel PHP $current_time agar sinkron dengan zona waktu aplikasi
+$stmtCancel = $conn->prepare("UPDATE orders 
+                              SET status = 'cancelled' 
+                              WHERE user_id = ? 
+                              AND status = 'pending' 
+                              AND expires_at IS NOT NULL 
+                              AND expires_at < ?");
+$stmtCancel->bind_param("is", $user_id, $current_time);
+$stmtCancel->execute();
+$stmtCancel->close();
+// ---------------------------------------------
+
+// 2. Ambil Data User (Untuk Profil)
 $stmtUser = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmtUser->bind_param("i", $user_id);
 $stmtUser->execute();
 $userData = $stmtUser->get_result()->fetch_assoc();
 
-// 2. Ambil Data Transaksi
+// 3. Ambil Data Transaksi (Data yang diambil sudah status terbaru)
 $stmtTrx = $conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
 $stmtTrx->bind_param("i", $user_id);
 $stmtTrx->execute();

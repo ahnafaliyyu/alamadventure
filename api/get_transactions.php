@@ -9,14 +9,30 @@ require_once __DIR__ . '/../config/database.php';
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 try {
-    if ($conn->connect_error) throw new Exception("Connection failed");
+    if ($conn->connect_error)
+        throw new Exception("Connection failed");
 
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    // --- [LOGIKA BARU] GLOBAL AUTO CANCEL ---
+    date_default_timezone_set('Asia/Makassar'); // Set Timezone WITA
+    $current_time = date('Y-m-d H:i:s');
+
+    // Update SEMUA pesanan kadaluarsa (tanpa filter user_id)
+    $stmtAuto = $conn->prepare("UPDATE orders 
+                                SET status = 'cancelled' 
+                                WHERE status = 'pending' 
+                                AND expires_at IS NOT NULL 
+                                AND expires_at < ?");
+    $stmtAuto->bind_param("s", $current_time);
+    $stmtAuto->execute();
+    $stmtAuto->close();
+    // ----------------------------------------
+
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
     $limit = 10;
     $offset = ($page - 1) * $limit;
     $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-    // Logic Pencarian
+    // Query Pencarian & Pagination (Sama seperti sebelumnya)
     $whereSQL = "WHERE 1=1";
     $params = [];
     $types = "";
@@ -28,22 +44,21 @@ try {
         $types = "sss";
     }
 
-    // Hitung Total
     $sqlCount = "SELECT COUNT(*) as total FROM orders o LEFT JOIN invoices i ON o.order_code = i.order_code $whereSQL";
     $stmtCount = $conn->prepare($sqlCount);
-    if (!empty($params)) $stmtCount->bind_param($types, ...$params);
+    if (!empty($params))
+        $stmtCount->bind_param($types, ...$params);
     $stmtCount->execute();
     $totalData = $stmtCount->get_result()->fetch_assoc()['total'];
     $totalPages = ceil($totalData / $limit);
 
-    // Ambil Data
     $sql = "SELECT o.*, i.invoice_no, o.payment_method, o.rental_status, o.created_at
             FROM orders o 
             LEFT JOIN invoices i ON o.order_code = i.order_code 
             $whereSQL 
             ORDER BY o.created_at DESC 
             LIMIT ? OFFSET ?";
-    
+
     $params[] = $limit;
     $params[] = $offset;
     $types .= "ii";
@@ -55,7 +70,7 @@ try {
 
     $data = [];
     while ($row = $result->fetch_assoc()) {
-        $row['total_amount'] = (int)$row['total_amount'];
+        $row['total_amount'] = (int) $row['total_amount'];
         $data[] = $row;
     }
 

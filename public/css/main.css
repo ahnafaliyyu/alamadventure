@@ -54,8 +54,9 @@ body.no-padding-top {
 /* 2. Kotak Konten Modal */
 .login-modal-content {
   background: white;
-  width: 90%;
-  max-width: 350px; /* Ukuran pas, tidak terlalu lebar */
+  width: 100%;
+  max-width: 350px;
+  margin: 0 20px;
   border-radius: 20px;
   padding: 30px 25px;
   text-align: center;
@@ -492,8 +493,8 @@ body.no-padding-top {
   }
 
   .btn-kanan button {
-  padding: 10.5px 18px;
-}
+    padding: 10.5px 18px;
+  }
 
   .nav {
     padding: 10px 16px 10px 20px;
@@ -563,8 +564,8 @@ body.no-padding-top {
     padding-top: 49px;
   }
   .btn-kanan button {
-  padding: 8px 16px;
-}
+    padding: 8px 16px;
+  }
 
   body.no-padding-top {
     padding-top: 0;

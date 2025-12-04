@@ -1,23 +1,29 @@
 <?php
-require '../config/init.php';
-// Cek Login Admin (sesuaikan dengan logic auth admin Anda)
-if (!isset($_SESSION['user_logged_in'])) {
-    header("Location: login.php");
+// admin/cancel_order.php
+require_once __DIR__ . '/../config/init.php';
+
+// Set header JSON
+header('Content-Type: application/json');
+
+// Cek Login Admin
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    echo json_encode(['success' => false, 'message' => 'Akses ditolak (Unauthorized)']);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
     $order_id = (int) $_POST['order_id'];
 
-    // Ubah status jadi cancelled
-    // Stok akan otomatis tersedia kembali karena katalog.php hanya menghitung stok dari order yang status != cancelled
+    // Lakukan Update
     $stmt = $conn->prepare("UPDATE orders SET status = 'cancelled' WHERE id = ?");
     $stmt->bind_param("i", $order_id);
 
     if ($stmt->execute()) {
-        header("Location: transaksi.php?msg=cancelled");
+        echo json_encode(['success' => true, 'message' => 'Pesanan berhasil dibatalkan secara manual.']);
     } else {
-        echo "Gagal membatalkan.";
+        echo json_encode(['success' => false, 'message' => 'Gagal membatalkan pesanan: ' . $conn->error]);
     }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Permintaan tidak valid']);
 }
 ?>

@@ -80,8 +80,12 @@ if ($payment_method === 'cod') {
     $batas_pesan = "24 Jam";
 } else {
     // ONLINE: Batas 2 Jam (Untuk segera transfer)
-    $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
-    $batas_pesan = "2 Jam";
+    // $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
+    // $batas_pesan = "2 Jam";
+
+    // --- MODE TESTING (1 MENIT) ---
+    $expires_at = date('Y-m-d H:i:s', strtotime('+1 minute'));
+    $batas_pesan = "1 Menit";
 }
 
 $conn->begin_transaction();
@@ -104,7 +108,7 @@ try {
 
     // --- SETUP URL & PESAN WA ---
     $admin_phone = "082241559607"; // GANTI DENGAN NOMOR ADMIN
-    $ngrok_url = "https://d23f9303ec2b.ngrok-free.app"; // GANTI URL PUBLIK/NGROK BARU
+    $ngrok_url = "https://015e3956031b.ngrok-free.app"; // GANTI URL PUBLIK/NGROK BARU
     $link_faktur = $ngrok_url . "/invoice.php?order=" . $order_code;
     $formatted_amount = "Rp " . number_format($total_transaction, 0, ',', '.');
 
@@ -180,8 +184,14 @@ try {
             'item_details' => $item_details,
             'expiry' => [
                 'start_time' => date("Y-m-d H:i:s T"),
-                'unit' => 'hours',
-                'duration' => 2
+
+                // --- CODE ASLI (Disimpan sementara) ---
+                // 'unit' => 'hours',
+                // 'duration' => 2
+
+                // --- MODE TESTING (1 MENIT) ---
+                'unit' => 'minutes',
+                'duration' => 1
             ]
         ];
 

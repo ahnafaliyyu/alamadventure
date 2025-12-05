@@ -1,6 +1,56 @@
 <?php
 require 'config/init.php'; // Koneksi database
 
+// --- 1. AMBIL SETTING LANDING PAGE ---
+// Pastikan fungsi getSetting tersedia (biasanya di init.php atau dibuat manual disini jika error)
+if (!function_exists('getSetting')) {
+  function getSetting($key)
+  {
+    global $conn;
+    $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
+    $stmt->bind_param("s", $key);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    return ($row = $res->fetch_assoc()) ? $row['setting_value'] : '';
+  }
+}
+
+$heroTitle = getSetting('landing_title');
+$heroDesc = getSetting('landing_desc');
+$heroBg = getSetting('landing_bg_image');
+
+// Default Values jika kosong
+if (empty($heroTitle))
+  $heroTitle = "Sewa Alat Camping<br>Terpercaya di Samarinda";
+if (empty($heroDesc))
+  $heroDesc = "Perlengkapan camping lengkap dan terawat untuk petualangan outdoor kamu.";
+if (empty($heroBg))
+  $heroBg = "public/main-background.jpg"; // Default background
+
+// 1. DATA HERO
+$heroTitle = getSetting('landing_title') ?: "Sewa Alat Camping<br>Terpercaya di Samarinda";
+$heroDesc = getSetting('landing_desc') ?: "Perlengkapan camping lengkap dan terawat...";
+$heroBg = getSetting('landing_bg_image') ?: "public/main-background.jpg";
+
+// 2. DATA STATS
+$statsTitle = getSetting('stats_title');
+$statsDesc = getSetting('stats_desc');
+
+// Default value jika database kosong/belum diisi
+if (empty($statsTitle))
+  $statsTitle = "Kenapa Memilih <strong>Alam Adventure?</strong>";
+
+if (empty($statsDesc))
+  $statsDesc = "Perlengkapan lengkap, berkualitas, dan layanan siap membantu kapan saja...";
+$stat1_num = getSetting('stat_1_num') ?: '330+';
+$stat1_lbl = getSetting('stat_1_label') ?: 'Pelanggan Puas';
+
+$stat2_num = getSetting('stat_2_num') ?: '4 Tahun';
+$stat2_lbl = getSetting('stat_2_label') ?: 'Pengalaman';
+
+$stat3_num = getSetting('stat_3_num') ?: '50+';
+$stat3_lbl = getSetting('stat_3_label') ?: 'Produk Tersedia';
+
 // --- QUERY PRODUK UNGGULAN (TOP 10 BEST SELLER) ---
 // Logika: Menggabungkan tabel products dengan order_items
 // Menghitung jumlah qty yang terjual per produk
@@ -13,7 +63,7 @@ $sql_best = "SELECT p.*,
              AND (o.status != 'cancelled' AND o.status != 'failed')
              GROUP BY p.id
              ORDER BY total_rented DESC, p.id DESC
-             LIMIT 10";
+             LIMIT 8";
 
 $result_best = $conn->query($sql_best);
 ?>
@@ -32,6 +82,12 @@ $result_best = $conn->query($sql_best);
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="public/css/style.css">
   <link rel="stylesheet" href="public/css/main.css">
+  <style>
+    .main-content {
+      background-image: linear-gradient(rgba(0, 15, 2, 0.5), rgba(0, 0, 0, 0.5)),
+        url('<?= $heroBg ?>') !important;
+    }
+  </style>
 </head>
 
 <body class="no-padding-top">
@@ -101,29 +157,26 @@ $result_best = $conn->query($sql_best);
   <!-- Kenapa Kami -->
   <section class="stats-container" data-aos="fade-up" data-aos-duration="800">
     <div class="left-section">
-      <h2 class="main-title">
-        Kenapa Memilih <strong>Alam Adventure?</strong>
-      </h2>
+      <h2 class="main-title"><?= $statsTitle ?></h2>
       <p class="description">
-        Perlengkapan lengkap, berkualitas, dan layanan siap membantu kapan saja
-        untuk petualangan camping-mu di Kalimantan Timur.
+        <?= htmlspecialchars($statsDesc) ?>
       </p>
 
       <div class="stats-grid">
         <div class="stat-item">
           <i class="fas fa-users icon-dark"></i>
-          <p class="stat-number">330+</p>
-          <p class="stat-label">Pelanggan Puas</p>
+          <p class="stat-number"><?= htmlspecialchars($stat1_num) ?></p>
+          <p class="stat-label"><?= htmlspecialchars($stat1_lbl) ?></p>
         </div>
         <div class="stat-item">
           <i class="fas fa-clock icon-dark"></i>
-          <p class="stat-number">4 Tahun</p>
-          <p class="stat-label">Pengalaman</p>
+          <p class="stat-number"><?= htmlspecialchars($stat2_num) ?></p>
+          <p class="stat-label"><?= htmlspecialchars($stat2_lbl) ?></p>
         </div>
         <div class="stat-item">
           <i class="fas fa-box icon-dark"></i>
-          <p class="stat-number">50+</p>
-          <p class="stat-label">Produk Tersedia</p>
+          <p class="stat-number"><?= htmlspecialchars($stat3_num) ?></p>
+          <p class="stat-label"><?= htmlspecialchars($stat3_lbl) ?></p>
         </div>
       </div>
     </div>
@@ -184,9 +237,10 @@ $result_best = $conn->query($sql_best);
                     class="card-image" />
 
                   <div class="card-overlay">
-                    <h3 class="card-title"><?= htmlspecialchars($row['name']) ?></h3>
+                    <h3 class="card-title" style="color: #f0c33c; text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);">
+                      <?= htmlspecialchars($row['name']) ?></h3>
                     <p class="card-subtitle">
-                      <i class="fas fa-star"></i> 5.0 •
+                      <i class="fas fa-star"></i>
                       <?php if ($row['total_rented'] > 0): ?>
                         Disewa <?= $row['total_rented'] ?>x
                       <?php else: ?>

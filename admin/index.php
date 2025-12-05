@@ -39,16 +39,16 @@
                         <span>Pengaturan</span>
                     </a>
                 </li>
-                <li class="logout">
-                    <a href="logout.php">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-                <li class="beranda">
+                <li class="Beranda">
                     <a href="../index.php">
                         <i class="fa-solid fa-house"></i>
                         <span>Beranda</span>
+                    </a>
+                </li>
+                <li class="Logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
                     </a>
                 </li>
             </ul>

@@ -93,7 +93,23 @@
                 <h2>ALAM<span>ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="produk.php" class="active"><i class="fa-solid fa-arrow-left"></i> <span>Kembali</span></a>
+                <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
+                <li><a href="produk.php"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a></li>
+                <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a>
+                </li>
+                <li><a href="pengaturan.php" class="active"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+                </li>
+                <li class="Beranda">
+                    <a href="../index.php">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Beranda</span>
+                    </a>
+                </li>
+                <li class="Logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
                 </li>
             </ul>
         </aside>

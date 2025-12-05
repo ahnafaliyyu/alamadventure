@@ -114,12 +114,12 @@ h4 {
   font-weight: 600;
 }
 
-.sidebar-nav .logout {
+.sidebar-nav .Beranda {
   margin-top: auto;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
-.sidebar-nav .logout a:hover {
+.sidebar-nav .Logout a:hover {
   color: #ff8787;
   background: rgba(255, 107, 107, 0.1);
 }
@@ -301,35 +301,90 @@ h4 {
   vertical-align: middle;
 }
 
-/* --- FORMS --- */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+/* --- FORMS & INPUTS --- */
+.form-group {
+  margin-bottom: 24px; /* Jarak antar form lebih lega */
 }
 
-.form-group {
-  margin-bottom: 20px;
-}
 .form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
   color: var(--brand);
+  font-size: 14px;
+  letter-spacing: 0.3px;
 }
-.form-group input,
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Styling Input Text, Textarea, Select */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="password"],
+.form-group input[type="email"],
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  background: #fff;
-  border-radius: var(--radius);
-  font-family: inherit;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db; /* Warna border lebih soft */
+  background: #ffffff;
+  border-radius: 8px; /* Radius sedikit dikurangi agar tidak terlalu bulat */
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--text-main);
+  transition: all 0.2s ease-in-out;
 }
-.form-group input:focus {
+
+/* Efek saat Input di-klik (Focus) */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: var(--brand);
   outline: none;
+  box-shadow: 0 0 0 4px rgba(44, 69, 50, 0.1); /* Glow effect hijau */
+}
+
+.form-group textarea {
+  resize: vertical; /* Hanya bisa ditarik ke bawah */
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* --- CUSTOM FILE INPUT (Tombol Upload) --- */
+/* Mengubah tampilan default 'Choose File' menjadi tombol keren */
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  background: #f8f9fa;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-right: 12px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: var(--brand-dark);
 }
 
 /* --- BUTTONS --- */

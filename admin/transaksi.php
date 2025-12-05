@@ -198,6 +198,12 @@
             align-items: flex-end;
             flex-direction: column;
         }
+
+        @media (max-width: 768px) {
+            .btn-toggle-sidebar {
+                display: block;
+            }
+        }
     </style>
 </head>
 
@@ -212,14 +218,20 @@
                 <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
                 <li><a href="produk.php"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a></li>
                 <li><a href="transaksi.php" class="active"><i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span>Transaksi</span></a></li>
+                        <span>Transaksi</span></a>
+                </li>
                 <li><a href="pengaturan.php"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
-                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Keluar</span></a></li>
-                <li class="beranda">
+                </li>
+                <li class="Beranda">
                     <a href="../index.php">
                         <i class="fa-solid fa-house"></i>
                         <span>Beranda</span>
+                    </a>
+                </li>
+                <li class="Logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
                     </a>
                 </li>
             </ul>
@@ -228,9 +240,7 @@
         <main class="main-content">
             <div class="main-header">
                 <div style="display:flex; align-items:center; gap:15px; width:100%;">
-                    <button class="btn-toggle-sidebar" id="sidebarToggle"
-                        style="display:block; background:none; border:none; font-size:24px;"><i
-                            class="fa-solid fa-bars"></i></button>
+                    <button class="btn-toggle-sidebar" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
                     <h1>Transaksi</h1>
                 </div>
                 <div class="search-box">

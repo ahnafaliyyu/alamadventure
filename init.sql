@@ -118,9 +118,16 @@ INSERT INTO admins (username, password) VALUES
 ('admin', '$2y$10$8.K/..password_hash_generated_here..'); 
 -- Catatan: Password hash di atas perlu diganti. Untuk sekarang kita akan handle di script login.
 
--- Hapus setting denda lama jika ada (agar tidak bingung)
-DELETE FROM settings WHERE setting_key = 'rental_fine';
-
--- Tambahkan setting baru untuk persentase
-INSERT INTO settings (setting_key, setting_value, description) VALUES 
-('rental_fine_percent', '50', 'Persentase Denda (%) dari Total Sewa Harian');
+INSERT INTO settings (setting_key, setting_value, description) VALUES
+('landing_title', 'Sewa Alat Camping<br>Terpercaya di Samarinda', 'Judul Hero'),
+('landing_desc', 'Perlengkapan camping lengkap dan terawat.', 'Deskripsi Hero'),
+('landing_bg_image', 'public/main-background.jpg', 'Hero Background'),
+('stats_title', 'Kenapa Memilih Alam Adventure?', 'Judul Stats'),
+('stats_desc', 'Layanan terbaik untuk petualangan Anda.', 'Deskripsi Stats'),
+('stat_1_num', '330+', 'Angka Stat 1'),
+('stat_1_label', 'Pelanggan Puas', 'Label Stat 1'),
+('stat_2_num', '4 Tahun', 'Angka Stat 2'),
+('stat_2_label', 'Pengalaman', 'Label Stat 2'),
+('stat_3_num', '50+', 'Angka Stat 3'),
+('stat_3_label', 'Produk Tersedia', 'Label Stat 3')
+ON DUPLICATE KEY UPDATE setting_key=setting_key;

@@ -60,8 +60,18 @@
                 <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a>
                 </li>
                 <li><a href="pengaturan.php"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a></li>
-                <li class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Keluar</span></a></li>
+                <li class="Beranda">
+                    <a href="../index.php">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Beranda</span>
+                    </a>
+                </li>
+                <li class="Logout">
+                    <a href="logout.php">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
             </ul>
         </aside>
 

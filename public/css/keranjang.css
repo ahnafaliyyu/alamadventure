@@ -275,6 +275,8 @@ body {
   justify-content: center;
   text-decoration: none;
   transition: 0.2s;
+  cursor: pointer;
+  border: none;
 }
 .btn-trash:hover {
   background: #ef4444;
@@ -532,4 +534,8 @@ body {
   .page-title {
     font-size: 26px;
   }
+
+  .cart-wrapper {
+  padding: 15px;
+}
 }

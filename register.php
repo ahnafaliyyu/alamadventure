@@ -1,49 +1,12 @@
 <?php
 // --- BAGIAN 1: KONFIGURASI & INISIALISASI ---
-// Sesuaikan path jika letak folder config berbeda
-require_once __DIR__ . '/config/init.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+require_once 'config/init.php';
+require_once 'config/mail.php'; // Memanggil fungsi kirim email
 
 $error = '';
 $success = '';
 
-// --- BAGIAN 2: FUNGSI KIRIM EMAIL ---
-function sendEmail($to, $subject, $body)
-{
-    $mail = new PHPMailer(true);
-    try {
-        // Konfigurasi Server SMTP
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-
-        // GANTI DENGAN EMAIL & APP PASSWORD ANDA
-        $mail->Username = 'ridho.setiawan24406@gmail.com';
-        $mail->Password = 'yoeovvavzpuzycua';
-
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-
-        // Penerima
-        $mail->setFrom('no-reply@alamadventure.com', 'Alam Adventure');
-        $mail->addAddress($to);
-
-        // Konten
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = $body;
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
-// --- BAGIAN 3: PROSES REGISTER ---
+// --- BAGIAN 2: PROSES REGISTER ---
 if (isset($_POST['register'])) {
     $name = trim(htmlspecialchars($_POST['name']));
     $email = trim(htmlspecialchars($_POST['email']));
@@ -71,29 +34,46 @@ if (isset($_POST['register'])) {
             $stmt->bind_param("sssss", $name, $email, $phone, $passwordHash, $token);
 
             if ($stmt->execute()) {
-                // Kirim Email Verifikasi
-                // Pastikan domain sesuai dengan setup lokal/live Anda
-                $link = "http://d23f9303ec2b.ngrok-free.app/verify.php?token=" . $token;
+                // --- BAGIAN 3: KIRIM EMAIL VERIFIKASI ---
 
+                // Deteksi URL dasar secara otomatis (Localhost / Ngrok / Hosting)
+                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+                $host = $_SERVER['HTTP_HOST'];
+                // Sesuaikan path folder jika perlu (misal: /alamadventure/verify.php)
+                $path = dirname($_SERVER['PHP_SELF']);
+                $base_url = $protocol . "://" . $host . $path;
+
+                $link = $base_url . "/verify.php?token=" . $token;
+
+                $emailSubject = "Verifikasi Akun Alam Adventure";
                 $emailBody = "
-                    <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
-                        <h2 style='color: #2c4532;'>Halo, $name!</h2>
-                        <p>Terima kasih telah bergabung di <strong>Alam Adventure</strong>.</p>
-                        <p>Tinggal satu langkah lagi untuk memulai petualangan Anda. Silakan klik tombol di bawah untuk mengaktifkan akun:</p>
-                        <p style='text-align: center;'>
-                            <a href='$link' style='background-color: #2c4532; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>Verifikasi Akun Saya</a>
-                        </p>
-                        <p style='margin-top: 20px; font-size: 12px; color: #777;'>Jika tombol tidak berfungsi, salin link ini: <br> $link</p>
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;'>
+                        <div style='background-color: #2c4532; padding: 20px; text-align: center;'>
+                            <h2 style='color: #ffffff; margin: 0;'>Selamat Datang!</h2>
+                        </div>
+                        <div style='padding: 20px; color: #333;'>
+                            <p>Halo <strong>$name</strong>,</p>
+                            <p>Terima kasih telah bergabung di Alam Adventure. Untuk mulai menyewa peralatan, silakan verifikasi email Anda dengan mengklik tombol di bawah ini:</p>
+                            <div style='text-align: center; margin: 30px 0;'>
+                                <a href='$link' style='background-color: #f9d84a; color: #2c4532; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block;'>Verifikasi Akun Saya</a>
+                            </div>
+                            <p style='font-size: 12px; color: #777;'>Atau salin link berikut ke browser Anda:<br> $link</p>
+                        </div>
+                        <div style='background-color: #f4f7f5; padding: 15px; text-align: center; font-size: 12px; color: #666;'>
+                            &copy; " . date('Y') . " Alam Adventure
+                        </div>
                     </div>
                 ";
 
-                if (sendEmail($email, "Verifikasi Akun Alam Adventure", $emailBody)) {
-                    $success = "Pendaftaran berhasil! Cek email Anda untuk verifikasi.";
+                // Panggil fungsi dari config/mail.php
+                if (sendEmail($email, $emailSubject, $emailBody)) {
+                    $success = "Pendaftaran berhasil! Link verifikasi telah dikirim ke <strong>$email</strong>. Silakan cek Inbox atau Spam.";
                 } else {
-                    $error = "Pendaftaran berhasil, namun gagal mengirim email verifikasi.";
+                    // Jika email gagal, user tetap terdaftar tapi belum verifikasi
+                    $error = "Pendaftaran berhasil, namun sistem gagal mengirim email verifikasi. Hubungi Admin.";
                 }
             } else {
-                $error = "Gagal mendaftar ke database. Coba lagi.";
+                $error = "Gagal mendaftar ke database. Silakan coba lagi.";
             }
         }
     }
@@ -108,18 +88,11 @@ if (isset($_POST['register'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Akun - Alam Adventure</title>
     <link rel="icon" href="public/logo.png" type="image/png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            /* Palette Warna Alam Adventure */
             --primary: #2c4532;
             --primary-hover: #1f3225;
             --accent: #f9d84a;
@@ -129,7 +102,6 @@ if (isset($_POST['register'])) {
             --border-color: #e2e8f0;
             --input-bg: #ffffff;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
 
@@ -143,16 +115,19 @@ if (isset($_POST['register'])) {
             font-family: 'Inter', sans-serif;
             background-color: var(--primary);
             min-height: 100vh;
-            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-main);
+            background-image: url('public/main-background.jpg');
+            background-size: cover;
+            background-blend-mode: multiply;
         }
 
         .login-container {
             width: 100%;
             max-width: 460px;
+            padding: 20px;
         }
 
         .auth-card {
@@ -162,8 +137,6 @@ if (isset($_POST['register'])) {
             padding: 40px 32px;
             text-align: center;
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin: 25px 0;
         }
 
         .brand-logo {
@@ -175,16 +148,11 @@ if (isset($_POST['register'])) {
             box-shadow: var(--shadow-sm);
         }
 
-        .auth-header {
-            margin-bottom: 32px;
-        }
-
         .auth-header h2 {
             font-size: 26px;
             font-weight: 700;
             color: var(--primary);
             margin: 0 0 8px 0;
-            letter-spacing: -0.5px;
         }
 
         .auth-header p {
@@ -194,7 +162,7 @@ if (isset($_POST['register'])) {
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin: 30px 0 20px 0;
             text-align: left;
         }
 
@@ -202,7 +170,6 @@ if (isset($_POST['register'])) {
             display: block;
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-main);
             margin-bottom: 8px;
         }
 
@@ -215,12 +182,9 @@ if (isset($_POST['register'])) {
             padding: 12px 16px;
             padding-right: 40px;
             font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-main);
-            background-color: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: 0.2s;
         }
 
         .form-control:focus {
@@ -236,17 +200,11 @@ if (isset($_POST['register'])) {
             transform: translateY(-50%);
             color: #94a3b8;
             pointer-events: none;
-            font-size: 14px;
         }
 
         .toggle-password {
             pointer-events: auto;
             cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .toggle-password:hover {
-            color: var(--text-main);
         }
 
         .btn-auth {
@@ -259,15 +217,13 @@ if (isset($_POST['register'])) {
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
             margin-top: 10px;
+            transition: 0.2s;
         }
 
         .btn-auth:hover {
             background-color: var(--primary-hover);
             transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
         }
 
         .auth-footer {
@@ -282,14 +238,12 @@ if (isset($_POST['register'])) {
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.2s;
         }
 
         .auth-footer a:hover {
             text-decoration: underline;
         }
 
-        /* Alerts */
         .alert {
             padding: 12px 16px;
             border-radius: 8px;
@@ -312,18 +266,6 @@ if (isset($_POST['register'])) {
             color: #166534;
             border: 1px solid #bbf7d0;
         }
-
-        @media (max-width: 510px) {
-            body {
-                background: rgba(255, 255, 255, 0.98);
-            }
-
-            .auth-card {
-                padding: 30px 20px;
-                border-radius: 12px;
-                box-shadow: none;
-            }
-        }
     </style>
 </head>
 
@@ -331,7 +273,7 @@ if (isset($_POST['register'])) {
 
     <div class="login-container">
         <div class="auth-card">
-            <img src="public/logo.png" alt="Alam Adventure Logo" class="brand-logo" onerror="this.style.display='none'">
+            <img src="public/logo.png" alt="Logo" class="brand-logo">
 
             <div class="auth-header">
                 <h2>Bergabung Bersama Kami</h2>
@@ -347,8 +289,7 @@ if (isset($_POST['register'])) {
             <?php if (!empty($success)): ?>
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i>
-                    <span><?= $success ?> <br><a href="login.php" style="color:inherit; text-decoration:underline;">Masuk
-                            sekarang</a></span>
+                    <span><?= $success ?></span>
                 </div>
             <?php endif; ?>
 
@@ -356,7 +297,7 @@ if (isset($_POST['register'])) {
                 <div class="form-group">
                     <label class="form-label">Nama Lengkap</label>
                     <div class="input-group">
-                        <input type="text" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap" required>
                         <i class="fas fa-user input-icon"></i>
                     </div>
                 </div>
@@ -364,7 +305,7 @@ if (isset($_POST['register'])) {
                 <div class="form-group">
                     <label class="form-label">Alamat Email</label>
                     <div class="input-group">
-                        <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+                        <input type="email" name="email" class="form-control" placeholder="email@contoh.com" required>
                         <i class="fas fa-envelope input-icon"></i>
                     </div>
                 </div>
@@ -382,7 +323,7 @@ if (isset($_POST['register'])) {
                     <div class="input-group">
                         <input type="password" name="password" id="password" class="form-control"
                             placeholder="Buat password aman" required>
-                        <i class="fas fa-eye input-icon toggle-password" id="togglePass" title="Tampilkan Password"></i>
+                        <i class="fas fa-eye input-icon toggle-password" id="togglePass"></i>
                     </div>
                 </div>
 
@@ -390,32 +331,25 @@ if (isset($_POST['register'])) {
             </form>
 
             <div class="auth-footer">
-                <p>Sudah memiliki akun? <a href="login.php">Masuk disini</a></p>
-                <p style="margin-top: 12px;">
-                    <a href="index.php" style="color: var(--text-muted); font-weight: normal; font-size: 13px;">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-                    </a>
-                </p>
+                <p>Sudah punya akun? <a href="login.php">Masuk disini</a></p>
+                <p style="margin-top: 10px;"><a href="index.php" style="color: #64748b; font-weight: normal;">&larr;
+                        Kembali ke Beranda</a></p>
             </div>
         </div>
     </div>
 
     <script>
-        // Script Toggle Password Visibility
         const togglePass = document.getElementById('togglePass');
         const passInput = document.getElementById('password');
-
         if (togglePass && passInput) {
             togglePass.addEventListener('click', function () {
                 const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passInput.setAttribute('type', type);
-
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
         }
     </script>
-
 </body>
 
 </html>

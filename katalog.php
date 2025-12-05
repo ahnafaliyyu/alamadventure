@@ -227,6 +227,41 @@ $total_pages = ceil($total_data / $limit);
   <link rel="stylesheet" href="./public/css/main.css" />
   <link rel="stylesheet" href="./public/css/katalog.css" />
   <style>
+    /* --- CSS ANIMASI TOMBOL KERANJANG (BARU) --- */
+    @keyframes cartPop {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(1.25);
+        box-shadow: 0 0 15px rgba(249, 216, 74, 0.6);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: none;
+      }
+    }
+
+    /* Class ini ditambahkan lewat JS saat sukses */
+    .cart-btn.added-success {
+      animation: cartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      background-color: var(--brand-900, #1f3225) !important;
+      /* Fallback warna hijau tua */
+      color: var(--accent, #f9d84a) !important;
+      /* Fallback warna kuning */
+      border-color: var(--brand-900, #1f3225) !important;
+      pointer-events: none;
+    }
+
+    /* Mengubah ikon menjadi centang saat sukses */
+    .cart-btn.added-success i::before {
+      content: "\f00c";
+      /* Unicode FontAwesome Check */
+    }
+
+    /* --- TOAST & LAINNYA --- */
     .toast-notification {
       position: fixed;
       top: 0;
@@ -346,6 +381,40 @@ $total_pages = ceil($total_data / $limit);
     .product-card.out-of-stock {
       opacity: 0.8;
       filter: grayscale(0.5);
+    }
+
+    /* --- ANIMASI NAVBAR CART --- */
+    @keyframes navCartJump {
+      0% {
+        transform: scale(1);
+      }
+
+      30% {
+        transform: scale(1.4) rotate(-10deg);
+        color: var(--accent, #f9d84a);
+      }
+
+      /* Membesar & miring */
+      50% {
+        transform: scale(1.1) rotate(10deg);
+      }
+
+      /* Miring balik */
+      70% {
+        transform: scale(1.2) rotate(0deg);
+      }
+
+      100% {
+        transform: scale(1);
+        color: inherit;
+      }
+    }
+
+    /* Class trigger untuk animasi */
+    .nav-cart-animate {
+      animation: navCartJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-block;
+      /* Penting agar transform bekerja pada elemen inline seperti <a> */
     }
   </style>
 </head>
@@ -605,11 +674,23 @@ $total_pages = ceil($total_data / $limit);
 
     function updateCartCount(count) {
       const cartCountElement = document.getElementById('cartCount');
-      const cartLink = document.getElementById('cartLink');
-      if (cartCountElement) cartCountElement.textContent = count;
+      const cartLink = document.getElementById('cartLink'); // Pastikan ID ini ada di elemen <a> keranjang
+
+      // 1. Update angkanya
+      if (cartCountElement) {
+        cartCountElement.textContent = count;
+      }
+
+      // 2. Jalankan animasi pada ikon keranjang di navbar
       if (cartLink) {
-        cartLink.classList.add('updated');
-        setTimeout(() => { cartLink.classList.remove('updated'); }, 500);
+        // Hapus class dulu (reset)
+        cartLink.classList.remove('nav-cart-animate');
+
+        // Trik: Force reflow / repaint browser agar animasi bisa di-restart instan
+        void cartLink.offsetWidth;
+
+        // Tambahkan class lagi untuk memicu animasi
+        cartLink.classList.add('nav-cart-animate');
       }
     }
 
@@ -771,15 +852,17 @@ $total_pages = ceil($total_data / $limit);
       attachPaginationListeners();
     }
 
-    // ===== EVENT LISTENERS =====
+    // ===== EVENT LISTENERS (DIPERBARUI) =====
     function attachCartButtonListeners() {
       document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function (e) {
           e.preventDefault();
           const productId = this.getAttribute('data-product-id');
           const buttonIcon = this.querySelector('i');
+          const originalIconClass = 'fa-solid fa-cart-plus';
+
           this.disabled = true;
-          buttonIcon.className = 'fas fa-spinner fa-spin';
+          buttonIcon.className = 'fas fa-spinner fa-spin'; // Loading state
 
           const formData = new FormData();
           formData.append('ajax_add_to_cart', '1');
@@ -789,19 +872,30 @@ $total_pages = ceil($total_data / $limit);
             .then(response => response.json())
             .then(data => {
               if (data.success) {
-                showToast(data.message);
+                // HILANGKAN TOAST SUKSES, GANTI DENGAN ANIMASI
                 updateCartCount(data.cartCount);
+
+                // Tambahkan class animasi ke tombol yang diklik
+                this.classList.add('added-success');
+
+                // Hapus animasi setelah selesai agar tombol kembali normal
+                setTimeout(() => {
+                  this.classList.remove('added-success');
+                }, 500); // 500ms, sedikit lebih lama dari durasi animasi 400ms
+
               } else {
+                // Tampilkan Toast HANYA jika error (misal stok habis)
                 showToast(data.message, true);
               }
             })
             // .catch(error => {
-            //   console.error('Error:', error);
-            //   showToast('Terjadi kesalahan, silakan coba lagi', true);
+            //    console.error('Error:', error);
+            //    showToast('Terjadi kesalahan, silakan coba lagi', true);
             // })
             .finally(() => {
               this.disabled = false;
-              buttonIcon.className = 'fa-solid fa-cart-plus';
+              // Reset icon ke keranjang biasa (akan ditimpa oleh CSS added-success jika sukses)
+              buttonIcon.className = originalIconClass;
             });
         });
       });

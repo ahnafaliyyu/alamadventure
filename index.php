@@ -188,7 +188,7 @@ $result_best = $conn->query($sql_best);
         </div>
         <div class="card-content">
           <h3 class="card-title">Peralatan Terawat</h3>
-          <p class="card-text">Semua perlengkapan dicek dan dibersihkan sebelum disewakan.</p>
+          <p class="card-text">Semua perlengkapan selalu dicek dan dibersihkan.</p>
         </div>
       </div>
 

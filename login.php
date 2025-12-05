@@ -394,7 +394,7 @@ if (isset($_POST['login'])) {
             </form>
 
             <div class="auth-footer">
-                <p>Belum memiliki akun? <a href="register_user.php">Daftar disini</a></p>
+                <p>Belum memiliki akun? <a href="register.php">Daftar disini</a></p>
                 <p style="margin-top: 12px;">
                     <a href="index.php" style="color: var(--text-muted); font-weight: normal; font-size: 13px;">
                         <i class="fas fa-arrow-left"></i> Kembali ke Beranda

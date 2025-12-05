@@ -470,3 +470,84 @@ h4 {
     padding: 10px;
   }
 }
+
+/* === TAMBAHAN: MODAL POPUP CUSTOM (Seragam dengan User) === */
+.generic-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
+.generic-box {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+  margin: 0 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.generic-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  color: #f9d84a;
+}
+.generic-icon.danger {
+  color: #ef4444;
+}
+.generic-icon.success {
+  color: #2e7d32;
+}
+.generic-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #2c4532;
+  margin-bottom: 10px;
+}
+.generic-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+.generic-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.btn-generic {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+}
+.btn-primary-modal {
+  background: #2c4532;
+  color: white;
+}
+.btn-secondary-modal {
+  background: #eee;
+  color: #555;
+}
+
+@keyframes popUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

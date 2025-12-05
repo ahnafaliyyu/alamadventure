@@ -250,59 +250,123 @@
         </main>
     </div>
 
-    <script>
-        // --- SIDEBAR LOGIC ---
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        });
-        document.getElementById('sidebarOverlay').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        });
+    <div class="generic-overlay" id="genericModal">
+        <div class="generic-box">
+            <div class="generic-icon" id="genericIcon"></div>
+            <h3 class="generic-title" id="genericTitle"></h3>
+            <p class="generic-text" id="genericText"></p>
+            <div class="generic-buttons" id="genericBtns">
+                <button class="btn-generic btn-primary-modal" onclick="closeGenericModal()">OK</button>
+            </div>
+        </div>
+    </div>
 
-        // --- STATE MANAGEMENT ---
+    <script>
+        // =========================================
+        // 1. SIDEBAR TOGGLE
+        // =========================================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
+
+        // =========================================
+        // 2. CUSTOM MODAL SYSTEM
+        // =========================================
+        const modal = document.getElementById('genericModal');
+        const mIcon = document.getElementById('genericIcon');
+        const mTitle = document.getElementById('genericTitle');
+        const mText = document.getElementById('genericText');
+        const mBtns = document.getElementById('genericBtns');
+
+        function closeGenericModal() {
+            modal.style.display = 'none';
+        }
+
+        function showAlert(title, msg, type = 'success') {
+            if (type === 'success') {
+                mIcon.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
+                mIcon.className = 'generic-icon success'; // Hijau
+            } else {
+                mIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+                mIcon.className = 'generic-icon danger'; // Merah
+            }
+            mTitle.innerText = title;
+            mText.innerText = msg;
+            mBtns.innerHTML = `<button class="btn-generic btn-primary-modal" onclick="closeGenericModal()">Tutup</button>`;
+            modal.style.display = 'flex';
+        }
+
+        function showConfirm(title, msg, onYes) {
+            mIcon.innerHTML = '<i class="fa-solid fa-circle-question"></i>';
+            mIcon.className = 'generic-icon'; // Kuning/Default
+            mTitle.innerText = title;
+            mText.innerText = msg;
+            mBtns.innerHTML = `
+                <button class="btn-generic btn-secondary-modal" onclick="closeGenericModal()">Batal</button>
+                <button class="btn-generic btn-primary-modal" id="btnYes">Ya, Lanjutkan</button>
+            `;
+            modal.style.display = 'flex';
+            document.getElementById('btnYes').onclick = function () {
+                closeGenericModal();
+                onYes();
+            };
+        }
+
+        // =========================================
+        // 3. AJAX DATA LOADING (LIVE)
+        // =========================================
         let currentPage = 1;
         let searchKeyword = '';
         let debounceTimer;
 
-        // Load pertama kali
+        // Load data saat halaman pertama kali dibuka
         document.addEventListener('DOMContentLoaded', fetchTransactions);
 
-        // Event Search dengan Debounce
+        // Live Search
         document.getElementById('searchInput').addEventListener('input', function (e) {
             clearTimeout(debounceTimer);
             searchKeyword = e.target.value;
-            // Reset ke halaman 1 jika user mencari sesuatu
             debounceTimer = setTimeout(() => {
                 currentPage = 1;
                 fetchTransactions();
             }, 500);
         });
 
-        // --- MAIN FUNCTION: FETCH DATA ---
         function fetchTransactions() {
             const tbody = document.getElementById('trx-table-body');
             const paginationContainer = document.getElementById('paginationContainer');
 
-            // Loader sementara
+            // Loader
             tbody.innerHTML = '<tr><td colspan="7" align="center"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td></tr>';
 
-            // Panggil API
             fetch(`../api/get_transactions.php?page=${currentPage}&q=${searchKeyword}`)
                 .then(res => res.json())
                 .then(result => {
-                    tbody.innerHTML = '';
+                    tbody.innerHTML = ''; // Clear loader
 
                     if (result.success && result.data.length > 0) {
-                        // 1. RENDER DATA TABEL
+                        // 1. Render Baris Tabel
                         result.data.forEach(trx => {
-                            const total = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(trx.total_amount);
+                            const total = new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0
+                            }).format(trx.total_amount);
 
                             // Badge Logic
-                            const methodBadge = (trx.payment_method === 'cod')
-                                ? '<span class="badge badge-cod">COD</span>'
-                                : '<span class="badge badge-info">Online</span>';
+                            const methodBadge = (trx.payment_method === 'cod') ?
+                                '<span class="badge badge-cod">COD</span>' :
+                                '<span class="badge badge-info">Online</span>';
 
                             let statusBadge = '';
                             if (trx.status === 'paid') statusBadge = '<span class="badge badge-success">Lunas</span>';
@@ -314,22 +378,26 @@
                             else if (trx.rental_status === 'returned') rentalBadge = '<span class="badge badge-success">Selesai</span>';
                             else rentalBadge = '<span class="badge badge-secondary">Menunggu Ambil</span>';
 
-                            // Button Logic
+                            // Button Logic (Menggunakan confirmProcess & confirmCancel)
                             let buttons = '';
+
+                            // Tombol Print
                             if (trx.status !== 'cancelled') {
-                                buttons += `<a href="../invoice.php?order=${trx.order_code}" target="_blank" class="btn-act" style="background:#6c757d;" title="Print"><i class="fa-solid fa-print"></i></a> `;
+                                buttons += `<a href="../invoice.php?order=${trx.order_code}" target="_blank" class="btn-act" style="background:#6c757d;" title="Cetak Invoice"><i class="fa-solid fa-print"></i></a> `;
                             }
 
+                            // Tombol Aksi Rental (Ambil/Kembali)
                             if (trx.status !== 'cancelled') {
                                 if (trx.rental_status === 'pending_pickup') {
-                                    buttons += `<button class="btn-act" style="background:#2980b9;" onclick="processRental('${trx.id}', 'start')">Ambil Barang</button> `;
+                                    buttons += `<button class="btn-act" style="background:#2980b9;" onclick="confirmProcess('${trx.id}', 'start')" title="Serahkan Barang"><i class="fa-solid fa-box-open"></i> Ambil</button> `;
                                 } else if (trx.rental_status === 'ongoing') {
-                                    buttons += `<button class="btn-act" style="background:#f39c12;" onclick="processRental('${trx.id}', 'finish')">Kembalikan</button> `;
+                                    buttons += `<button class="btn-act" style="background:#f39c12;" onclick="confirmProcess('${trx.id}', 'finish')" title="Terima Barang Kembali"><i class="fa-solid fa-rotate-left"></i> Kembali</button> `;
                                 }
                             }
 
+                            // Tombol Batal
                             if (trx.status === 'pending') {
-                                buttons += `<button class="btn-act" style="background:#c0392b;" onclick="cancelOrder(${trx.id})"><i class="fa-solid fa-ban"></i> Batal</button>`;
+                                buttons += `<button class="btn-act" style="background:#c0392b;" onclick="confirmCancel(${trx.id})" title="Batalkan Pesanan"><i class="fa-solid fa-ban"></i> Batal</button>`;
                             }
 
                             // Append Row
@@ -346,36 +414,41 @@
                         `;
                         });
 
-                        // 2. RENDER PAGINATION
-                        // Asumsi API mengembalikan 'total_pages'
-                        // Pastikan membaca dari result.pagination
+                        // 2. Render Pagination
                         const totalPages = (result.pagination && result.pagination.total_pages) ? result.pagination.total_pages : 1;
                         renderPagination(totalPages, currentPage);
 
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="7" align="center">Tidak ada data ditemukan.</td></tr>';
-                        paginationContainer.innerHTML = ''; // Hapus pagination jika tidak ada data
+                        tbody.innerHTML = '<tr><td colspan="7" align="center">Tidak ada data transaksi ditemukan.</td></tr>';
+                        paginationContainer.innerHTML = '';
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    tbody.innerHTML = '<tr><td colspan="7" align="center" style="color:red">Gagal memuat data. Periksa koneksi API.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" align="center" style="color:red">Gagal memuat data. Periksa koneksi server.</td></tr>';
                 });
         }
 
-        // --- FUNGSI RENDER PAGINATION ---
+        // =========================================
+        // 4. PAGINATION RENDERER
+        // =========================================
         function renderPagination(totalPages, current) {
             const container = document.getElementById('paginationContainer');
-            let html = '<div class="pagination">';
-
-            // Tombol Previous
-            if (current > 1) {
-                html += `<button class="page-btn" onclick="changePage(${current - 1})">&laquo; Prev</button>`;
-            } else {
-                html += `<button class="page-btn" disabled>&laquo; Prev</button>`;
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
             }
 
-            // Logic Angka Halaman (Membatasi tampilan jika halaman sangat banyak)
+            let html = '<div class="pagination">';
+
+            // Prev
+            if (current > 1) {
+                html += `<button class="page-btn" onclick="changePage(${current - 1})">&laquo;</button>`;
+            } else {
+                html += `<button class="page-btn" disabled>&laquo;</button>`;
+            }
+
+            // Page Numbers (Simple: Current - 2 to Current + 2)
             let startPage = Math.max(1, current - 2);
             let endPage = Math.min(totalPages, current + 2);
 
@@ -394,55 +467,79 @@
                 html += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
             }
 
-            // Tombol Next
+            // Next
             if (current < totalPages) {
-                html += `<button class="page-btn" onclick="changePage(${current + 1})">Next &raquo;</button>`;
+                html += `<button class="page-btn" onclick="changePage(${current + 1})">&raquo;</button>`;
             } else {
-                html += `<button class="page-btn" disabled>Next &raquo;</button>`;
+                html += `<button class="page-btn" disabled>&raquo;</button>`;
             }
 
             html += '</div>';
             container.innerHTML = html;
         }
 
-        // --- FUNGSI GANTI HALAMAN ---
         function changePage(page) {
             currentPage = page;
             fetchTransactions();
-            // Scroll ke atas tabel agar UX lebih baik
             document.querySelector('.content-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- ACTION FUNCTIONS (SAMA SEPERTI SEBELUMNYA) ---
-        function cancelOrder(id) {
-            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
-            fetch('cancel_order.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'order_id=' + id
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) { alert(data.message); fetchTransactions(); }
-                    else { alert("Gagal: " + data.message); }
-                });
+        // =========================================
+        // 5. LIVE ACTIONS HANDLERS
+        // =========================================
+
+        // Handler Pembatalan
+        function confirmCancel(id) {
+            showConfirm(
+                'Batalkan Pesanan?',
+                'Apakah Anda yakin ingin membatalkan pesanan ini? Aksi ini tidak dapat dibatalkan.',
+                function () {
+                    // Tampilkan loading di modal? Opsional, tapi kita langsung fetch saja
+                    fetch('cancel_order.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'order_id=' + id
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                showAlert("Berhasil", data.message, "success");
+                                fetchTransactions(); // Live refresh
+                            } else {
+                                showAlert("Gagal", data.message, "danger");
+                            }
+                        })
+                        .catch(err => showAlert("Error", "Terjadi kesalahan koneksi.", "danger"));
+                }
+            );
         }
 
-        function processRental(id, type) {
+        // Handler Proses Rental (Ambil Barang / Kembalikan Barang)
+        function confirmProcess(id, type) {
             const action = (type === 'start') ? 'start_rent' : 'finish_rent';
-            if (type === 'finish' && !confirm("Barang sudah diterima kembali?")) return;
-            if (type === 'start' && !confirm("Serahkan barang ke penyewa?")) return;
+            const title = (type === 'start') ? 'Serahkan Barang?' : 'Barang Dikembalikan?';
+            const msg = (type === 'start')
+                ? 'Pastikan identitas penyewa (KTP/SIM) sudah sesuai dan disimpan sebagai jaminan.'
+                : 'Pastikan semua barang telah dicek kelengkapannya dan kondisinya baik. Lanjutkan?';
 
-            fetch('../api/process_rental.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: action, order_id: id })
-            })
-                .then(res => res.json())
-                .then(d => {
-                    alert(d.message);
-                    fetchTransactions();
-                });
+            showConfirm(title, msg, function () {
+                fetch('../api/process_rental.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: action, order_id: id })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Jika ada denda (dari backend), tampilkan di alert sukses
+                            showAlert("Berhasil", data.message, "success");
+                            fetchTransactions(); // Live refresh
+                        } else {
+                            showAlert("Gagal", data.message, "danger");
+                        }
+                    })
+                    .catch(err => showAlert("Error", "Terjadi kesalahan sistem.", "danger"));
+            });
         }
     </script>
 </body>

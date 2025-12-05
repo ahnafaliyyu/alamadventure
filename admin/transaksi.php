@@ -184,6 +184,20 @@
             color: #999;
             cursor: not-allowed;
         }
+
+        td[data-label="Order Info"] {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        td[data-label="Pelanggan"] span {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            flex-direction: column;
+        }
     </style>
 </head>
 
@@ -404,7 +418,7 @@
                             tbody.innerHTML += `
                             <tr>
                                 <td data-label="Order Info"><strong>${trx.order_code}</strong><br><small>${trx.created_at}</small></td>
-                                <td data-label="Pelanggan">${trx.customer_name}<br><small>${trx.customer_phone}</small></td>
+                                <td data-label="Pelanggan"><span>${trx.customer_name}<br><small>${trx.customer_phone}</small></span></td>
                                 <td data-label="Total">${total}</td>
                                 <td data-label="Metode">${methodBadge}</td>
                                 <td data-label="Status Bayar">${statusBadge}</td>

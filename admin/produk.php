@@ -66,6 +66,57 @@
             display: block;
             margin-top: 2px;
         }
+
+        /* --- MOBILE VIEW CSS (RESPONSIVE TABLE) --- */
+        @media (max-width: 768px) {
+            .content-table thead {
+                display: none;
+                /* Sembunyikan header tabel di HP */
+            }
+
+            .content-table,
+            .content-table tbody,
+            .content-table tr,
+            .content-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .content-table tr {
+                background: #fff;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                padding: 15px;
+                position: relative;
+            }
+
+            .content-table td {
+                padding: 8px 0;
+                border-bottom: 1px solid #f0f0f0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+            }
+
+            .content-table td:last-child {
+                border-bottom: none;
+                justify-content: center;
+                gap: 10px;
+                padding-top: 15px;
+            }
+
+            /* Label Data (Pseudo-element untuk menampilkan header kolom di kiri) */
+            .content-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #666;
+                text-align: left;
+                flex: 1;
+            }
+        }
     </style>
 </head>
 
@@ -203,10 +254,10 @@
             // Icon
             if (type === 'success') {
                 mIcon.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
-                mIcon.className = 'generic-icon success'; // Pastikan ada class css .success { color: #2e7d32; }
+                mIcon.className = 'generic-icon success';
             } else {
                 mIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
-                mIcon.className = 'generic-icon danger'; // Pastikan ada class css .danger { color: #ef4444; }
+                mIcon.className = 'generic-icon danger';
             }
 
             mTitle.innerText = title;
@@ -299,14 +350,14 @@
                                 </div>
                             `;
 
-                            // Render Baris Tabel
+                            // Render Baris Tabel dengan data-label untuk Mobile View
                             tbody.innerHTML += `
                                 <tr>
-                                    <td>#${p.id}</td>
-                                    <td><strong>${p.name}</strong></td>
-                                    <td>${price}</td>
-                                    <td align="center">${stockDisplay}</td>
-                                    <td>
+                                    <td data-label="ID">#${p.id}</td>
+                                    <td data-label="Nama Produk"><strong>${p.name}</strong></td>
+                                    <td data-label="Harga/hari">${price}</td>
+                                    <td data-label="Stok (Disewa/Total)" align="center">${stockDisplay}</td>
+                                    <td data-label="Aksi">
                                         <a href="edit_produk.php?id=${p.id}" class="btn btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
                                         <button class="btn btn-delete" onclick="handleDelete(${p.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                                     </td>
@@ -394,8 +445,12 @@
                     // Eksekusi Hapus jika User klik "Ya"
                     fetch('../api/delete_product.php', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: id })
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
                     })
                         .then(res => res.json())
                         .then(r => {

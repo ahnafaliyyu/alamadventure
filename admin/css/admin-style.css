@@ -356,13 +356,13 @@ h4 {
 .btn-edit {
   background-color: var(--accent);
   color: var(--brand);
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 10px;
+  font-size: 12px;
 }
 .btn-delete {
   background-color: #ffe5e5;
   color: #d63031;
-  padding: 6px 12px;
+  padding: 10px;
   font-size: 12px;
 }
 

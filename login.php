@@ -323,20 +323,25 @@ if (isset($_POST['login'])) {
             flex-shrink: 0;
         }
 
-        /* Responsiveness */
         @media (max-width: 510px) {
             body {
                 background: rgba(255, 255, 255, 0.98);
             }
 
             .auth-card {
-                padding: 30px 20px;
+                padding: 30px 10px;
                 border-radius: 12px;
                 box-shadow: none;
             }
 
             .login-container {
                 padding: 16px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .auth-card {
+                padding: 30px 0;
             }
         }
     </style>
@@ -380,7 +385,7 @@ if (isset($_POST['login'])) {
                         <i class="fas fa-eye input-icon toggle-password" id="togglePass" title="Tampilkan Password"></i>
                     </div>
                     <div class="forgot-password">
-                        <a href="forgot_password.php">Lupa Password?</a>
+                        <a href="lupa-password">Lupa Password?</a>
                     </div>
                 </div>
 
@@ -394,7 +399,7 @@ if (isset($_POST['login'])) {
             </form>
 
             <div class="auth-footer">
-                <p>Belum memiliki akun? <a href="register.php">Daftar disini</a></p>
+                <p>Belum memiliki akun? <a href="registrasi">Daftar disini</a></p>
                 <p style="margin-top: 12px;">
                     <a href="index.php" style="color: var(--text-muted); font-weight: normal; font-size: 13px;">
                         <i class="fas fa-arrow-left"></i> Kembali ke Beranda

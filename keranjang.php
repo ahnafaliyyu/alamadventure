@@ -141,23 +141,32 @@ if (isset($_GET['remove'])) {
         </button>
         <div class="logo"><img src="public/logo.png" width="30px" alt="Logo" /></div>
         <ul class="nav-menu" id="navMenu">
-          <li><a href="index.php" class="nav-link">Beranda</a></li>
-          <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-          <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-          <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+          <li><a href="beranda" class="nav-link">Beranda</a></li>
+          <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
+          <li><a href="katalog" class="nav-link">Katalog</a></li>
+          <li><a href="kontak" class="nav-link">Kontak</a></li>
         </ul>
       </div>
       <div class="btn-kanan">
-        <a href="keranjang.php" class="nav-link" id="cartLink">
+        <a href="keranjang" class="nav-link" id="cartLink">
           <i class="fas fa-shopping-cart"></i>
           <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
         </a>
+
         <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
-          <a href="admin/index.php" style="background:#d35400; color:white;"><i class="fas fa-user-shield"></i> Panel</a>
+          <a href="dashboard-admin" style="background:#d35400; color:white;">
+            <i class="fas fa-user-shield"></i> Panel
+          </a>
+
         <?php elseif (isset($_SESSION['user_id'])): ?>
-          <a href="riwayat.php" title="Akun Saya"><i class="fas fa-user"></i></a>
+          <a href="profil" title="Akun Saya">
+            <i class="fas fa-user"></i>
+          </a>
+
         <?php else: ?>
-          <button onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i></button>
+          <button onclick="openLoginModal()">
+            <i class="fas fa-sign-in-alt"></i>
+          </button>
         <?php endif; ?>
       </div>
     </nav>
@@ -172,7 +181,12 @@ if (isset($_GET['remove'])) {
                     <i class="fas fa-shopping-basket"></i>
                     <h3>Keranjang Anda kosong</h3>
                     <p style="color:#6b7280;">Belum ada barang yang disewa.</p>
-                    <a href="katalog.php" class="btn-shop">Mulai Belanja <i class="fas fa-arrow-right"></i></a>
+                    <a href="profil" class="btn-shop">Riwayat Belanja
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </a>
+                    <a href="katalog" class="btn-shop" style="margin-left:8px;">Mulai Belanja 
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
         <?php else: ?>
                 <form action="process_checkout.php" method="POST" id="checkoutForm">
@@ -351,18 +365,22 @@ if (isset($_GET['remove'])) {
         </div>
     </div>
 
-    <div id="loginChoiceModal" class="login-modal-overlay">
-        <div class="login-modal-content">
-            <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-            <div class="login-modal-header">
-                <h3>Selamat Datang!</h3>
-                <p>Silakan pilih cara masuk Anda</p>
-            </div>
-            <a href="login.php" class="option-user"><i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan</a>
-            <div class="modal-divider"><span>ATAU</span></div>
-            <a href="admin/login.php" class="option-admin"><i class="fas fa-lock"></i> Masuk sebagai Admin</a>
-        </div>
+  <div id="loginChoiceModal" class="login-modal-overlay">
+    <div class="login-modal-content">
+      <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
+      <div class="login-modal-header">
+        <h3>Selamat Datang!</h3>
+        <p>Silakan pilih cara masuk Anda</p>
+      </div>
+      <a href="login" class="option-user">
+        <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
+      </a>
+      <div class="modal-divider"><span>ATAU</span></div>
+      <a href="login-admin" class="option-admin">
+        <i class="fas fa-lock"></i> Masuk sebagai Admin
+      </a>
     </div>
+  </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>

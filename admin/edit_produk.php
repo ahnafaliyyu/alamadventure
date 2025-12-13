@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Produk - Alam Adventure</title>
-    <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="icon" href="public/logo.png" type="image/png" />
+    <link rel="stylesheet" href="styling-admin">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .form-container {
@@ -90,17 +91,33 @@
     <div class="admin-wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>ALAM<span>ADVENTURE</span></h2>
+                <h2>ALAM<span style="color:#fff">ADVENTURE</span></h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="index.php"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a></li>
-                <li><a href="produk.php"><i class="fa-solid fa-box-open"></i> <span>Produk</span></a></li>
-                <li><a href="transaksi.php"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Transaksi</span></a>
+                <li>
+                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                        <span>Dashboard</span></a>
                 </li>
-                <li><a href="pengaturan.php" class="active"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+                <li>
+                    <a href="barang-admin">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span>Produk</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="transaksi-admin">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Transaksi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="pengaturan-admin">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Pengaturan</span>
+                    </a>
                 </li>
                 <li class="Beranda">
-                    <a href="../index.php">
+                    <a href="../beranda">
                         <i class="fa-solid fa-house"></i>
                         <span>Beranda</span>
                     </a>
@@ -168,12 +185,59 @@
         </main>
     </div>
 
+    <div class="generic-overlay" id="genericModal">
+        <div class="generic-box">
+            <div class="generic-icon" id="genericIcon"></div>
+            <h3 class="generic-title" id="genericTitle"></h3>
+            <p class="generic-text" id="genericText"></p>
+            <div class="generic-buttons" id="genericBtns">
+                <button class="btn-generic btn-primary-modal" onclick="closeGenericModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Sidebar Toggle
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.getElementById('sidebarToggle');
         if (toggleBtn) { toggleBtn.addEventListener('click', () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }); }
+
+        // =========================================
+        // CUSTOM MODAL SYSTEM
+        // =========================================
+        const modal = document.getElementById('genericModal');
+        const mIcon = document.getElementById('genericIcon');
+        const mTitle = document.getElementById('genericTitle');
+        const mText = document.getElementById('genericText');
+        const mBtns = document.getElementById('genericBtns');
+
+        function closeGenericModal() {
+            modal.style.display = 'none';
+        }
+
+        function showAlert(title, msg, type = 'success', redirectUrl = null) {
+            // Icon Logic
+            if (type === 'success') {
+                mIcon.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
+                mIcon.className = 'generic-icon success';
+            } else {
+                mIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+                mIcon.className = 'generic-icon danger';
+            }
+
+            mTitle.innerText = title;
+            mText.innerText = msg;
+
+            // Button Logic (Redirect jika ada URL)
+            if (redirectUrl) {
+                mBtns.innerHTML = `<button class="btn-generic btn-primary-modal" onclick="window.location.href='${redirectUrl}'">OK</button>`;
+            } else {
+                mBtns.innerHTML = `<button class="btn-generic btn-primary-modal" onclick="closeGenericModal()">OK</button>`;
+            }
+
+            modal.style.display = 'flex';
+        }
 
         // --- LOGIC EDIT PRODUK ---
 
@@ -182,36 +246,39 @@
         const productId = urlParams.get('id');
 
         if (!productId) {
-            alert("ID Produk tidak ditemukan!");
-            window.location.href = 'produk.php';
+            showAlert("Error", "ID Produk tidak ditemukan!", "danger", "produk.php");
         }
 
         // 2. Load Data Produk
         document.addEventListener('DOMContentLoaded', () => {
-            fetch(`../api/get_product_details.php?id=${productId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const p = data.data;
-                        document.getElementById('productId').value = p.id;
-                        document.getElementById('name').value = p.name;
-                        document.getElementById('price').value = p.price_per_day;
-                        document.getElementById('stock').value = p.stock;
-                        document.getElementById('description').value = p.description;
+            if (productId) {
+                fetch(`../api/get_product_details.php?id=${productId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const p = data.data;
+                            document.getElementById('productId').value = p.id;
+                            document.getElementById('name').value = p.name;
+                            document.getElementById('price').value = p.price_per_day;
+                            document.getElementById('stock').value = p.stock;
+                            document.getElementById('description').value = p.description;
 
-                        if (p.image_url) {
-                            const preview = document.getElementById('preview');
-                            const placeholder = document.getElementById('placeholder');
-                            preview.src = p.image_url; // Pastikan path dari API benar
-                            preview.style.display = 'block';
-                            placeholder.style.display = 'none';
+                            if (p.image_url) {
+                                const preview = document.getElementById('preview');
+                                const placeholder = document.getElementById('placeholder');
+                                preview.src = p.image_url;
+                                preview.style.display = 'block';
+                                placeholder.style.display = 'none';
+                            }
+                        } else {
+                            showAlert("Gagal", "Gagal memuat data: " + data.message, "danger", "produk.php");
                         }
-                    } else {
-                        alert("Gagal memuat data: " + data.message);
-                        window.location.href = 'produk.php';
-                    }
-                })
-                .catch(err => console.error(err));
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showAlert("Error", "Terjadi kesalahan saat memuat data.", "danger");
+                    });
+            }
         });
 
         // 3. Preview Image Logic
@@ -245,17 +312,16 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert("Produk berhasil diperbarui!");
-                        window.location.href = 'produk.php';
+                        showAlert("Berhasil", "Produk berhasil diperbarui!", "success", "produk.php");
                     } else {
-                        alert("Gagal: " + data.message);
+                        showAlert("Gagal", "Gagal memperbarui: " + data.message, "danger");
                         btn.innerHTML = 'Simpan Perubahan';
                         btn.disabled = false;
                     }
                 })
                 .catch(err => {
-                    alert("Terjadi kesalahan sistem.");
                     console.error(err);
+                    showAlert("Error", "Terjadi kesalahan sistem.", "danger");
                     btn.innerHTML = 'Simpan Perubahan';
                     btn.disabled = false;
                 });

@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Alam Adventure</title>
-    <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="icon" href="public/logo.png" type="image/png" />
+    <link rel="stylesheet" href="styling-admin">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -19,28 +20,29 @@
             </div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="index.php" class="active"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></a>
+                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                        <span>Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="produk.php">
+                    <a href="barang-admin">
                         <i class="fa-solid fa-box-open"></i>
                         <span>Produk</span>
                     </a>
                 </li>
                 <li>
-                    <a href="transaksi.php">
+                    <a href="transaksi-admin">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         <span>Transaksi</span>
                     </a>
                 </li>
                 <li>
-                    <a href="pengaturan.php">
+                    <a href="pengaturan-admin">
                         <i class="fa-solid fa-gear"></i>
                         <span>Pengaturan</span>
                     </a>
                 </li>
                 <li class="Beranda">
-                    <a href="../index.php">
+                    <a href="../beranda">
                         <i class="fa-solid fa-house"></i>
                         <span>Beranda</span>
                     </a>

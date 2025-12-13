@@ -1,5 +1,8 @@
 <?php
 require 'config/init.php';
+// --- LOAD CONFIG MIDTRANS & FONNTE (PENTING) ---
+// Memuat token dari .env dan fungsi helper sendFonnte()
+require_once 'config/midtrans.php';
 
 // --- 1. CEK LOGIN (WAJIB) ---
 if (!isset($_SESSION['user_id'])) {
@@ -15,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_SESSION['cart'])) {
 
 // Ambil Data User dari Session
 $user_id = $_SESSION['user_id'];
-// Data nama & hp diambil dari form checkout (agar bisa diubah jika perlu) atau session
+// Data nama & hp diambil dari form checkout
 $name = htmlspecialchars($_POST['customer_name']);
 $phone = htmlspecialchars($_POST['customer_phone']);
 
@@ -82,16 +85,12 @@ if ($payment_method === 'cod') {
     // ONLINE: Batas 2 Jam (Untuk segera transfer)
     $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
     $batas_pesan = "2 Jam";
-
-    // // --- MODE TESTING (1 MENIT) ---
-    // $expires_at = date('Y-m-d H:i:s', strtotime('+1 minute'));
-    // $batas_pesan = "1 Menit";
 }
 
 $conn->begin_transaction();
 
 try {
-    // 5. SIMPAN ORDER (Dengan user_id & expires_at)
+    // 5. SIMPAN ORDER
     $sql = "INSERT INTO orders (order_code, user_id, customer_name, customer_phone, total_amount, duration_days, status, payment_method, rental_status, delivery_method, delivery_address, delivery_lat, delivery_long, shipping_cost, expires_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, 'pending_pickup', ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
@@ -106,9 +105,9 @@ try {
         $stmtItem->execute();
     }
 
-    // --- SETUP URL & PESAN WA ---
-    $admin_phone = "082241559607"; // GANTI DENGAN NOMOR ADMIN
-    $ngrok_url = "https://4695fb861470.ngrok-free.app"; // GANTI URL PUBLIK/NGROK BARU
+    // --- SETUP URL & INFO ---
+    $admin_phone = "082241559607"; // Nomor Admin (Bisa diganti atau pakai ENV juga jika mau)
+    $ngrok_url = " https://95816cc257c9.ngrok-free.app"; // URL PUBLIK
     $link_faktur = $ngrok_url . "/invoice.php?order=" . $order_code;
     $formatted_amount = "Rp " . number_format($total_transaction, 0, ',', '.');
 
@@ -137,7 +136,7 @@ try {
         $conn->commit();
         unset($_SESSION['cart']);
 
-        // A. Pesan WA Admin
+        // A. Pesan WA Admin (Menggunakan Helper sendFonnte)
         $msgAdmin = "*ORDER COD BARU!* 📦\n";
         $msgAdmin .= "Kode: $order_code\n";
         $msgAdmin .= "Nama: $name\n";
@@ -150,7 +149,9 @@ try {
             $msgAdmin .= "Alamat: $delivery_address\n";
         }
         $msgAdmin .= "👉 Cek Admin Panel.";
-        sendWhatsApp($admin_phone, $msgAdmin);
+
+        // Kirim WA Admin (Token otomatis dari .env via config/midtrans.php)
+        sendFonnte($admin_phone, $msgAdmin);
 
         // B. Pesan WA User
         $msgUser = "*PESANAN DITERIMA* (COD) ✅\n";
@@ -169,14 +170,16 @@ try {
             $msgUser .= "🏪 Silakan ambil barang di toko kami:\n📍 $shop_map_link\n";
         }
         $msgUser .= "\n📄 Faktur: $link_faktur";
-        sendWhatsApp($phone, $msgUser);
+
+        // Kirim WA User
+        sendFonnte($phone, $msgUser);
 
         // Redirect ke Invoice
         header("Location: invoice.php?order=$order_code");
 
     } else {
         // --- ONLINE (MIDTRANS) FLOW ---
-        require 'config/midtrans.php';
+        // Config Midtrans sudah diload di paling atas file, jadi bisa langsung pakai
 
         $params = [
             'transaction_details' => ['order_id' => $order_code, 'gross_amount' => $total_transaction],
@@ -184,14 +187,8 @@ try {
             'item_details' => $item_details,
             'expiry' => [
                 'start_time' => date("Y-m-d H:i:s T"),
-
-                // --- CODE ASLI (Disimpan sementara) ---
                 'unit' => 'hours',
                 'duration' => 2
-
-                // // --- MODE TESTING (1 MENIT) ---
-                // 'unit' => 'minutes',
-                // 'duration' => 1
             ]
         ];
 
@@ -212,31 +209,5 @@ try {
     die("Error: " . $e->getMessage());
 }
 
-// Fungsi Kirim WA (Fonnte)
-function sendWhatsApp($target, $message)
-{
-    $token = "pMEu6MFUdc2f9zQ3JzQk"; // GANTI TOKEN FONNTE
-
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.fonnte.com/send',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => array(
-            'target' => $target,
-            'message' => $message,
-        ),
-        CURLOPT_HTTPHEADER => array(
-            "Authorization: $token"
-        ),
-    ));
-
-    $response = curl_exec($curl);
-    curl_close($curl);
-}
+// Fungsi sendWhatsApp dihapus karena sudah digantikan oleh sendFonnte() dari config/midtrans.php
 ?>

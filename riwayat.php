@@ -311,10 +311,10 @@ $userData = $stmtUser->get_result()->fetch_assoc();
                 </div>
 
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-                    <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-                    <li><a href="kontak.php" class="nav-link">Kontak</a></li>
+                    <li><a href="beranda" class="nav-link">Beranda</a></li>
+                    <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
+                    <li><a href="katalog" class="nav-link">Katalog</a></li>
+                    <li><a href="kontak" class="nav-link">Kontak</a></li>
                 </ul>
             </div>
         </div>
@@ -358,19 +358,15 @@ $userData = $stmtUser->get_result()->fetch_assoc();
     <div id="loginChoiceModal" class="login-modal-overlay">
         <div class="login-modal-content">
             <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-
             <div class="login-modal-header">
                 <h3>Selamat Datang!</h3>
                 <p>Silakan pilih cara masuk Anda</p>
             </div>
-
-            <a href="login.php" class="option-user">
+            <a href="login" class="option-user">
                 <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
             </a>
-
             <div class="modal-divider"><span>ATAU</span></div>
-
-            <a href="admin/login.php" class="option-admin">
+            <a href="login-admin" class="option-admin">
                 <i class="fas fa-lock"></i> Masuk sebagai Admin
             </a>
         </div>

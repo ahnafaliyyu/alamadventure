@@ -1,0 +1,59 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ==================================================
+    # 1. KEAMANAN (SECURITY)
+    # ==================================================
+
+    # Mencegah akses ke file sensitif (.env, .sql, .log, .yml, .git)
+    <FilesMatch "\.(env|sql|log|ini|yml|git|lock|json)$">
+        Order Allow,Deny
+        Deny from all
+    </FilesMatch>
+
+    # Mencegah akses langsung ke folder sensitif yang ada di public
+    # Berdasarkan file kamu: config, middleware, dan init.sql tidak boleh diakses langsung
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^middleware/ - [F,L]
+    RewriteRule ^init\.sql$ - [F,L]
+
+    # ==================================================
+    # 2. ROUTING (URL CANTIK)
+    # ==================================================
+
+    # --- A. Custom Mapping ---
+    
+    RewriteRule ^beranda/?$ index.php [L]
+    RewriteRule ^katalog/?$ katalog.php [L]
+    RewriteRule ^keranjang/?$ keranjang.php [L]
+    RewriteRule ^kontak/?$ kontak.php [L]
+    RewriteRule ^tentang-kami/?$ tentang-kami.php [L]
+    RewriteRule ^profil/?$ riwayat.php [L]
+    RewriteRule ^login/?$ login.php [L]
+    RewriteRule ^registrasi/?$ register.php [L]
+    RewriteRule ^login-admin/?$ /admin/login.php [L]
+    RewriteRule ^proses-login/?$ /admin/do_login.php [L]
+    RewriteRule ^dashboard-admin/?$ /admin/index.php [L]
+    RewriteRule ^barang-admin/?$ /admin/produk.php [L]
+    RewriteRule ^transaksi-admin/?$ /admin/transaksi.php [L]
+    RewriteRule ^batalkan/?$ /admin/cancel_order.php [L]
+    RewriteRule ^tambah-barang-admin/?$ /admin/tambah_produk.php [L]
+    RewriteRule ^pengaturan-admin/?$ /admin/pengaturan.php [L]
+    RewriteRule ^edit-barang-admin/?$ /admin/edit_produk.php [L]
+    RewriteRule ^styling-admin/?$ /admin/css/admin-style.css [L]
+    RewriteRule ^reset/?$ reset_password.php [L]
+    RewriteRule ^lupa-password/?$ forgot_password.php [L]
+
+    # --- B. Otomatis Menghilangkan Ekstensi .php ---
+    
+    # Jika user mengakses file tanpa ekstensi (misal: /login)
+    # Cek apakah itu bukan direktori (!-d)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Cek apakah file .php nya ada (misal: login.php ada)
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    # Arahkan permintaan tersebut ke file .php aslinya secara internal
+    RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+</IfModule>

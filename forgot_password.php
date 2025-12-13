@@ -28,7 +28,7 @@ if (isset($_POST['reset'])) {
         $path = dirname($_SERVER['PHP_SELF']);
         $base_url = $protocol . "://" . $host . $path;
 
-        $link = $base_url . "/reset_password.php?token=" . $token;
+        $link = $base_url . "/reset?token=" . $token;
 
         $emailSubject = "Reset Password Alam Adventure";
         $emailBody = "

@@ -28,25 +28,25 @@
       </div>
 
       <ul class="nav-menu" id="navMenu">
-        <li><a href="index.php" class="nav-link">Beranda</a></li>
-        <li><a href="tentang-kami.php" class="nav-link">Tentang Kami</a></li>
-        <li><a href="katalog.php" class="nav-link">Katalog</a></li>
-        <li><a href="kontak.php" class="nav-link active">Kontak</a></li>
+        <li><a href="beranda" class="nav-link">Beranda</a></li>
+        <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
+        <li><a href="katalog" class="nav-link">Katalog</a></li>
+        <li><a href="kontak" class="nav-link active">Kontak</a></li>
       </ul>
     </div>
     <div class="btn-kanan">
-      <a href="keranjang.php" class="nav-link" id="cartLink">
+      <a href="keranjang" class="nav-link" id="cartLink">
         <i class="fas fa-shopping-cart"></i>
         <span id="cartCount"><?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?></span>
       </a>
 
       <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
-        <a href="admin/index.php" style="background:#d35400; color:white;">
+        <a href="dashboard-admin" style="background:#d35400; color:white;">
           <i class="fas fa-user-shield"></i> Panel
         </a>
 
       <?php elseif (isset($_SESSION['user_id'])): ?>
-        <a href="riwayat.php" title="Akun Saya">
+        <a href="profil" title="Akun Saya">
           <i class="fas fa-user"></i>
         </a>
 
@@ -129,12 +129,10 @@
       <div class="footer-navigation">
         <h4>Navigasi</h4>
         <ul>
-          <li><a href="index.html">Beranda</a></li>
-          <li><a href="index.html#tentang">Tentang Kami</a></li>
-          <li><a href="katalog.html">Katalog Lengkap</a></li>
-          <li><a href="kontak.html">Hubungi Kami</a></li>
-          <li><a href="testimoni.html">Testimoni</a></li>
-          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="index.php">Beranda</a></li>
+          <li><a href="tentang-kami.php">Tentang Kami</a></li>
+          <li><a href="katalog.php">Katalog Lengkap</a></li>
+          <li><a href="kontak.php">Hubungi Kami</a></li>
         </ul>
       </div>
 
@@ -176,22 +174,18 @@
     </div>
   </footer>
 
-      <div id="loginChoiceModal" class="login-modal-overlay">
+  <div id="loginChoiceModal" class="login-modal-overlay">
     <div class="login-modal-content">
       <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-
       <div class="login-modal-header">
         <h3>Selamat Datang!</h3>
         <p>Silakan pilih cara masuk Anda</p>
       </div>
-
-      <a href="login.php" class="option-user">
+      <a href="login" class="option-user">
         <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
       </a>
-
       <div class="modal-divider"><span>ATAU</span></div>
-
-      <a href="admin/login.php" class="option-admin">
+      <a href="login-admin" class="option-admin">
         <i class="fas fa-lock"></i> Masuk sebagai Admin
       </a>
     </div>

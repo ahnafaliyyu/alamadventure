@@ -5,8 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Produk - Alam Adventure</title>
-    <link rel="stylesheet" href="css/admin-style.css">
+    <title>Manajemen Barang - Alam Adventure</title>
+    <link rel="icon" href="public/logo.png" type="image/png" />
+    <link rel="stylesheet" href="styling-admin">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .pagination-container {
@@ -129,31 +130,29 @@
             </div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="index.php">
-                        <i class="fa-solid fa-gauge-high"></i>
-                        <span>Dashboard</span>
-                    </a>
+                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                        <span>Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="produk.php" class="active">
+                    <a href="barang-admin">
                         <i class="fa-solid fa-box-open"></i>
                         <span>Produk</span>
                     </a>
                 </li>
                 <li>
-                    <a href="transaksi.php">
+                    <a href="transaksi-admin">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         <span>Transaksi</span>
                     </a>
                 </li>
                 <li>
-                    <a href="pengaturan.php">
+                    <a href="pengaturan-admin">
                         <i class="fa-solid fa-gear"></i>
                         <span>Pengaturan</span>
                     </a>
                 </li>
                 <li class="Beranda">
-                    <a href="../index.php">
+                    <a href="../beranda">
                         <i class="fa-solid fa-house"></i>
                         <span>Beranda</span>
                     </a>
@@ -176,7 +175,7 @@
             </div>
 
             <div style="margin-bottom: 20px; text-align: left; display: flex; justify-content: space-between">
-                <a href="tambah_produk.php" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Produk</a>
+                <a href="tambah-barang-admin" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Produk</a>
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="searchInput" placeholder="Cari nama produk...">
@@ -358,7 +357,7 @@
                                     <td data-label="Harga/hari">${price}</td>
                                     <td data-label="Stok (Disewa/Total)" align="center">${stockDisplay}</td>
                                     <td data-label="Aksi">
-                                        <a href="edit_produk.php?id=${p.id}" class="btn btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="edit-barang-admin?id=${p.id}" class="btn btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
                                         <button class="btn btn-delete" onclick="handleDelete(${p.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                                     </td>
                                 </tr>

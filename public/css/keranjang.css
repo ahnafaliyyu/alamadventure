@@ -169,8 +169,11 @@ body {
   text-decoration: none;
   font-weight: 600;
   transition: 0.3s;
-  display: inline-block;
-  margin-top: 15px;
+  position: relative;
+  top: 30px;
+}
+.btn-shop i {
+  font-size: 16px;
 }
 .btn-shop:hover {
   background: var(--brand-light);

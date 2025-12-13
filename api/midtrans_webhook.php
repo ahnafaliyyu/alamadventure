@@ -113,7 +113,7 @@ if ($new_status == 'paid') {
 
             // Variabel Pendukung
             $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
-            $base_url = "https://4695fb861470.ngrok-free.app"; // GANTI URL NGROK/DOMAIN ANDA DISINI
+            $base_url = "https://95816cc257c9.ngrok-free.app"; // GANTI URL NGROK/DOMAIN
             $link_faktur = $base_url . "/invoice.php?order=" . $order_id;
 
             // Lokasi Toko & Buyer
@@ -136,7 +136,7 @@ if ($new_status == 'paid') {
                 $pesan_admin .= "📍 Lokasi Antar: $buyer_map_link\n";
                 $pesan_admin .= "Alamat: " . $order['delivery_address'] . "\n";
             }
-            $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://015e3956031b.ngrok-free.app/admin/index.php";
+            $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://95816cc257c9.ngrok-free.app/admin/index.php";
 
             // Kirim ke Admin
             $nomor_admin = "082241559607"; // Nomor Admin Utama
@@ -181,7 +181,7 @@ function sendWhatsApp($target, $message)
     $target_formatted = formatNomor($target);
 
     // 2. Token Fonnte
-    $token = "pMEu6MFUdc2f9zQ3JzQk"; // PASTIKAN TOKEN BENAR
+    $token = "F9mUKaDCDio3bocjj1kzGfe";
 
     $curl = curl_init();
     curl_setopt_array($curl, array(

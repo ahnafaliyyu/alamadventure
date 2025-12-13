@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -8,13 +9,17 @@
   font-style: normal;
   scroll-behavior: smooth;
 }
+
 body {
   background-color: #f9f5f0;
   padding-top: 74px;
 }
+
 body.no-padding-top {
   padding-top: 0;
 }
+
+/* --- UPDATE Z-INDEX NAVBAR --- */
 .nav {
   position: fixed;
   top: 0;
@@ -30,28 +35,28 @@ body.no-padding-top {
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 15px 20px;
-  z-index: 1000;
+  z-index: 9999; /* UPDATE: Paling atas */
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
-/* 1. Latar Belakang Gelap (Overlay) */
 .login-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Hitam transparan */
-  z-index: 99999; /* Paling atas dari segalanya */
-  display: none; /* Sembunyi default */
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100000; /* UPDATE: Di atas segalanya */
+  display: none;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px); /* Efek blur di belakang */
+  backdrop-filter: blur(4px);
   animation: fadeInBg 0.3s ease;
 }
 
-/* 2. Kotak Konten Modal */
+/* ... (Sisa styling modal & elemen lain tetap original) ... */
+
 .login-modal-content {
   background: white;
   width: 100%;
@@ -66,7 +71,6 @@ body.no-padding-top {
   animation: slideUp 0.3s ease forwards;
 }
 
-/* Header Modal */
 .login-modal-header {
   margin-bottom: 25px;
 }
@@ -82,7 +86,6 @@ body.no-padding-top {
   font-size: 13px;
 }
 
-/* Tombol Close (X) */
 .btn-close-modal {
   position: absolute;
   top: 15px;
@@ -98,7 +101,6 @@ body.no-padding-top {
   color: #333;
 }
 
-/* Pilihan User (Besar & Menonjol) */
 .option-user {
   display: flex;
   align-items: center;
@@ -123,7 +125,6 @@ body.no-padding-top {
   font-size: 20px;
 }
 
-/* Garis Pemisah */
 .modal-divider {
   border-top: 1px solid #eee;
   margin: 20px 0;
@@ -140,16 +141,15 @@ body.no-padding-top {
   font-size: 12px;
 }
 
-/* Pilihan Admin (Kecil) */
 .option-admin {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   color: #666;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 500;
-  padding: 8px 15px;
+  padding: 4px 8px;
   border-radius: 50px;
   background-color: #f5f5f5;
   transition: all 0.2s;
@@ -159,7 +159,6 @@ body.no-padding-top {
   color: #333;
 }
 
-/* Animasi */
 @keyframes fadeInBg {
   from {
     opacity: 0;
@@ -179,8 +178,6 @@ body.no-padding-top {
   }
 }
 
-/* Navbar compact saat scroll - geser ke kanan */
-/* Navbar compact saat scroll */
 .nav.scrolled {
   background: rgba(30, 30, 30, 0.95);
   padding: 12px 5%;
@@ -196,7 +193,6 @@ body.no-padding-top {
   align-items: center;
   gap: 10px;
 }
-
 .btn-kanan a {
   background: #f9f5f0;
   color: #1a1a1a;
@@ -212,25 +208,20 @@ body.no-padding-top {
   align-items: center;
   gap: 8px;
 }
-
 .btn-kanan a[href="riwayat.php"] {
-  width: 43px !important; /* Paksa lebar tetap */
-  height: 43px !important; /* Paksa tinggi SAMA dengan lebar */
-  padding: 0 !important; /* Hapus padding agar tidak melar */
-
-  display: inline-flex !important; /* Gunakan Flexbox */
-  justify-content: center !important; /* Tengahkan icon secara horizontal */
-  align-items: center !important; /* Tengahkan icon secara vertikal */
-
-  border-radius: 50% !important; /* Membuat lingkaran penuh */
-  aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
+  width: 43px !important;
+  height: 43px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
 }
-
 .btn-kanan a:hover,
 .btn-kanan button:hover {
   background: #f0c33c;
 }
-
 .btn-kanan button {
   background: #f9f5f0;
   color: #1a1a1a;
@@ -246,12 +237,10 @@ body.no-padding-top {
   align-items: center;
   gap: 24px;
 }
-
 .desktop-nav .logo {
   display: flex;
   align-items: center;
 }
-
 .desktop-nav ul {
   list-style: none;
   margin: 0;
@@ -259,7 +248,6 @@ body.no-padding-top {
   display: flex;
   align-items: center;
 }
-
 .desktop-nav a {
   text-decoration: none;
   font-weight: 500;
@@ -270,18 +258,15 @@ body.no-padding-top {
   transition: background 0.2s ease, color 0.2s ease;
   white-space: nowrap;
 }
-
 .desktop-nav a:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
 }
-
 .desktop-nav a.active {
   color: #1a1a1a;
   background: #f0c33c;
   font-weight: 600;
 }
-
 .desktop-nav .logo img {
   width: 40px;
   height: 40px;
@@ -301,7 +286,6 @@ body.no-padding-top {
   position: relative;
   overflow: hidden;
 }
-
 .site-footer::before {
   content: "";
   position: absolute;
@@ -317,7 +301,6 @@ body.no-padding-top {
     transparent 100%
   );
 }
-
 .footer-inner {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
@@ -326,28 +309,23 @@ body.no-padding-top {
   max-width: 1400px;
   margin: 0 auto;
 }
-
-/* Brand Section */
 .footer-brand {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-
 .footer-logo {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 8px;
 }
-
 .footer-logo img {
   width: 70px;
   height: 70px;
   border-radius: 16px;
   object-fit: cover;
 }
-
 .footer-brand h3 {
   font-size: 24px;
   letter-spacing: 1px;
@@ -356,7 +334,6 @@ body.no-padding-top {
   line-height: 1.2;
   font-weight: 700;
 }
-
 .footer-brand p {
   font-size: 14px;
   line-height: 1.8;
@@ -364,8 +341,6 @@ body.no-padding-top {
   opacity: 0.92;
   margin: 0;
 }
-
-/* Navigation Section */
 .footer-navigation h4 {
   font-weight: 700;
   font-size: 18px;
@@ -373,17 +348,14 @@ body.no-padding-top {
   margin: 0 0 20px 0;
   letter-spacing: 0.5px;
 }
-
 .footer-navigation ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .footer-navigation li {
   margin-bottom: 12px;
 }
-
 .footer-navigation a {
   color: #e8f1e6;
   text-decoration: none;
@@ -391,13 +363,10 @@ body.no-padding-top {
   transition: all 0.3s ease;
   display: inline-block;
 }
-
 .footer-navigation a:hover {
   color: #f9d84a;
   padding-left: 5px;
 }
-
-/* Features Section */
 .footer-features-section h4 {
   font-weight: 700;
   font-size: 18px;
@@ -405,7 +374,6 @@ body.no-padding-top {
   margin: 0 0 20px 0;
   letter-spacing: 0.5px;
 }
-
 .feature-item {
   display: flex;
   align-items: center;
@@ -417,12 +385,10 @@ body.no-padding-top {
   border-left: 3px solid #f9d84a;
   transition: all 0.3s ease;
 }
-
 .feature-item:hover {
   background: rgba(249, 216, 74, 0.15);
   transform: translateX(5px);
 }
-
 .feature-icon {
   width: 36px;
   height: 36px;
@@ -434,21 +400,17 @@ body.no-padding-top {
   color: #f9d84a;
   flex-shrink: 0;
 }
-
 .feature-item span {
   color: #e8f1e6;
   font-size: 14px;
   font-weight: 500;
 }
-
-/* Footer Bottom */
 .footer-bottom {
   border-top: 1px solid rgba(249, 216, 74, 0.15);
   padding: 24px 48px;
   background: rgba(0, 0, 0, 0.15);
   text-align: center;
 }
-
 .footer-bottom p {
   margin: 0;
   color: #d6e2d9;
@@ -456,68 +418,55 @@ body.no-padding-top {
   opacity: 0.9;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .footer-inner {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     padding: 50px 36px;
   }
-
   .footer-brand {
     grid-column: 1 / -1;
   }
 }
-
 @media (max-width: 768px) {
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 36px;
     padding: 40px 28px;
   }
-
   .footer-bottom {
     padding: 24px 28px;
   }
 }
-
 @media (max-width: 480px) {
   .footer-inner {
     padding: 32px 20px;
   }
-
   .footer-bottom {
     padding: 20px;
   }
-
   .footer-brand h3 {
     font-size: 20px;
   }
-
   .footer-logo img {
     width: 60px;
     height: 60px;
   }
 }
-
 @media screen and (max-width: 900px) {
   body {
     padding-top: 49px;
   }
-
   .btn-kanan button {
     padding: 10.5px 18px;
   }
-
   .nav {
     padding: 10px 16px 10px 20px;
     gap: 16px;
   }
-
   .desktop-nav {
     gap: 16px;
   }
-
   .desktop-nav a {
     font-size: 14px;
     padding: 10px 16px;
@@ -527,62 +476,44 @@ body.no-padding-top {
     font-size: 14px;
   }
   .btn-kanan a[href="riwayat.php"] {
-    width: 38px !important; /* Paksa lebar tetap */
-    height: 38px !important; /* Paksa tinggi SAMA dengan lebar */
-    padding: 0 !important; /* Hapus padding agar tidak melar */
-
-    display: inline-flex !important; /* Gunakan Flexbox */
-    justify-content: center !important; /* Tengahkan icon secara horizontal */
-    align-items: center !important; /* Tengahkan icon secara vertikal */
-
-    border-radius: 50% !important; /* Membuat lingkaran penuh */
-    aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
+    width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
   }
 }
-
 @media screen and (max-width: 768px) {
   body.no-padding-top {
     padding-top: 0;
   }
-
   .nav {
-    /* top: 12px; */
     padding: 10px 14px 10px 18px;
     gap: 12px;
   }
-
   .nav.scrolled {
     padding: 12px 16px;
   }
-
   .desktop-nav {
     gap: 12px;
   }
-
   .desktop-nav .logo img {
     width: 34px;
     height: 34px;
   }
-
   .desktop-nav ul {
     gap: 2px;
   }
-
   .desktop-nav a {
     font-size: 13px;
     padding: 8px 14px;
   }
-
   .btn-kanan {
     gap: 8px;
   }
-
   .btn-kanan a {
     padding: 10px 16px;
     font-size: 13px;
   }
 }
-
 @media screen and (max-width: 600px) {
   body {
     padding-top: 49px;
@@ -590,52 +521,36 @@ body.no-padding-top {
   .btn-kanan button {
     padding: 8px 16px;
   }
-
   body.no-padding-top {
     padding-top: 0;
   }
-
   .nav {
     padding: 8px 12px 8px 14px;
     gap: 10px;
   }
-
   .nav.scrolled {
     padding: 12px 20px;
   }
-
   .desktop-nav {
     gap: 10px;
   }
-
   .desktop-nav .logo img {
     width: 32px;
     height: 32px;
   }
-
   .btn-kanan {
     gap: 6px;
   }
-
   .btn-kanan a {
     padding: 8px 14px;
     font-size: 13px;
   }
   .btn-kanan a[href="riwayat.php"] {
-    width: 34px !important; /* Paksa lebar tetap */
-    height: 34px !important; /* Paksa tinggi SAMA dengan lebar */
-    padding: 0 !important; /* Hapus padding agar tidak melar */
-
-    display: inline-flex !important; /* Gunakan Flexbox */
-    justify-content: center !important; /* Tengahkan icon secara horizontal */
-    align-items: center !important; /* Tengahkan icon secara vertikal */
-
-    border-radius: 50% !important; /* Membuat lingkaran penuh */
-    aspect-ratio: 1 / 1 !important; /* Kunci rasio agar selalu kotak 1:1 */
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
   }
 }
-
-/* Responsive Footer Layout */
 @media (max-width: 992px) {
   .footer-inner {
     grid-template-columns: 1fr;
@@ -646,39 +561,33 @@ body.no-padding-top {
     justify-content: center;
   }
 }
-
-/* Mobile (Max Width 768px) */
 @media screen and (max-width: 768px) {
-  /* Footer Responsif */
   .footer-inner {
     flex-direction: column;
     gap: 30px;
   }
-
   .footer-brand,
   .footer-links {
     width: 100%;
-    text-align: center; /* Rata tengah untuk mobile */
+    text-align: center;
   }
-
   .footer-logo img {
-    margin: 0 auto 15px auto; /* Tengahkan logo */
+    margin: 0 auto 15px auto;
     display: block;
   }
-
   .footer-links ul li a {
     padding: 10px;
-    display: block; /* Area klik lebih besar di HP */
+    display: block;
   }
 }
 
-/* 1. Style Tombol Hamburger (Default Hidden di Desktop) */
+/* --- HAMBURGER MENU & MOBILE NAV UPDATE --- */
 .hamburger {
-  display: none; /* Sembunyikan di layar besar */
+  display: none;
   flex-direction: column;
   cursor: pointer;
   padding: 5px;
-  z-index: 1002; /* Pastikan di atas elemen lain */
+  z-index: 10002; /* UPDATE: Lebih tinggi dari nav */
   background: none;
   border: none;
   gap: 4px;
@@ -687,63 +596,55 @@ body.no-padding-top {
 .hamburger span {
   width: 25px;
   height: 3px;
-  background-color: #ffffff; /* Warna garis */
+  background-color: #ffffff;
   transition: all 0.3s ease;
   border-radius: 3px;
 }
 
-/* Animasi silang (X) saat aktif */
 .hamburger.active span:nth-child(1) {
   transform: rotate(-45deg) translate(-5px, 5px);
 }
 .hamburger.active span:nth-child(2) {
-  opacity: 0; /* Garis tengah hilang */
+  opacity: 0;
 }
 .hamburger.active span:nth-child(3) {
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
-/* 2. Responsif untuk Mobile (Max-width 768px) */
 @media (max-width: 768px) {
   .hamburger {
-    display: flex; /* Tampilkan tombol di mobile */
+    display: flex;
   }
-
-  /* Penyesuaian container navbar */
   .desktop-nav {
     width: 100%;
     justify-content: flex-start;
   }
 
-  /* Style Menu saat mode Mobile */
+  /* Mobile Menu Container */
   .desktop-nav ul.nav-menu {
     position: fixed;
-    left: -100%; /* Sembunyikan di kiri layar */
+    left: -100%;
     top: 0;
     flex-direction: column;
-    background: rgba(30, 30, 30, 0.98); /* Background gelap transparan */
+    background: rgba(30, 30, 30, 0.98);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    width: 70%; /* Lebar menu */
+    width: 70%;
     height: 100vh;
-    padding-top: 80px; /* Jarak dari atas */
+    padding-top: 80px;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
-    z-index: 1001;
+    z-index: 10001; /* UPDATE: Di atas nav bar */
     gap: 0;
   }
 
-  /* Kelas aktif untuk memunculkan menu */
   .desktop-nav ul.nav-menu.active {
     left: 0;
   }
-
-  /* Style Link di dalam menu mobile */
   .desktop-nav ul.nav-menu li {
     width: 100%;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-
   .desktop-nav ul.nav-menu li a {
     display: block;
     padding: 20px;
@@ -751,12 +652,10 @@ body.no-padding-top {
     color: rgba(255, 255, 255, 0.9);
     border-radius: 0;
   }
-
   .desktop-nav ul.nav-menu li a:hover {
     background: rgba(255, 255, 255, 0.1);
-    padding-left: 25px; /* Efek geser saat hover */
+    padding-left: 25px;
   }
-
   .desktop-nav ul.nav-menu li a.active {
     background: #f0c33c;
     color: #1a1a1a;

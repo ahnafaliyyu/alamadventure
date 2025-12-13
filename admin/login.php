@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 
 if (auth_is_logged_in()) {
-    redirect('index.php');
+    redirect('dashboard-admin');
 }
 
 $error = $_SESSION['login_error'] ?? '';
@@ -14,6 +14,7 @@ unset($_SESSION['login_error']);
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="public/logo.png" type="image/png" />
     <title>Login Admin - Alam Adventure</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -65,7 +66,7 @@ unset($_SESSION['login_error']);
             width: 100%;
             max-width: 450px;
             /* Diperbesar sedikit */
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             /* Putih transparan */
             border: 2px solid #f2ead3;
             border-radius: 20px;
@@ -184,10 +185,19 @@ unset($_SESSION['login_error']);
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 510px) {
+            body {
+                background: rgba(255, 255, 255, 0.95);
+            }
             .login-card {
-                max-width: 100%;
-                margin: 0 10px;
+                padding: 30px 10px;
+                box-shadow: none;
+                border: none;
+            }
+        }
+        @media (max-width: 380px) {
+            .login-card {
+                padding: 30px 0;
             }
         }
     </style>
@@ -206,7 +216,7 @@ unset($_SESSION['login_error']);
                 <div class="error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
             <?php endif; ?>
 
-            <form method="post" action="do_login.php">
+            <form method="post" action="proses-login">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Masukkan username" required />
@@ -219,7 +229,7 @@ unset($_SESSION['login_error']);
             </form>
 
             <div class="back-link">
-                <a href="../index.php">← Kembali ke Halaman Utama</a>
+                <a href="../beranda">← Kembali ke Halaman Utama</a>
             </div>
         </div>
     </div>

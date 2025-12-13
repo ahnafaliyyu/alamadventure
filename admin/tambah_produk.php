@@ -55,11 +55,11 @@
             </div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                    <a href="dashboard-admin"><i class="fa-solid fa-gauge-high"></i>
                         <span>Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="barang-admin">
+                    <a href="barang-admin" class="active">
                         <i class="fa-solid fa-box-open"></i>
                         <span>Produk</span>
                     </a>

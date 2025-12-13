@@ -393,7 +393,7 @@ if (isset($_POST['change_password'])) {
             </div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                    <a href="dashboard-admin"><i class="fa-solid fa-gauge-high"></i>
                         <span>Dashboard</span></a>
                 </li>
                 <li>
@@ -409,7 +409,7 @@ if (isset($_POST['change_password'])) {
                     </a>
                 </li>
                 <li>
-                    <a href="pengaturan-admin">
+                    <a href="pengaturan-admin" class="active">
                         <i class="fa-solid fa-gear"></i>
                         <span>Pengaturan</span>
                     </a>

@@ -217,7 +217,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="dashboard-admin" class="active"><i class="fa-solid fa-gauge-high"></i>
+                    <a href="dashboard-admin"><i class="fa-solid fa-gauge-high"></i>
                         <span>Dashboard</span></a>
                 </li>
                 <li>
@@ -227,7 +227,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="transaksi-admin">
+                    <a href="transaksi-admin" class="active">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         <span>Transaksi</span>
                     </a>

@@ -177,7 +177,7 @@
                         </div>
 
                         <button type="submit" class="btn-submit" id="submitBtn">Simpan Perubahan</button>
-                        <a href="produk.php"
+                        <a href="barang-admin"
                             style="display:block; text-align:center; margin-top:15px; color:#666; text-decoration:none;">Batal</a>
                     </form>
                 </div>
@@ -246,7 +246,7 @@
         const productId = urlParams.get('id');
 
         if (!productId) {
-            showAlert("Error", "ID Produk tidak ditemukan!", "danger", "produk.php");
+            showAlert("Error", "ID Produk tidak ditemukan!", "danger", "barang-admin");
         }
 
         // 2. Load Data Produk
@@ -271,7 +271,7 @@
                                 placeholder.style.display = 'none';
                             }
                         } else {
-                            showAlert("Gagal", "Gagal memuat data: " + data.message, "danger", "produk.php");
+                            showAlert("Gagal", "Gagal memuat data: " + data.message, "danger", "barang-admin");
                         }
                     })
                     .catch(err => {
@@ -312,7 +312,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        showAlert("Berhasil", "Produk berhasil diperbarui!", "success", "produk.php");
+                        showAlert("Berhasil", "Produk berhasil diperbarui!", "success", "barang-admin");
                     } else {
                         showAlert("Gagal", "Gagal memperbarui: " + data.message, "danger");
                         btn.innerHTML = 'Simpan Perubahan';

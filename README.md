@@ -351,6 +351,5 @@ services:
 
 ## 🛡️ Login Admin
 
-  * **URL:** `/admin`
   * **Username:** `admin`
   * **Password:** `admin123`

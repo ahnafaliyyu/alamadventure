@@ -113,7 +113,7 @@ if ($new_status == 'paid') {
 
             // Variabel Pendukung
             $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
-            $base_url = "https://95816cc257c9.ngrok-free.app"; // GANTI URL NGROK/DOMAIN
+            $base_url = "https://9b5c644a336d.ngrok-free.app"; // GANTI URL NGROK/DOMAIN
             $link_faktur = $base_url . "/invoice.php?order=" . $order_id;
 
             // Lokasi Toko & Buyer

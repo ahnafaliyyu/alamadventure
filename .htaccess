@@ -29,7 +29,7 @@ Options -Indexes
     # --- A. Custom Mapping ---
     
     RewriteRule ^beranda/?$ index.php [L]
-    RewriteRule ^katalog/?$ katalog.php [L]
+    RewriteRule ^katalog-barang/?$ katalog.php [L]
     RewriteRule ^keranjang/?$ keranjang.php [L]
     RewriteRule ^kontak/?$ kontak.php [L]
     RewriteRule ^tentang-kami/?$ tentang-kami.php [L]

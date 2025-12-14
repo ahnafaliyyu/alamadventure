@@ -30,7 +30,7 @@
       <ul class="nav-menu" id="navMenu">
         <li><a href="beranda" class="nav-link">Beranda</a></li>
         <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
-        <li><a href="katalog" class="nav-link">Katalog</a></li>
+        <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
         <li><a href="kontak" class="nav-link active">Kontak</a></li>
       </ul>
     </div>
@@ -129,10 +129,10 @@
       <div class="footer-navigation">
         <h4>Navigasi</h4>
         <ul>
-          <li><a href="index.php">Beranda</a></li>
-          <li><a href="tentang-kami.php">Tentang Kami</a></li>
-          <li><a href="katalog.php">Katalog Lengkap</a></li>
-          <li><a href="kontak.php">Hubungi Kami</a></li>
+          <li><a href="beranda">Beranda</a></li>
+          <li><a href="tentang-kami">Tentang Kami</a></li>
+          <li><a href="katalog-barang">Katalog Lengkap</a></li>
+          <li><a href="kontak">Hubungi Kami</a></li>
         </ul>
       </div>
 

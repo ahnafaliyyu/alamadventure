@@ -313,7 +313,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="beranda" class="nav-link">Beranda</a></li>
                     <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
-                    <li><a href="katalog" class="nav-link">Katalog</a></li>
+                    <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
                     <li><a href="kontak" class="nav-link">Kontak</a></li>
                 </ul>
             </div>

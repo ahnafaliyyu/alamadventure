@@ -143,7 +143,7 @@ if (isset($_GET['remove'])) {
         <ul class="nav-menu" id="navMenu">
           <li><a href="beranda" class="nav-link">Beranda</a></li>
           <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
-          <li><a href="katalog" class="nav-link">Katalog</a></li>
+          <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
           <li><a href="kontak" class="nav-link">Kontak</a></li>
         </ul>
       </div>
@@ -181,10 +181,10 @@ if (isset($_GET['remove'])) {
                     <i class="fas fa-shopping-basket"></i>
                     <h3>Keranjang Anda kosong</h3>
                     <p style="color:#6b7280;">Belum ada barang yang disewa.</p>
-                    <a href="profil" class="btn-shop">Riwayat Belanja
+                    <a href="profil" class="btn-shop">Riwayat
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </a>
-                    <a href="katalog" class="btn-shop" style="margin-left:8px;">Mulai Belanja 
+                    <a href="katalog-barang" class="btn-shop" style="margin-left:8px;">Belanja 
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>

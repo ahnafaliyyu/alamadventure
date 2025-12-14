@@ -107,7 +107,7 @@ $result_best = $conn->query($sql_best);
         <ul class="nav-menu" id="navMenu">
           <li><a href="beranda" class="nav-link active">Beranda</a></li>
           <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
-          <li><a href="katalog" class="nav-link">Katalog</a></li>
+          <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
           <li><a href="kontak" class="nav-link">Kontak</a></li>
         </ul>
       </div>
@@ -143,7 +143,7 @@ $result_best = $conn->query($sql_best);
           Harga bersahabat, booking cepat, layanan ramah.
         </p>
         <div class="button-container">
-          <a href="katalog.php">
+          <a href="katalog-barang">
             <button class="active-button">Lihat Katalog</button>
           </a>
           <a href="#cara-sewa">
@@ -260,7 +260,7 @@ $result_best = $conn->query($sql_best);
     </div>
 
     <div class="controls-row">
-      <a href="katalog.php"><button class="view-more">Lihat Semua</button></a>
+      <a href="katalog-barang"><button class="view-more">Lihat Semua</button></a>
       <div class="slider-arrows">
         <button class="arrow prev-arrow" id="prevArrow"><i class="fas fa-chevron-left"></i></button>
         <button class="arrow next-arrow" id="nextArrow"><i class="fas fa-chevron-right"></i></button>
@@ -363,7 +363,7 @@ $result_best = $conn->query($sql_best);
         <ul>
           <li><a href="beranda">Beranda</a></li>
           <li><a href="tentang-kami">Tentang Kami</a></li>
-          <li><a href="katalog">Katalog Lengkap</a></li>
+          <li><a href="katalog-barang">Katalog Lengkap</a></li>
           <li><a href="kontak">Hubungi Kami</a></li>
         </ul>
       </div>

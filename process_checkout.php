@@ -107,7 +107,7 @@ try {
 
     // --- SETUP URL & INFO ---
     $admin_phone = "082241559607"; // Nomor Admin (Bisa diganti atau pakai ENV juga jika mau)
-    $ngrok_url = " https://95816cc257c9.ngrok-free.app"; // URL PUBLIK
+    $ngrok_url = "https://9b5c644a336d.ngrok-free.app"; // URL PUBLIK
     $link_faktur = $ngrok_url . "/invoice.php?order=" . $order_code;
     $formatted_amount = "Rp " . number_format($total_transaction, 0, ',', '.');
 

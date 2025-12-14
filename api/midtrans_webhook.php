@@ -136,7 +136,7 @@ if ($new_status == 'paid') {
                 $pesan_admin .= "📍 Lokasi Antar: $buyer_map_link\n";
                 $pesan_admin .= "Alamat: " . $order['delivery_address'] . "\n";
             }
-            $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://95816cc257c9.ngrok-free.app/admin/index.php";
+            $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://95816cc257c9.ngrok-free.app/transaksi-admin";
 
             // Kirim ke Admin
             $nomor_admin = "082241559607"; // Nomor Admin Utama
@@ -181,7 +181,7 @@ function sendWhatsApp($target, $message)
     $target_formatted = formatNomor($target);
 
     // 2. Token Fonnte
-    $token = "F9mUKaDCDio3bocjj1kzGfe";
+    $token = "pMEu6MFUdc2f9zQ3JzQk";
 
     $curl = curl_init();
     curl_setopt_array($curl, array(

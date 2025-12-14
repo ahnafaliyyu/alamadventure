@@ -136,6 +136,7 @@ if ($new_status == 'paid') {
                 $pesan_admin .= "📍 Lokasi Antar: $buyer_map_link\n";
                 $pesan_admin .= "Alamat: " . $order['delivery_address'] . "\n";
             }
+            $pesan_admin .= "🔗 Faktur: $link_faktur";
             $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://95816cc257c9.ngrok-free.app/transaksi-admin";
 
             // Kirim ke Admin

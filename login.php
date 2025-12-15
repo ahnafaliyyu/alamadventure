@@ -1,10 +1,9 @@
 <?php
 require 'config/init.php';
 
-// --- KONFIGURASI CLOUDFLARE ---
-$cf_site_key = '1x00000000000000000000AA';
-$cf_secret_key = '1x0000000000000000000000000000000AA';
-// -----------------------------
+// Ambil dari ENV (Gunakan Null Coalescing ?? untuk fallback jika gagal)
+$cf_site_key = $_ENV['CF_SITE_KEY'] ?? '';
+$cf_secret_key = $_ENV['CF_SECRET_KEY'] ?? '';
 
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");

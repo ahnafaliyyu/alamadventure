@@ -125,3 +125,5 @@ INSERT INTO settings (setting_key, setting_value, description) VALUES
 ('stat_3_num', '50+', 'Angka Stat 3'),
 ('stat_3_label', 'Produk Tersedia', 'Label Stat 3')
 ON DUPLICATE KEY UPDATE setting_key=setting_key;
+
+ALTER TABLE orders ADD COLUMN actual_pickup_date DATETIME NULL AFTER rental_status;

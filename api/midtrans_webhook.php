@@ -5,15 +5,14 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/midtrans.php';
 
-// --- FUNGSI LOGGING (Penting untuk cek error) ---
-function writeLog($msg)
-{
-    file_put_contents(__DIR__ . '/wa_log.txt', date('Y-m-d H:i:s') . " - " . $msg . "\n", FILE_APPEND);
+// --- FUNGSI LOGGING ---
+function writeLog($msg) {
+    $logFile = __DIR__ . '/wa_log.txt';
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - " . $msg . "\n", FILE_APPEND);
 }
 
-// --- FUNGSI FORMAT NOMOR HP (08xx -> 628xx) ---
-function formatNomor($nomor)
-{
+// --- FUNGSI FORMAT NOMOR HP ---
+function formatNomor($nomor) {
     $nomor = preg_replace('/[^0-9]/', '', $nomor);
     if (substr($nomor, 0, 2) == '08') {
         $nomor = '62' . substr($nomor, 1);
@@ -30,24 +29,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $json_result = file_get_contents('php://input');
 $result = json_decode($json_result, true);
 
-if (!$result)
+if (!$result) {
+    writeLog("Error: Invalid JSON Input");
     die("Invalid JSON");
-
-$order_id = $result['order_id'];
-$transaction_status = $result['transaction_status'];
-$gross_amount = $result['gross_amount'];
-$payment_type = $result['payment_type'];
-$status_code = $result['status_code'];
-
-// Validasi Signature Midtrans
-$serverKey = \Midtrans\Config::$serverKey;
-$my_signature_key = hash('sha512', $order_id . $status_code . $gross_amount . $serverKey);
-
-if ($my_signature_key !== $result['signature_key']) {
-    writeLog("Signature Key Salah: $order_id");
-    http_response_code(403);
-    die("Invalid Signature");
 }
+
+$order_id = $result['order_id'] ?? '';
+$transaction_status = $result['transaction_status'] ?? '';
+$payment_type = $result['payment_type'] ?? '';
+$gross_amount = $result['gross_amount'] ?? 0;
+
+if (empty($order_id)) {
+    writeLog("Error: Order ID kosong");
+    die("No Order ID");
+}
+
+writeLog("Webhook Masuk: $order_id | Status: $transaction_status");
 
 // Tentukan Status Baru
 $new_status = 'pending';
@@ -66,9 +63,9 @@ if ($new_status == 'paid') {
     $stmtCek->execute();
     $order = $stmtCek->get_result()->fetch_assoc();
 
-    // Hanya proses jika status di database belum 'paid'
+    // Proses jika order ada dan belum paid
     if ($order && $order['status'] !== 'paid') {
-
+        
         $conn->begin_transaction();
 
         try {
@@ -77,7 +74,7 @@ if ($new_status == 'paid') {
             $stmt->bind_param("s", $order_id);
             $stmt->execute();
 
-            // 2. AMBIL LIST ITEM (Untuk pesan WA)
+            // 2. AMBIL LIST ITEM
             $stmtItems = $conn->prepare("SELECT p.name, oi.qty FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?");
             $stmtItems->bind_param("i", $order['id']);
             $stmtItems->execute();
@@ -90,76 +87,94 @@ if ($new_status == 'paid') {
                 $total_qty += $item['qty'];
             }
 
-            // 3. BUAT/CEK INVOICE
-            $inv_no = "";
+            // 3. BUAT INVOICE (Jika belum ada)
             $cekInv = $conn->query("SELECT invoice_no FROM invoices WHERE order_code = '$order_id'");
-            if ($cekInv->num_rows > 0) {
-                $inv_no = $cekInv->fetch_assoc()['invoice_no'];
-            } else {
-                $inv_no = "INV-RENT/" . date('ymd') . "/" . rand(100, 999);
+            if ($cekInv->num_rows == 0) {
+                $inv_no = "INV/" . date('Ymd') . "/" . rand(1000, 9999);
                 $stmtInv = $conn->prepare("INSERT INTO invoices (invoice_no, order_code, customer_name, order_type, duration, total_qty, payment_method, signature_customer, signature_admin) VALUES (?, ?, ?, 'Peminjaman Barang', ?, ?, ?, ?, 'Admin')");
                 $durText = $order['duration_days'] . " Hari";
                 $stmtInv->bind_param("ssssiss", $inv_no, $order_id, $order['customer_name'], $durText, $total_qty, $payment_type, $order['customer_name']);
                 $stmtInv->execute();
+            } else {
+                $inv_no = $cekInv->fetch_assoc()['invoice_no'];
             }
 
-            // 4. COMMIT DATABASE (Simpan Data Dulu!)
             $conn->commit();
             writeLog("Database Berhasil Commit: $order_id");
 
             // ==========================================
-            // 5. PERSIAPAN PESAN WHATSAPP (Format Baru)
+            // 4. PERSIAPAN PESAN WHATSAPP
             // ==========================================
 
-            // Variabel Pendukung
-            $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
-            $base_url = "https://9b5c644a336d.ngrok-free.app"; // GANTI URL NGROK/DOMAIN
-            $link_faktur = $base_url . "/invoice.php?order=" . $order_id;
+            // Auto Detect Base URL
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+            $host = $_SERVER['HTTP_HOST'];
+            $base_url = "$protocol://$host"; 
+            
+            // Link Faktur
+            // Asumsi folder project di root, hapus '/api' dari path jika perlu
+            $clean_path = str_replace("/api", "", dirname($_SERVER['PHP_SELF'])); 
+            // Jika di localhost/ngrok tanpa subfolder, clean_path mungkin kosong
+            $link_faktur = $base_url . $clean_path . "/invoice.php?order=" . $order_id;
+            // Perbaiki jika ada double slash
+            $link_faktur = str_replace("api//invoice", "invoice", $link_faktur); 
 
-            // Lokasi Toko & Buyer
-            $shop_map_link = "https://maps.google.com/?q=-0.502183,117.153801"; // Ganti Koordinat Toko Anda
+            $formatted_amount = "Rp " . number_format($gross_amount, 0, ',', '.');
+
+            // --- KOORDINAT LOKASI ---
+            // Koordinat Toko (Samarinda)
+            $shop_lat = "-0.5454512191833396";
+            $shop_long = "117.11993488175007";
+            $shop_map_link = "https://maps.google.com/?q=$shop_lat,$shop_long"; 
+            
+            // Koordinat Pembeli (Jika Delivery)
             $buyer_map_link = "";
             if (!empty($order['delivery_lat']) && !empty($order['delivery_long'])) {
-                $buyer_map_link = "https://www.google.com/maps?q=" . $order['delivery_lat'] . "," . $order['delivery_long'];
+                $buyer_map_link = "https://maps.google.com/?q=" . $order['delivery_lat'] . "," . $order['delivery_long'];
             }
 
-            // --- A. FORMAT PESAN ADMIN ---
+            // --- A. KIRIM KE ADMIN ---
+            $nomor_admin = "082241559607"; 
             $pesan_admin = "*PEMBAYARAN MASUK!* 💰\n";
             $pesan_admin .= "Faktur: $inv_no\n";
             $pesan_admin .= "Penyewa: " . $order['customer_name'] . "\n";
             $pesan_admin .= "Total: " . $formatted_amount . "\n";
-            $pesan_admin .= "Durasi: " . $order['duration_days'] . " Hari\n\n";
-            $pesan_admin .= "*Rincian Sewa:*\n" . $list_barang . "\n";
-            $pesan_admin .= "Metode: " . strtoupper($order['delivery_method']) . "\n";
-
+            $pesan_admin .= "Metode: " . strtoupper($payment_type) . "\n";
+            $pesan_admin .= "*Barang:*\n" . $list_barang;
+            
             if ($order['delivery_method'] === 'delivery') {
-                $pesan_admin .= "📍 Lokasi Antar: $buyer_map_link\n";
+                $pesan_admin .= "\n📍 *Lokasi Antar:* $buyer_map_link\n";
                 $pesan_admin .= "Alamat: " . $order['delivery_address'] . "\n";
+            } else {
+                $pesan_admin .= "\nInfo: Customer akan ambil barang di toko.\n";
             }
-            $pesan_admin .= "🔗 Faktur: $link_faktur";
+
             $pesan_admin .= "Cek Dashboard untuk memproses: " . "\n" . "https://95816cc257c9.ngrok-free.app/transaksi-admin";
+            
+            $logAdmin = sendFonnte($nomor_admin, $pesan_admin);
+            writeLog("WA Admin: $logAdmin");
 
-            // Kirim ke Admin
-            $nomor_admin = "082241559607"; // Nomor Admin Utama
-            sendWhatsApp($nomor_admin, $pesan_admin);
-
-
-            // --- B. FORMAT PESAN CUSTOMER ---
+            // --- B. KIRIM KE CUSTOMER ---
             $nomor_penyewa = $order['customer_phone'];
             if ($nomor_penyewa) {
                 $pesan_user = "*PEMBAYARAN BERHASIL* ✅\n";
                 $pesan_user .= "Halo " . $order['customer_name'] . ",\n";
-                $pesan_user .= "Pembayaran sewa alat camping diterima.\n\n";
-                $pesan_user .= "🧾 *No Faktur:* $inv_no\n";
-                $pesan_user .= "*Barang:* \n" . $list_barang . "\n";
-
-                if ($order['delivery_method'] === 'pickup') {
-                    $pesan_user .= "Silakan ambil barang di toko:\n📍 $shop_map_link\n\n";
+                $pesan_user .= "Terima kasih, pembayaran sewa alat camping telah kami terima.\n\n";
+                $pesan_user .= "🧾 *No Invoice:* $inv_no\n";
+                $pesan_user .= "*Rincian:*\n" . $list_barang . "\n";
+                
+                if ($order['delivery_method'] === 'delivery') {
+                    $pesan_user .= "🛵 *Status:* Menunggu pengantaran kurir.\n";
                 } else {
-                    $pesan_user .= "Barang segera kami antar 🛵.\n\n";
+                    // JIKA AMBIL SENDIRI (PICKUP) -> TAMPILKAN ALAMAT TOKO
+                    $pesan_user .= "📍 *Status:* Silakan ambil barang di toko kami.\n";
+                    $pesan_user .= "🗺️ *Google Maps:* $shop_map_link\n";
                 }
-                $pesan_user .= "🔗 Faktur: $link_faktur";
-                sendWhatsApp($nomor_penyewa, $pesan_user);
+                
+                $pesan_user .= "\nLihat Invoice: $link_faktur";
+                
+                $logUser = sendFonnte($nomor_penyewa, $pesan_user);
+                writeLog("WA User ($nomor_penyewa): $logUser");
             }
 
         } catch (Exception $e) {
@@ -168,55 +183,13 @@ if ($new_status == 'paid') {
             http_response_code(500);
         }
     } else {
-        writeLog("Order skip (sudah paid/tidak ada): $order_id");
+        writeLog("Order skip (sudah paid atau tidak ditemukan): $order_id");
     }
+
 } elseif ($new_status == 'failed') {
     $conn->query("UPDATE orders SET status = 'cancelled' WHERE order_code = '$order_id'");
     writeLog("Order Cancelled: $order_id");
 }
 
-// --- FUNGSI KIRIM WA (ROBUST / ANTI GAGAL) ---
-function sendWhatsApp($target, $message)
-{
-    // 1. Format Nomor (Auto ganti 08 ke 62)
-    $target_formatted = formatNomor($target);
-
-    // 2. Token Fonnte
-    $token = "pMEu6MFUdc2f9zQ3JzQk";
-
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.fonnte.com/send',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 15,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        // PENTING: Bypass SSL agar jalan di localhost/ngrok
-        CURLOPT_SSL_VERIFYHOST => 0,
-        CURLOPT_SSL_VERIFYPEER => 0,
-        CURLOPT_POSTFIELDS => array(
-            'target' => $target_formatted,
-            'message' => $message,
-        ),
-        CURLOPT_HTTPHEADER => array(
-            "Authorization: $token"
-        ),
-    ));
-
-    $response = curl_exec($curl);
-    $error = curl_error($curl);
-    curl_close($curl);
-
-    if ($error) {
-        writeLog("WA Error ke $target_formatted: $error");
-    } else {
-        writeLog("WA Sukses ke $target_formatted. Resp: $response");
-    }
-}
-
-http_response_code(200);
-echo "Webhook OK";
+echo json_encode(['status' => 'ok']);
 ?>

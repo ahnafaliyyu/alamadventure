@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
-// Ambil Data User (Hanya untuk Sidebar Profil)
+// Ambil Data User
 $stmtUser = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmtUser->bind_param("i", $user_id);
 $stmtUser->execute();
@@ -29,7 +29,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-        /* === STYLING ASLI (TIDAK DIUBAH) === */
+        /* === STYLING TAMBAHAN === */
         body {
             background-color: #f4f7f5;
             padding-top: 100px;
@@ -99,6 +99,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             color: #2c4532;
         }
 
+        /* Buttons */
         .btn-logout {
             display: block;
             padding: 12px;
@@ -108,15 +109,37 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             border-radius: 8px;
             font-weight: 600;
             text-decoration: none;
-            margin-top: 20px;
+            margin-top: 10px;
             transition: 0.3s;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .btn-logout:hover {
             background: #ffcdd2;
         }
 
-        /* History & Search Styles */
+        .btn-changepass {
+            display: block;
+            padding: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: 0.3s;
+            width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .btn-changepass:hover {
+            background: #c8e6c9;
+        }
+
+        /* History Styles */
         .history-section h2 {
             font-size: 24px;
             color: #2c4532;
@@ -144,7 +167,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             border-color: #2c4532;
         }
 
-        /* Order Card Styles (Ini yang dipakai AJAX nanti) */
+        /* Order Card */
         .order-card {
             background: white;
             border-radius: 12px;
@@ -247,7 +270,7 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             border: 1px solid #ddd;
         }
 
-        /* Pagination Styles (Compatible with AJAX) */
+        /* Pagination & Loader */
         .pagination {
             display: flex;
             justify-content: center;
@@ -271,16 +294,87 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             border-color: #2c4532;
         }
 
-        .pagination a:hover:not(.active) {
-            background-color: #eee;
-        }
-
-        /* Loader */
         #loader {
             display: none;
             text-align: center;
             padding: 20px;
             color: #666;
+        }
+
+        /* --- MODAL CHANGE PASSWORD --- */
+        .pass-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pass-modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .pass-modal h3 {
+            margin-top: 0;
+            color: #2c4532;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: #2c4532;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #eee;
+            color: #333;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -299,24 +393,14 @@ $userData = $stmtUser->get_result()->fetch_assoc();
 
     <nav class="nav">
         <div class="desktop-nav">
-            <div class="desktop-nav">
-                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
-                <div class="logo">
-                    <img src="public/logo.png" width="30px" alt="Logo" />
-                </div>
-
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="beranda" class="nav-link">Beranda</a></li>
-                    <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
-                    <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
-                    <li><a href="kontak" class="nav-link">Kontak</a></li>
-                </ul>
-            </div>
+            <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            <div class="logo"><img src="public/logo.png" width="30px" alt="Logo" /></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="beranda" class="nav-link">Beranda</a></li>
+                <li><a href="tentang-kami" class="nav-link">Tentang Kami</a></li>
+                <li><a href="katalog-barang" class="nav-link">Katalog</a></li>
+                <li><a href="kontak" class="nav-link">Kontak</a></li>
+            </ul>
         </div>
         <div class="btn-kanan">
             <span style="font-weight:600; color:#fff;">Hi
@@ -332,102 +416,117 @@ $userData = $stmtUser->get_result()->fetch_assoc();
             <div class="info-list">
                 <div class="info-item"><i class="fas fa-phone"></i> <?= htmlspecialchars($userData['phone']) ?></div>
                 <div class="info-item"><i class="fas fa-calendar"></i> Member sejak
-                    <?= date('Y', strtotime($userData['created_at'])) ?>
-                </div>
+                    <?= date('Y', strtotime($userData['created_at'])) ?></div>
                 <div class="info-item"><i class="fas fa-check-circle"></i>
                     <?= $userData['is_verified'] ? '<span style="color:green">Terverifikasi</span>' : '<span style="color:red">Belum Verifikasi</span>' ?>
                 </div>
             </div>
+
+            <button onclick="openPassModal()" class="btn-changepass"><i class="fas fa-key"></i> Ganti Password</button>
             <a href="logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
 
         <div class="history-section">
             <h2>Riwayat Pesanan</h2>
-
             <div class="search-box">
                 <input type="text" id="inputCari" placeholder="Cari Kode Transaksi..." autocomplete="off">
             </div>
-
             <div id="loader"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>
-
-            <div id="dataContainer">
-            </div>
+            <div id="dataContainer"></div>
         </div>
     </div>
 
-    <div id="loginChoiceModal" class="login-modal-overlay">
-        <div class="login-modal-content">
-            <button class="btn-close-modal" onclick="closeLoginModal()">&times;</button>
-            <div class="login-modal-header">
-                <h3>Selamat Datang!</h3>
-                <p>Silakan pilih cara masuk Anda</p>
-            </div>
-            <a href="login" class="option-user">
-                <i class="fas fa-user-circle"></i> Masuk sebagai Pelanggan
-            </a>
-            <div class="modal-divider"><span>ATAU</span></div>
-            <a href="login-admin" class="option-admin">
-                <i class="fas fa-lock"></i> Masuk sebagai Admin
-            </a>
+    <div id="passModal" class="pass-modal-overlay">
+        <div class="pass-modal">
+            <h3>Ganti Password</h3>
+            <form id="formChangePass">
+                <div class="form-group">
+                    <label>Password Lama</label>
+                    <input type="password" name="old_password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Password Baru</label>
+                    <input type="password" name="new_password" class="form-control" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Konfirmasi Password Baru</label>
+                    <input type="password" name="confirm_password" class="form-control" required minlength="6">
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="btn-cancel" onclick="closePassModal()">Batal</button>
+                    <button type="submit" class="btn-save" id="btnSavePass">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
         $(document).ready(function () {
-
-            // Fungsi panggil data
+            // Load Riwayat Function
             function loadRiwayat(page, keyword) {
                 $('#loader').show();
                 $('#dataContainer').css('opacity', '0.3');
-
                 $.ajax({
-                    url: 'load_riwayat.php',
-                    type: 'POST',
-                    data: {
-                        page: page,
-                        keyword: keyword
-                    },
+                    url: 'load_riwayat.php', type: 'POST',
+                    data: { page: page, keyword: keyword },
                     success: function (response) {
                         $('#dataContainer').html(response);
                         $('#loader').hide();
                         $('#dataContainer').css('opacity', '1');
-                    },
-                    error: function () {
-                        alert('Gagal memuat data');
-                        $('#loader').hide();
                     }
                 });
             }
 
-            // 1. Load Pertama kali (Halaman 1, keyword kosong)
             loadRiwayat(1, '');
 
-            // 2. Event Ketik (Live Search)
             $('#inputCari').on('keyup', function () {
                 var keyword = $(this).val();
-                loadRiwayat(1, keyword); // Reset ke hal 1 setiap mencari
+                loadRiwayat(1, keyword);
             });
 
-            // 3. Event Klik Pagination (Delegation)
-            // Kita pakai $(document).on karena tombol pagination dibuat dinamis oleh AJAX
             $(document).on('click', '.ajax-page', function (e) {
                 e.preventDefault();
                 var page = $(this).data('page');
-                var keyword = $('#inputCari').val();
-
-                loadRiwayat(page, keyword);
-
-                // Scroll halus ke atas list
-                $('html, body').animate({
-                    scrollTop: $(".history-section").offset().top - 120
-                }, 500);
+                loadRiwayat(page, $('#inputCari').val());
+                $('html, body').animate({ scrollTop: $(".history-section").offset().top - 120 }, 500);
             });
 
+            // Handle Change Password Form
+            $('#formChangePass').on('submit', function (e) {
+                e.preventDefault();
+                $('#btnSavePass').text('Menyimpan...').prop('disabled', true);
+
+                $.ajax({
+                    url: 'api/change_password.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.message);
+                            closePassModal();
+                            $('#formChangePass')[0].reset();
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function () { alert('Terjadi kesalahan koneksi.'); },
+                    complete: function () { $('#btnSavePass').text('Simpan').prop('disabled', false); }
+                });
+            });
+        });
+
+        // Modal Functions
+        function openPassModal() { $('#passModal').css('display', 'flex'); }
+        function closePassModal() { $('#passModal').hide(); }
+
+        // Tutup modal jika klik di luar
+        $(window).on('click', function (e) {
+            if ($(e.target).is('#passModal')) { closePassModal(); }
         });
     </script>
 
     <script src="public/js/nav.js"></script>
-
 </body>
 
 </html>
